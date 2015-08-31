@@ -1,0 +1,11 @@
+# Binary files
+target
+*.class
+# IDEA configuration file
+.idea
+# Eclipse configuration file
+.classpath
+.project
+.settings
+# Emacs temporary files
+*~
