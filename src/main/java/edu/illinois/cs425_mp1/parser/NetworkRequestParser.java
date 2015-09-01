@@ -23,7 +23,6 @@ public class NetworkRequestParser extends Parser {
 		case GREP: replyContent = ShellExecutor.execute(request.getBody());
 					break;
 		}
-		System.out.println("reply" + replyContent);
 		return new Reply(new DateTime(), replyContent);
 	}
 	
