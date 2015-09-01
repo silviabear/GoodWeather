@@ -1,4 +1,6 @@
 package edu.illinois.cs425_mp1.parser;
+import edu.illinois.cs425_mp1.types.Request;
 
-public abstract class Parser {
+public interface Parser {
+    String parse(Request body);
 }
