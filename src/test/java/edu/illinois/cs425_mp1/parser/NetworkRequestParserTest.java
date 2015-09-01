@@ -16,5 +16,8 @@ public class NetworkRequestParserTest {
 		DateTime before = new DateTime();
 		Reply reply = NetworkRequestParser.acceptNetworkRequest(
 				new Request(Command.GREP, "grep artifactId pom.xml"));
+		long diff = reply.getTimeStamp().getMillis() - before.getMillis();
+		assertTrue(diff < 1000);
+		assertTrue(reply.getBody().contains("cs425-mp1"));
 	}
 }
