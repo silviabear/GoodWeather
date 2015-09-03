@@ -6,8 +6,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Base64;
+import java.util.zip.GZIPOutputStream;
 
 final public class ObjectStringSerializer {
+
 	/**
 	 * Serialize an object into a string
 	 * @param ob
@@ -19,9 +21,9 @@ final public class ObjectStringSerializer {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(ob);
-        oos.close();
         oos.flush();
-        return Base64.getEncoder().encodeToString(baos.toByteArray()); 
+        oos.close();
+        return Base64.getEncoder().encodeToString(baos.toByteArray());
 	}
 	
 	/**
