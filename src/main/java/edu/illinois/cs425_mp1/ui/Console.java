@@ -29,9 +29,6 @@ public class Console {
 			default: System.out.println("Invalid option");
 					continue;
 			}
-			line = read();
-			num = parseNum(line);
-			
 		}
 	}
 	
@@ -40,7 +37,7 @@ public class Console {
 			BufferedReader br = 
                       new BufferedReader(new InputStreamReader(System.in));
 			String input;
-			if((input=br.readLine())!=null){
+			if((input = br.readLine())!= null){
 				return input;
 			}
 		} catch (IOException e) {
@@ -73,6 +70,7 @@ public class Console {
 					line = read();
 					//Unfinished
 					return 0;
+			default: return -1;
 		}
 	}
 }

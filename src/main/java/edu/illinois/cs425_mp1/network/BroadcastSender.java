@@ -5,7 +5,5 @@ package edu.illinois.cs425_mp1.network;
  */
 public class BroadcastSender implements Sender {
 
-    public static void send() {
-
-    }
+    
 }
