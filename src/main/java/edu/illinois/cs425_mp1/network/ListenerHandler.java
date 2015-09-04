@@ -2,24 +2,31 @@ package edu.illinois.cs425_mp1.network;
 
 
 import edu.illinois.cs425_mp1.types.Request;
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.channel.ChannelPipeline;
+import io.netty.channel.SimpleChannelInboundHandler;
+
+import java.net.InetAddress;
+import java.util.Date;
 
 /**
  * This Class is the listener handler class that handles all incoming messages
  * Created by Wesley on 8/31/15.
  */
-public class ListenerHandler extends ChannelInboundHandlerAdapter {
+public class ListenerHandler extends SimpleChannelInboundHandler<String> {
 
 
         @Override
-        public void channelRead(ChannelHandlerContext ctx, Object msg) {
-            // Discard the received data silently.
-            ChannelPipeline pip = ctx.pipeline();
-            ((ByteBuf) msg).release();
-            Request req = (Request) msg;
+        public void channelActive(ChannelHandlerContext ctx) throws Exception{
+            // TODO: How talk is done?
+            ctx.write("You have connected to " + InetAddress.getLocalHost().getHostName() + "!\r\n");
+            ctx.write("It is " + new Date() + " now.\r\n");
+            ctx.flush();
+        }
+
+        @Override
+        public void channelRead0(ChannelHandlerContext ctx, String msg) {
+            //TODO: Parse the msg, do the work and send it here
+            ctx.write(msg);
         }
 
         @Override
