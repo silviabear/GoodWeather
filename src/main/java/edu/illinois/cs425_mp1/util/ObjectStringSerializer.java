@@ -5,8 +5,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Base64;
-import java.util.zip.GZIPOutputStream;
+
+import org.apache.commons.codec.binary.Base64;
 
 final public class ObjectStringSerializer {
 
@@ -23,7 +23,8 @@ final public class ObjectStringSerializer {
         oos.writeObject(ob);
         oos.flush();
         oos.close();
-        return Base64.getEncoder().encodeToString(baos.toByteArray());
+        
+        return new String(Base64.encodeBase64(baos.toByteArray()));
 	}
 	
 	/**
@@ -34,7 +35,7 @@ final public class ObjectStringSerializer {
 	 * @throws ClassNotFoundException
 	 */
 	public static Object stringToObject(String str) throws IOException, ClassNotFoundException {
-		byte [] data = Base64.getDecoder().decode(str);
+		byte [] data = Base64.decodeBase64(str.getBytes());
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(data));
         Object o  = ois.readObject();
         ois.close();
