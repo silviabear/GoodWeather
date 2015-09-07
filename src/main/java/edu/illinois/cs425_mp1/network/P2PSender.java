@@ -2,10 +2,12 @@ package edu.illinois.cs425_mp1.network;
 
 import edu.illinois.cs425_mp1.types.Message;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
 
 /**
  * Created by Wesley on 8/31/15.
@@ -29,12 +31,13 @@ public class P2PSender implements Sender {
 
         Bootstrap b = new Bootstrap();
         b.group(group)
-                .channel(NioServerSocketChannel.class)
+                .channel(NioSocketChannel.class)
                 .handler(new P2PSenderInitializer())
                 .option(ChannelOption.TCP_NODELAY, true);
 
 
         // Start the sender
+        System.out.println("Connecting " + HOST + " @" + PORT);
         cf = b.connect(HOST, PORT).sync();
         channel = cf.channel();
 
@@ -42,13 +45,19 @@ public class P2PSender implements Sender {
     }
 
     public void send(Message msg) {
-        // TODO: What should be sent?
+
         cf = channel.writeAndFlush(msg.toString());
+    }
+
+    // Send String obj
+    public void send(String msg){
+        cf = channel.writeAndFlush(msg);
     }
 
     public void close() throws Exception {
         try {
             // Wait until the connection is closed
+            System.out.println("Closing current talk");
             channel.closeFuture().sync();
 
             // TODO: Test if cf.channel should be closed or not
