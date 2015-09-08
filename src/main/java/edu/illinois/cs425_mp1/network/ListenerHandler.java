@@ -1,10 +1,12 @@
 package edu.illinois.cs425_mp1.network;
 
-
+import edu.illinois.cs425_mp1.types.Message;
 import edu.illinois.cs425_mp1.types.Request;
+import edu.illinois.cs425_mp1.util.ObjectStringSerializer;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.util.Date;
 
@@ -12,7 +14,7 @@ import java.util.Date;
  * This Class is the listener handler class that handles all incoming messages
  * Created by Wesley on 8/31/15.
  */
-public class ListenerHandler extends SimpleChannelInboundHandler<String> {
+class ListenerHandler extends SimpleChannelInboundHandler<String> {
 
 
         @Override

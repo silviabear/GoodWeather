@@ -1,5 +1,7 @@
 package edu.illinois.cs425_mp1.parser;
 
+import edu.illinois.cs425_mp1.types.LogCommand;
+import edu.illinois.cs425_mp1.types.LogReply;
 import edu.illinois.cs425_mp1.types.Reply;
 import edu.illinois.cs425_mp1.types.Request;
 
@@ -18,6 +20,6 @@ public class LocalRequestParser extends Parser {
 	 * @return reply from network
 	 */
 	public static Reply acceptLocalRequest(Request request) {
-		return new Reply(new DateTime(), "");
+		return new LogReply(LogCommand.GREP, "");
 	}
 }
