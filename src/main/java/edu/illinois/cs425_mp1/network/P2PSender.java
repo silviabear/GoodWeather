@@ -36,6 +36,7 @@ public class P2PSender implements Sender {
                 .option(ChannelOption.TCP_NODELAY, true);
 
 
+        // TODO: Log the connection
         // Start the sender
         System.out.println("Connecting " + HOST + " @" + PORT);
         cf = b.connect(HOST, PORT).sync();
@@ -44,25 +45,23 @@ public class P2PSender implements Sender {
 
     }
 
-    public void send(Message msg) {
+    // NOTE: Channel will be closed after send msg, ie. this is a one time used channel
+    public void send(Message msg) { cf = channel.writeAndFlush(msg); }
 
-        cf = channel.writeAndFlush(msg.toString());
+    public void send(String msg){
+        cf = channel.writeAndFlush(msg);
     }
 
-    // Send String obj
-    public void send(String msg){
+    public void send(Object msg) {
         cf = channel.writeAndFlush(msg);
     }
 
     public void close() throws Exception {
         try {
-            // Wait until the connection is closed
+            // TODO: Log closing
             System.out.println("Closing current talk");
             channel.closeFuture().sync();
-
-            // TODO: Test if cf.channel should be closed or not
-            cf.channel().close();
-            cf.sync();
+            cf.channel().close().sync();
 
         } finally {
             group.shutdownGracefully();
