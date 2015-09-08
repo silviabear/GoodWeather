@@ -16,7 +16,7 @@ public class NetworkRequestParserTest {
 
 	@Test
 	public void testGrep() {
-		Reply reply = NetworkRequestParser.acceptNetworkRequest(
+		Reply reply = NetworkMessageParser.acceptNetworkRequest(
 				new LogRequest(LogCommand.GREP, "grep artifactId pom.xml"));
 		assertTrue(reply instanceof LogReply);
 		assertTrue(reply.getBody().contains("cs425-mp1"));

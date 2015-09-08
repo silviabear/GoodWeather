@@ -3,7 +3,7 @@ package edu.illinois.cs425_mp1.network;
 /**
  * Created by Wesley on 9/6/15.
  */
-public class EchoServer {
+public class EchoServerTest {
 
     public static void main(String[] args){
         int port = 6753;

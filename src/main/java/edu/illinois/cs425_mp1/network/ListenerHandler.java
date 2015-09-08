@@ -1,5 +1,7 @@
 package edu.illinois.cs425_mp1.network;
 
+import edu.illinois.cs425_mp1.parser.NetworkMessageParser;
+import edu.illinois.cs425_mp1.types.Reply;
 import edu.illinois.cs425_mp1.types.Request;
 import edu.illinois.cs425_mp1.types.ShutdownRequest;
 import io.netty.channel.*;
@@ -23,15 +25,22 @@ public class ListenerHandler extends ChannelInboundHandlerAdapter {
         @Override
         public void channelRead(ChannelHandlerContext ctx, Object msg) {
             // TODO: Log msg received
-            // If msg is a Request
             if (msg instanceof Request){
                 Request req = (Request) msg;
                 System.out.println("Msg received, Echo it back : " + req.getBody());
-                // TODO: Exec this request and reply back
+                // TODO: @Wesley: should this also be called for reply?
                 ChannelFuture cf = ctx.write(msg);
-
-                if(req instanceof ShutdownRequest)
+                if(req instanceof ShutdownRequest) {
                     cf.addListener(ChannelFutureListener.CLOSE);
+                    return;
+                } 
+                // TODO: change to asynchronized way and separate IO later
+                Reply rep = NetworkMessageParser.acceptNetworkRequest(req);
+                // TODO: @Wesley add sender method later, I don't know
+                // if I should new a sender with certain address or 
+                // it can directly reply
+            } else if(msg instanceof Reply) {
+            	NetworkMessageParser.acceptNetworkReply((Reply)msg);
             }
         }
 
@@ -44,5 +53,9 @@ public class ListenerHandler extends ChannelInboundHandlerAdapter {
         public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
             cause.printStackTrace();
             ctx.close();
+        }
+        
+        private void handleRequest(Request req) {
+        	
         }
 }

@@ -11,9 +11,16 @@ import edu.illinois.cs425_mp1.adapter.Adapter;
  */
 public class Console {
 	
-	private Adapter adapter = new Adapter(6753);
+	private static Adapter adapter;
 	
 	public static void main(String[] args) {
+		Console c = new Console();
+		adapter = new Adapter(6753);
+		adapter.registerUI(c);
+		c.start();
+	}
+	
+	private void start() {
 		String line = null;
 		while(true) {
 			System.out.println("Choose the num of operation:");
@@ -32,7 +39,7 @@ public class Console {
 		}
 	}
 	
-	private static String read() {
+	private String read() {
 		try {
 			BufferedReader br = 
                       new BufferedReader(new InputStreamReader(System.in));
@@ -56,7 +63,7 @@ public class Console {
 		}
 	}
 
-	private static int logMenu() {
+	private int logMenu() {
 		System.out.println("Please enter the num of query:");
 		System.out.println("1. grep 0. Return to main menu");
 		String line = read();
@@ -72,5 +79,14 @@ public class Console {
 					return 0;
 			default: return -1;
 		}
+	}
+	
+	/**
+	 * Callback for adapter when new message received
+	 * 
+	 * @param s
+	 */
+	public void print(String s) {
+		System.out.println(s);
 	}
 }

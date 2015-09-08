@@ -12,14 +12,9 @@ import org.joda.time.DateTime;
  * @author silvia
  *
  */
-public class LocalRequestParser extends Parser {
+public class LocalMessageParser extends Parser {
 	
-	/**
-	 * 
-	 * @param request
-	 * @return reply from network
-	 */
-	public static Reply acceptLocalRequest(Request request) {
-		return new LogReply(LogCommand.GREP, "");
+	public static void acceptBroadcastRequest(Request request) {
+		
 	}
 }

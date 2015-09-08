@@ -23,6 +23,10 @@ public abstract class Message implements Serializable {
 		body = null;
 		timeStamp = null;
 	}
+	
+	public DateTime getTimeStamp() {
+		return this.timeStamp;
+	}
 
 
 }

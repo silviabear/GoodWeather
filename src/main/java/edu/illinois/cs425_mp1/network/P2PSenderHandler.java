@@ -29,7 +29,6 @@ public class P2PSenderHandler extends ChannelInboundHandlerAdapter {
 
         Request req = (Request) reply;
         System.out.println("Get echo meg : " + req.getBody());
-
     }
 
 }

@@ -1,5 +1,6 @@
 package edu.illinois.cs425_mp1.parser;
 
+import edu.illinois.cs425_mp1.adapter.Adapter;
 import edu.illinois.cs425_mp1.io.ShellExecutor;
 import edu.illinois.cs425_mp1.types.LogCommand;
 import edu.illinois.cs425_mp1.types.LogReply;
@@ -15,7 +16,7 @@ import org.joda.time.DateTime;
  * @author silvia
  * 
  */
-public class NetworkRequestParser extends Parser {
+public class NetworkMessageParser extends Parser {
 	/**
 	 * 
 	 * @param request
@@ -29,13 +30,19 @@ public class NetworkRequestParser extends Parser {
 	}
 	
 	public static void acceptNetworkReply(Reply reply) {
-		
+		if(reply instanceof LogReply) {
+			Adapter.getConsole().print("QUERY RESULT FROM: " + reply.getReplierAddress());
+			Adapter.getConsole().print("FETCH TIME: " + reply.getTimeStamp());
+			Adapter.getConsole().print("LOG: " + reply.getBody());
+		}
 	}
 	
 	private static LogReply parseLogRequest(LogRequest request) {
 		LogCommand c = request.getCommand();
 		switch(c) {
-		case GREP: return new LogReply(LogCommand.GREP, ShellExecutor.execute(request.getBody()));
+		case GREP: return new LogReply(ShellExecutor.execute(request.getBody()),
+				request.getRequestId(),
+				Adapter.getLocalAddress());
 		}
 		return null;
 	}

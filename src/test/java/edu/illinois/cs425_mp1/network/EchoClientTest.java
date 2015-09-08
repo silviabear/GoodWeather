@@ -2,20 +2,16 @@ package edu.illinois.cs425_mp1.network;
 
 import edu.illinois.cs425_mp1.types.LogCommand;
 import edu.illinois.cs425_mp1.types.LogRequest;
-import edu.illinois.cs425_mp1.types.Message;
-import edu.illinois.cs425_mp1.types.Reply;
 import edu.illinois.cs425_mp1.types.Request;
 import edu.illinois.cs425_mp1.types.ShutdownRequest;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 /**
  * Created by Wesley on 9/6/15.
  */
-public class EchoClient {
+public class EchoClientTest {
 
     public static void main(String args[]) {
 
