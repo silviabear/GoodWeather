@@ -2,10 +2,12 @@ package edu.illinois.cs425_mp1.network;
 
 import edu.illinois.cs425_mp1.types.Message;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
 
 /**
  * Created by Wesley on 8/31/15.
@@ -29,31 +31,37 @@ public class P2PSender implements Sender {
 
         Bootstrap b = new Bootstrap();
         b.group(group)
-                .channel(NioServerSocketChannel.class)
+                .channel(NioSocketChannel.class)
                 .handler(new P2PSenderInitializer())
                 .option(ChannelOption.TCP_NODELAY, true);
 
 
+        // TODO: Log the connection
         // Start the sender
+        System.out.println("Connecting " + HOST + " @" + PORT);
         cf = b.connect(HOST, PORT).sync();
         channel = cf.channel();
 
 
     }
 
-    public void send(Message msg) {
-        // TODO: What should be sent?
-        cf = channel.writeAndFlush(msg.toString());
+    // NOTE: Channel will be closed after send msg, ie. this is a one time used channel
+    public void send(Message msg) { cf = channel.writeAndFlush(msg); }
+
+    public void send(String msg){
+        cf = channel.writeAndFlush(msg);
+    }
+
+    public void send(Object msg) {
+        cf = channel.writeAndFlush(msg);
     }
 
     public void close() throws Exception {
         try {
-            // Wait until the connection is closed
+            // TODO: Log closing
+            System.out.println("Closing current talk");
             channel.closeFuture().sync();
-
-            // TODO: Test if cf.channel should be closed or not
-            cf.channel().close();
-            cf.sync();
+            cf.channel().close().sync();
 
         } finally {
             group.shutdownGracefully();

@@ -24,4 +24,5 @@ public abstract class Message implements Serializable {
 		timeStamp = null;
 	}
 
+
 }
