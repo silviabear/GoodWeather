@@ -6,13 +6,13 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
 
 /**
  * Created by Wesley on 9/3/15.
  */
 public class P2PSenderInitializer extends ChannelInitializer<SocketChannel> {
-//    private static final StringDecoder DECODER = new StringDecoder();
-//    private static final StringEncoder ENCODER = new StringEncoder();
     private static final P2PSenderHandler HANDLER = new P2PSenderHandler();
 
     private static final ObjectDecoder DECODER = new ObjectDecoder(ClassResolvers.cacheDisabled(null));
@@ -22,12 +22,10 @@ public class P2PSenderInitializer extends ChannelInitializer<SocketChannel> {
     public void initChannel(SocketChannel ch){
         ChannelPipeline pipeline = ch.pipeline();
 
-        // Add the text line codec combination first,
-        // pipeline.addLast(new DelimiterBasedFrameDecoder(8192, Delimiters.lineDelimiter()));
-
         pipeline.addLast(DECODER);//not necessary, but nah..
         pipeline.addLast(ENCODER);
 
+        pipeline.addLast(new LoggingHandler(LogLevel.INFO));
         // and then business logic.
         pipeline.addLast(HANDLER);
 

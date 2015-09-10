@@ -10,6 +10,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
 /**
+ * This is the p2p message sender, one way communication. a proper close() should be called after every run()
  * Created by Wesley on 8/31/15.
  */
 public class P2PSender implements Sender {
@@ -35,31 +36,25 @@ public class P2PSender implements Sender {
                 .handler(new P2PSenderInitializer())
                 .option(ChannelOption.TCP_NODELAY, true);
 
-
-        // TODO: Log the connection
-        // Start the sender
-        System.out.println("Connecting " + HOST + " @" + PORT);
         cf = b.connect(HOST, PORT).sync();
         channel = cf.channel();
 
 
     }
 
-    // NOTE: Channel will be closed after send msg, ie. this is a one time used channel
+    /**
+     * Tell the sender to send message
+     * @param msg
+     */
     public void send(Message msg) { cf = channel.writeAndFlush(msg); }
 
-    public void send(String msg){
-        cf = channel.writeAndFlush(msg);
-    }
-
-    public void send(Object msg) {
-        cf = channel.writeAndFlush(msg);
-    }
-
+    /**
+     * Tell the sender to shutdown
+     * @throws Exception
+     */
     public void close() throws Exception {
         try {
             // TODO: Log closing
-            System.out.println("Closing current talk");
             channel.closeFuture().sync();
             cf.channel().close().sync();
 

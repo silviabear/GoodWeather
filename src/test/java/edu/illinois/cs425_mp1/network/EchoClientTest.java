@@ -27,7 +27,6 @@ public class EchoClientTest {
         lis.add(new ShutdownRequest());
 
         try {
-            System.out.println("Trying to Connect Server @ " + target);
             client.run();
 
             for (Request msg : lis) {

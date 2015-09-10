@@ -8,15 +8,17 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
 
 
 /**
  * This class is the main listener class that sets up the server required config
+ *
  */
 public class Listener {
 
     private final int port;
-
     private Channel channel;
     private ChannelFuture cf;
     private EventLoopGroup bossGroup;
@@ -26,7 +28,10 @@ public class Listener {
         this.port = port;
     }
 
-
+    /**
+     * Tell the listener to run
+     * @throws Exception
+     */
     public void run() throws Exception {
         bossGroup = new NioEventLoopGroup();
         workerGroup = new NioEventLoopGroup();
@@ -41,6 +46,7 @@ public class Listener {
                                           p.addLast(
                                                   new ObjectEncoder(),
                                                   new ObjectDecoder(ClassResolvers.cacheDisabled(null)),
+                                                  new LoggingHandler(LogLevel.INFO),
                                                   new ListenerHandler());
                                       }
                                   }
@@ -56,6 +62,10 @@ public class Listener {
         }
     }
 
+    /**
+     * Forcefully shutdown
+     * @throws Exception
+     */
     public void close() throws Exception {
         // Wait until the server socket is closed.
         try {

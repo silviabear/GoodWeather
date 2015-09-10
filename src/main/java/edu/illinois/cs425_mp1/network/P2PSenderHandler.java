@@ -1,17 +1,17 @@
 package edu.illinois.cs425_mp1.network;
 
 import edu.illinois.cs425_mp1.types.Reply;
-import edu.illinois.cs425_mp1.types.Request;
-import io.netty.channel.*;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 
 /**
+ * This class handles all the events
  * Created by Wesley on 8/31/15.
  */
 public class P2PSenderHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        // TODO: Log channel active time
         ctx.flush();
     }
 
@@ -23,12 +23,10 @@ public class P2PSenderHandler extends ChannelInboundHandlerAdapter {
             // TODO: print on shell and close current channel
 
 
-            System.out.println("Closing Channel");
             ctx.channel().close().sync();
         }
 
-        Request req = (Request) reply;
-        System.out.println("Get echo meg : " + req.getBody());
+
     }
 
 }
