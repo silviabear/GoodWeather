@@ -18,6 +18,10 @@ public class P2PSenderInitializer extends ChannelInitializer<SocketChannel> {
     private static final ObjectDecoder DECODER = new ObjectDecoder(ClassResolvers.cacheDisabled(null));
     private static final ObjectEncoder ENCODER = new ObjectEncoder();
 
+    /**
+     * init channel parameters
+     * @param ch
+     */
     @Override
     public void initChannel(SocketChannel ch){
         ChannelPipeline pipeline = ch.pipeline();
@@ -25,8 +29,7 @@ public class P2PSenderInitializer extends ChannelInitializer<SocketChannel> {
         pipeline.addLast(DECODER);//not necessary, but nah..
         pipeline.addLast(ENCODER);
 
-        pipeline.addLast(new LoggingHandler(LogLevel.INFO));
-        // and then business logic.
+//        pipeline.addLast(new LoggingHandler(LogLevel.INFO));
         pipeline.addLast(HANDLER);
 
     }

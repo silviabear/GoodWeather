@@ -4,19 +4,24 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import com.sun.istack.internal.logging.Logger;
 import edu.illinois.cs425_mp1.adapter.Adapter;
 
 /**
+ * This is the console
  * Created by Wesley on 8/30/15.
  */
 public class Console {
-	
+
+	static Logger log = Logger.getLogger(Console.class);
 	private static Adapter adapter;
 	
 	public static void main(String[] args) {
+		log.info("Start Console init...");
 		Console c = new Console();
 		adapter = new Adapter(6753);
 		adapter.registerUI(c);
+		log.info("Console init finished");
 		c.start();
 	}
 	

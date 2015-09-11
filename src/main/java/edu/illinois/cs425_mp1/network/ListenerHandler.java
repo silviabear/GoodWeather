@@ -4,7 +4,12 @@ import edu.illinois.cs425_mp1.parser.NetworkMessageParser;
 import edu.illinois.cs425_mp1.types.Reply;
 import edu.illinois.cs425_mp1.types.Request;
 import edu.illinois.cs425_mp1.types.ShutdownRequest;
+
 import io.netty.channel.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.net.InetSocketAddress;
 
 
 /**
@@ -14,40 +19,49 @@ import io.netty.channel.*;
 @ChannelHandler.Sharable
 public class ListenerHandler extends ChannelInboundHandlerAdapter {
 
+    static Logger log = LogManager.getLogger("networkLogger");
+
     /**
-     * This method will be called when the channel opens
-     *
+     * Will be called when channel is active
      * @param ctx
      * @throws Exception
      */
     @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+    public void channelActive(ChannelHandlerContext ctx){
+        InetSocketAddress remote = (InetSocketAddress)ctx.channel().remoteAddress();
+        log.trace("channel opens for address " + remote.getHostString());
         ctx.flush();
     }
 
     /**
+     * Handles incoming msg
      * @param ctx
      * @param msg
      */
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        // TODO: Log msg received
+        log.trace("message received at listener");
         if (msg instanceof Request) {
             Request req = (Request) msg;
+            log.trace("receive request: " + req.toString());
             // TODO: @Wesley: should this also be called for reply?
 
+            log.trace("parsing request and executing request");
             // TODO: change to asynchronized way and separate IO later
 //                Reply rep = NetworkMessageParser.acceptNetworkRequest(req);
             // TODO: @Wesley add sender method later, I don't know
-            // if I should new a sender with certain address or
-            // it can directly reply
+
+            log.trace("write message back");
             ChannelFuture cf = ctx.write(msg);
+
             if (req instanceof ShutdownRequest) {
                 cf.addListener(ChannelFutureListener.CLOSE);
                 return;
             }
         } else if (msg instanceof Reply) {
-            NetworkMessageParser.acceptNetworkReply((Reply) msg);
+            Reply rpl = (Reply)msg;
+            log.trace("receive reply:" + rpl.getBody());
+            NetworkMessageParser.acceptNetworkReply(rpl);
         }
     }
 
@@ -68,7 +82,9 @@ public class ListenerHandler extends ChannelInboundHandlerAdapter {
      */
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+        log.error("exception is caught in channel, details printed on console");
         cause.printStackTrace();
+        log.error("closing current channel");
         ctx.close();
     }
 

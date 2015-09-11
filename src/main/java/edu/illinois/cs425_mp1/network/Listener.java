@@ -8,18 +8,19 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
-import io.netty.handler.logging.LogLevel;
-import io.netty.handler.logging.LoggingHandler;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 
 /**
  * This class is the main listener class that sets up the server required config
- *
+ * @Author: Wesley
  */
 public class Listener {
 
+    static Logger log = LogManager.getLogger("networkLogger");
+
     private final int port;
-    private Channel channel;
     private ChannelFuture cf;
     private EventLoopGroup bossGroup;
     private EventLoopGroup workerGroup;
@@ -30,13 +31,13 @@ public class Listener {
 
     /**
      * Tell the listener to run
-     * @throws Exception
      */
-    public void run() throws Exception {
+    public void run(){
+        log.trace("listener tries self-configuring on localhost @" + port);
         bossGroup = new NioEventLoopGroup();
         workerGroup = new NioEventLoopGroup();
         ServerBootstrap b = new ServerBootstrap();
-        try {
+
             b.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
                     .childHandler(new ChannelInitializer<SocketChannel>() {
@@ -46,35 +47,44 @@ public class Listener {
                                           p.addLast(
                                                   new ObjectEncoder(),
                                                   new ObjectDecoder(ClassResolvers.cacheDisabled(null)),
-                                                  new LoggingHandler(LogLevel.INFO),
+//                                                  new LoggingHandler(LogLevel.INFO),
                                                   new ListenerHandler());
                                       }
                                   }
                     );
+        try {
+        // Bind and start to accept incoming connections.
+        log.trace("listener finished configuration, start listening @" + port);
+        cf = b.bind(port).sync().channel().closeFuture().sync();
 
-            // Bind and start to accept incoming connections.
-            cf = b.bind(port).sync().channel().closeFuture().sync();
-            channel = cf.channel();
-
+        } catch (InterruptedException e){
+            log.error("binding failed due to interruption");
+        } catch (Exception e){
+            log.error("binding failed (address maybe in use)");
         } finally {
+            log.trace("listener starts to shutdown");
             workerGroup.shutdownGracefully();
             bossGroup.shutdownGracefully();
+
         }
+        log.trace("shutdown complete");
     }
 
     /**
      * Forcefully shutdown
-     * @throws Exception
      */
-    public void close() throws Exception {
-        // Wait until the server socket is closed.
+    public void close(){
         try {
-            channel.close().sync();
-            cf.sync();
-        } finally {
+            log.trace("listener tries forcefully shutdown");
+            cf.channel().close().sync();
+        } catch (InterruptedException e){
+            log.error("exception caught during shutdown listener");
+        }
+        finally {
             workerGroup.shutdownGracefully();
             bossGroup.shutdownGracefully();
         }
+        log.trace("shutdown complete");
 
     }
 }

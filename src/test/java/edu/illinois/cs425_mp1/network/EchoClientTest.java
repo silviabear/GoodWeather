@@ -1,32 +1,42 @@
 package edu.illinois.cs425_mp1.network;
 
+
 import edu.illinois.cs425_mp1.types.LogCommand;
 import edu.illinois.cs425_mp1.types.LogRequest;
 import edu.illinois.cs425_mp1.types.Request;
 import edu.illinois.cs425_mp1.types.ShutdownRequest;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 /**
+ * This is a demo(test) of the actual Client
  * Created by Wesley on 9/6/15.
  */
 public class EchoClientTest {
 
+    static Logger log = LogManager.getLogger("testLogger");
+
     public static void main(String args[]) {
 
+        log.trace("Start EchoClientTest");
         String target = "127.0.0.1";
         int port = 6753;
+        log.trace("Configuring Sender...");
         P2PSender client = new P2PSender(target, port);
 
+        log.trace("Constructing meg to send");
         int numberOfMessage = 10;
         ArrayList<Request> lis = new ArrayList<Request>();
         for(int i = 0; i < numberOfMessage; i++){
             lis.add(new LogRequest(LogCommand.GREP, Integer.valueOf(i).toString()));
         }
         lis.add(new ShutdownRequest());
+        log.trace("Construction done");
 
         try {
+            log.trace("Sender start connecting...");
             client.run();
 
             for (Request msg : lis) {
@@ -34,15 +44,19 @@ public class EchoClientTest {
             }
 
 
-        } catch (IOException e){
-            e.printStackTrace();
-        } catch (Exception e){
+        } catch(NullPointerException e){
+            log.error("cannot establish talk to " + client.HOST + " @" + client.PORT);
+        }
+        catch (Exception e){
+            log.error("unknown error");
             e.printStackTrace();
         }
 
         try{
             Thread.sleep(5000);
+            log.trace("Shutting down the sender...");
             client.close();
+            log.trace("Shut-down complete");
         } catch (InterruptedException e){
             Thread.currentThread().interrupt();
         } catch (Exception e){

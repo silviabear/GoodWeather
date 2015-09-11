@@ -11,6 +11,7 @@ import io.netty.handler.codec.serialization.ObjectEncoder;
  * Change all the initializer parameter here
  * Created by Wesley on 9/3/15.
  * NOTE: DO NOT USE THIS CLASS. IT WILL MAKE DECODER HANDLE NOT SHAREABLE! (I HAVE NO F**KING CLUE WHY)
+ * DO NOT USE THIS!!
  */
 public class ListenerInitializer extends ChannelInitializer<SocketChannel> {
 
