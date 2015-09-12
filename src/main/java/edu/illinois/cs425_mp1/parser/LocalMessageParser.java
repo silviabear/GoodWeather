@@ -1,5 +1,6 @@
 package edu.illinois.cs425_mp1.parser;
 
+import edu.illinois.cs425_mp1.network.BroadcastSender;
 import edu.illinois.cs425_mp1.types.LogCommand;
 import edu.illinois.cs425_mp1.types.LogReply;
 import edu.illinois.cs425_mp1.types.Reply;

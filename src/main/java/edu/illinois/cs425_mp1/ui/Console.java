@@ -4,8 +4,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import com.sun.istack.internal.logging.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import edu.illinois.cs425_mp1.adapter.Adapter;
+import edu.illinois.cs425_mp1.network.BroadcastSender;
+import edu.illinois.cs425_mp1.network.P2PSender;
+import edu.illinois.cs425_mp1.types.LogCommand;
+import edu.illinois.cs425_mp1.types.LogRequest;
 
 /**
  * This is the console
@@ -13,13 +19,15 @@ import edu.illinois.cs425_mp1.adapter.Adapter;
  */
 public class Console {
 
-	static Logger log = Logger.getLogger(Console.class);
+	static Logger log = LogManager.getLogger("mainLogger");
 	private static Adapter adapter;
+	//port for listener is consistent universally
+	private static final int port = 6753;
 	
 	public static void main(String[] args) {
 		log.info("Start Console init...");
 		Console c = new Console();
-		adapter = new Adapter(6753);
+		adapter = new Adapter(port);
 		adapter.registerUI(c);
 		log.info("Console init finished");
 		c.start();
@@ -74,16 +82,35 @@ public class Console {
 		String line = read();
 		int num = parseNum(line);
 		switch(num){
-			case -1: System.out.println("Please enter a valid number");
+			case -1:System.out.println("Please enter a valid number");
 					return logMenu();
 			case 0: return 0;
 			case 1: System.out.println("Please enter the argument after grep:");
 					System.out.println("For example: \"-c blah\", no need to specify file name");
 					line = read();
-					//Unfinished
+					String arg = line;
+					System.out.println("Please enter ip address of operation, 0 if broadcast");
+					line = read();
+					if(parseNum(line) != 0) {
+						handleLogRequest(LogCommand.GREP, arg, null);
+					} else {
+						handleLogRequest(LogCommand.GREP, arg, line);
+					}
 					return 0;
 			default: return -1;
 		}
+	}
+	
+	private int handleLogRequest(LogCommand command, String request, String address) {
+		LogRequest r = new LogRequest(command, request);
+		if(address == null) {
+			BroadcastSender sender = new BroadcastSender(adapter.getNeighbors(), port);
+			sender.send(r);
+		} else {
+			P2PSender sender = new P2PSender(address, port);
+			sender.send(r);
+		}
+		return 0;
 	}
 	
 	/**

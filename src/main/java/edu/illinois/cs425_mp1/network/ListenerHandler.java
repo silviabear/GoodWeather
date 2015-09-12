@@ -41,27 +41,16 @@ public class ListenerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
         log.trace("message received at listener");
-        if (msg instanceof Request) {
-            Request req = (Request) msg;
-            log.trace("receive request: " + req.toString());
-            // TODO: @Wesley: should this also be called for reply?
-
-            log.trace("parsing request and executing request");
-            // TODO: change to asynchronized way and separate IO later
-//                Reply rep = NetworkMessageParser.acceptNetworkRequest(req);
-            // TODO: @Wesley add sender method later, I don't know
-
-            log.trace("write message back");
-            ChannelFuture cf = ctx.write(msg);
-
-            if (req instanceof ShutdownRequest) {
-                cf.addListener(ChannelFutureListener.CLOSE);
-                return;
-            }
-        } else if (msg instanceof Reply) {
-            Reply rpl = (Reply)msg;
-            log.trace("receive reply:" + rpl.getBody());
-            NetworkMessageParser.acceptNetworkReply(rpl);
+        assert(msg instanceof Request);
+        Request req = (Request) msg;
+        log.trace("receive request: " + req.toString());
+        log.trace("parsing request and executing request");
+        Reply rep = NetworkMessageParser.acceptNetworkRequest(req);
+        ChannelFuture cf = ctx.write(rep);
+        log.trace("write message back");
+        if (req instanceof ShutdownRequest) {
+            cf.addListener(ChannelFutureListener.CLOSE);
+            return;
         }
     }
 
@@ -86,9 +75,5 @@ public class ListenerHandler extends ChannelInboundHandlerAdapter {
         cause.printStackTrace();
         log.error("closing current channel");
         ctx.close();
-    }
-
-    private void handleRequest(Request req) {
-
     }
 }

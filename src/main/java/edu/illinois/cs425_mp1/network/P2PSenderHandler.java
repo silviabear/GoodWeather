@@ -1,8 +1,10 @@
 package edu.illinois.cs425_mp1.network;
 
+import edu.illinois.cs425_mp1.parser.NetworkMessageParser;
 import edu.illinois.cs425_mp1.types.Reply;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -37,19 +39,15 @@ public class P2PSenderHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object reply){
         log.trace("message received at sender");
-        if (reply instanceof Reply) {
-            Reply rpl = (Reply) reply;
-            log.trace("receive reply: " + reply.toString());
-            // TODO: print on shell and close current channel
-
-            try{
+        assert(reply instanceof Reply);
+        Reply rpl = (Reply) reply;
+        log.trace("receive reply: " + rpl.toString());
+        NetworkMessageParser.acceptNetworkReply(rpl);
+        try{
                 ctx.channel().close().sync();
-            } catch (Exception e){
-
-            }
+        } catch (Exception e){
+        	log.trace("channel read fail");
         }
-
-
     }
 
     /**

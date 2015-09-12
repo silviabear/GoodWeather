@@ -23,6 +23,8 @@ final public class Adapter {
 	
 	private static Console console = null;
 	
+	public static final String logPath = ".log";
+	
 	static {
 		try {
 			InetAddress.getLocalHost().getHostAddress();
