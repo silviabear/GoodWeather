@@ -33,7 +33,7 @@ final public class Adapter {
 			System.exit(1);
 		}
 	}
-	
+	// IP addresses of all neighbors
 	private final static String[] addresses = new String[]{
 		"172.22.151.52",
 		"172.22.151.53",
