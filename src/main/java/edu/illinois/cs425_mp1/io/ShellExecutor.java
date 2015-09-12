@@ -3,11 +3,16 @@ package edu.illinois.cs425_mp1.io;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class ShellExecutor {
+	private final static Logger log = LogManager.getLogger("shellLogger");
 	public static String execute(String command) {
 		StringBuffer output = new StringBuffer();
 		Process p;
 		try {
+			log.trace("shell execute: " + command);
 			p = Runtime.getRuntime().exec(command);
 			p.waitFor();
 			BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));

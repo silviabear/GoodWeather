@@ -110,7 +110,6 @@ public class Console {
 			P2PSender sender = new P2PSender(address, port);
 			sender.run();
 			sender.send(r);
-			sender.close();
 		}
 		return 0;
 	}

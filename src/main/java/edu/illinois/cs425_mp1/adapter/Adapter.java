@@ -32,7 +32,7 @@ final public class Adapter {
 	
 	static {
 		try {
-			InetAddress.getLocalHost().getHostAddress();
+			localhost = InetAddress.getLocalHost().getHostAddress();
 		} catch (Exception e) {
 			System.out.println("fail to inititate local node");
 			System.exit(1);
