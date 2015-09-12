@@ -54,11 +54,10 @@ final public class Adapter {
 	public Adapter(int port) {
 		requestListener = new Listener(port);
 		mainLoop = new Thread() {
-			@Override 
-			public void run() {
+			public synchronized void run() {
+				log.trace("run");
 				try {
 					requestListener.run();
-					log.trace("listener start running");
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

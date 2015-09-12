@@ -56,7 +56,7 @@ public class Listener {
         // Bind and start to accept incoming connections.
         log.trace("listener finished configuration, start listening @" + port);
         cf = b.bind(port).sync().channel().closeFuture().sync();
-
+        
         } catch (InterruptedException e){
             log.error("binding failed due to interruption");
         } catch (Exception e){

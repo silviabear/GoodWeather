@@ -32,7 +32,9 @@ public class BroadcastSender implements Sender {
 				@Override
 				public void run() {
 					P2PSender sender = new P2PSender(addr, uniPort);
+					sender.run();
 					sender.send(request);
+					sender.close();
 				}
 			};
 		}
