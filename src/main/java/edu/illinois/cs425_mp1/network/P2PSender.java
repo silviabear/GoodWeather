@@ -1,5 +1,6 @@
 package edu.illinois.cs425_mp1.network;
 
+import edu.illinois.cs425_mp1.exceptions.RemoteAddressClosedException;
 import edu.illinois.cs425_mp1.types.Message;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -34,7 +35,7 @@ public class P2PSender implements Sender {
     /**
      * Connecting the server(listener)
      */
-    public void run() {
+    public void run() throws RemoteAddressClosedException{
         log.trace("sender tries self-configuring on " + HOST + " @" + PORT);
         group = new NioEventLoopGroup();
         Bootstrap b = new Bootstrap();
@@ -50,6 +51,7 @@ public class P2PSender implements Sender {
             log.error("connecting failed due to interruption");
         } catch (Exception e) {
             log.error("connecting to " + HOST + "@" + PORT + "failed");
+            throw new RemoteAddressClosedException();
         }
 
     }
@@ -59,13 +61,14 @@ public class P2PSender implements Sender {
      *
      * @param msg
      */
-    public void send(Message msg) {
+    public void send(Message msg) throws RemoteAddressClosedException{
         log.trace("sender request to sends msg of " + msg.toString());
         try {
             cf = channel.writeAndFlush(msg);
         } catch (Exception e) {
             log.error("remote address " + HOST + "@" + PORT + "not accessible");
             log.info("message ignored due to fail :" + msg.toString());
+            throw new RemoteAddressClosedException();
         }
     }
 

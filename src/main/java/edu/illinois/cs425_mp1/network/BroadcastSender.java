@@ -1,5 +1,6 @@
 package edu.illinois.cs425_mp1.network;
 
+import edu.illinois.cs425_mp1.exceptions.RemoteAddressClosedException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -32,9 +33,13 @@ public class BroadcastSender implements Sender {
 				@Override
 				public void run() {
 					P2PSender sender = new P2PSender(addr, uniPort);
-					sender.run();
-					sender.send(request);
-					sender.close();
+					try {
+						sender.run();
+						sender.send(request);
+					} catch (RemoteAddressClosedException e){
+						// TODO: remote address closed (failed), ignore it
+					}
+//					sender.close();
 				}
 			};
 		}

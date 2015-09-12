@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import edu.illinois.cs425_mp1.exceptions.RemoteAddressClosedException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -108,8 +109,12 @@ public class Console {
 			sender.send(r);
 		} else {
 			P2PSender sender = new P2PSender(address, port);
-			sender.run();
-			sender.send(r);
+			try {
+				sender.run();
+				sender.send(r);
+			} catch (RemoteAddressClosedException e){
+				// TODO: Re-init sender
+			}
 		}
 		return 0;
 	}
