@@ -6,12 +6,15 @@
         </Console>
     </Appenders>
     <Loggers>
+    	<Logger name="consolLogger" level="trace" additivity="false">
+    		<AppenderRef ref="Console"/>
+    	</Logger>
         <Logger name="testLogger" level="trace" additivity="false">
             <AppenderRef ref="Console"/>
-        </Logger>>
+        </Logger>
         <Logger name="networkLogger" level="trace" additivity="false">
             <AppenderRef ref="Console"/>
-        </Logger>>
+        </Logger>
         <Root level="error">
             <AppenderRef ref="Console"/>
         </Root>

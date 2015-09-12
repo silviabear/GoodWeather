@@ -23,7 +23,7 @@ final public class Adapter {
 	
 	private static Console console = null;
 	
-	public static final String logPath = ".log";
+	public static final String logPath = "trace.log";
 	
 	static {
 		try {
