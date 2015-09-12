@@ -71,7 +71,7 @@ public class Console {
 			int num = Integer.valueOf(line);
 			return num;
 		} catch (Exception e) {
-			System.out.println("Invalid num");
+			//System.out.println("Invalid num");
 			return -1;
 		}
 	}
@@ -91,7 +91,7 @@ public class Console {
 					String arg = line;
 					System.out.println("Please enter ip address of operation, 0 if broadcast");
 					line = read();
-					if(parseNum(line) != 0) {
+					if(parseNum(line) != -1) {
 						handleLogRequest(LogCommand.GREP, arg, null);
 					} else {
 						handleLogRequest(LogCommand.GREP, arg, line);
