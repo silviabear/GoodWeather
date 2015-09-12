@@ -2,6 +2,9 @@ package edu.illinois.cs425_mp1.adapter;
 
 import java.net.InetAddress;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import edu.illinois.cs425_mp1.network.Listener;
 import edu.illinois.cs425_mp1.parser.LocalMessageParser;
 import edu.illinois.cs425_mp1.types.Request;
@@ -24,6 +27,8 @@ final public class Adapter {
 	private static Console console = null;
 	
 	public static final String logPath = "trace.log";
+	
+	private Logger log = LogManager.getLogger("adapterLogger");
 	
 	static {
 		try {
@@ -53,6 +58,7 @@ final public class Adapter {
 			public void run() {
 				try {
 					requestListener.run();
+					log.trace("listener run on port " + port);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

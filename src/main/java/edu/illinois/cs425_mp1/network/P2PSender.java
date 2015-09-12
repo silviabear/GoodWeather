@@ -59,7 +59,7 @@ public class P2PSender implements Sender {
      * @param msg
      */
     public void send(Message msg) {
-        log.trace("sender sends msg of " + msg.toString());
+        log.trace("sender request to sends msg of " + msg.toString());
         cf = channel.writeAndFlush(msg);
     }
 

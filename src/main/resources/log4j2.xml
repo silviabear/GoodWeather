@@ -9,6 +9,9 @@
     	<Logger name="consolLogger" level="trace" additivity="false">
     		<AppenderRef ref="Console"/>
     	</Logger>
+    	<Logger name="adapterLogger" level="trace" additivity="false">
+    		<AppnderRef ref="Console"/>
+    	</Logger>
         <Logger name="testLogger" level="trace" additivity="false">
             <AppenderRef ref="Console"/>
         </Logger>
