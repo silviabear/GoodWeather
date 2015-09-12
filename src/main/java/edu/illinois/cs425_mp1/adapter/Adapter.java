@@ -35,7 +35,11 @@ final public class Adapter {
 	}
 	
 	private final static String[] addresses = new String[]{
+		"172.22.151.52",
 		"172.22.151.53",
+		"172.22.151.54",
+		"172.22.151.55",
+		"172.22.151.56"
 	};
 	
 	/**
