@@ -34,7 +34,7 @@ public class P2PSender implements Sender {
     /**
      * Connecting the server(listener)
      */
-    public void run(){
+    public void run() {
         log.trace("sender tries self-configuring on " + HOST + " @" + PORT);
         group = new NioEventLoopGroup();
         Bootstrap b = new Bootstrap();
@@ -46,35 +46,40 @@ public class P2PSender implements Sender {
             log.trace("sender finished configuration, start connecting " + HOST + " @" + PORT);
             cf = b.connect(HOST, PORT).sync();
             channel = cf.channel();
-        } catch (InterruptedException e){
+        } catch (InterruptedException e) {
             log.error("connecting failed due to interruption");
-        } catch (Exception e){
-            log.error("connecting failed");
+        } catch (Exception e) {
+            log.error("connecting to " + HOST + "@" + PORT + "failed");
         }
 
     }
 
     /**
      * Tell the sender to send message
+     *
      * @param msg
      */
     public void send(Message msg) {
         log.trace("sender request to sends msg of " + msg.toString());
-        cf = channel.writeAndFlush(msg);
+        try {
+            cf = channel.writeAndFlush(msg);
+        } catch (Exception e) {
+            log.error("remote address " + HOST + "@" + PORT + "not accessible");
+            log.info("message ignored due to fail :" + msg.toString());
+        }
     }
 
     /**
      * Tell the sender to shutdown
      */
-    public void close(){
+    public void close() {
         try {
             log.trace("sender tries to shutdown");
             channel.closeFuture().sync();
             cf.channel().close().sync();
-        } catch (InterruptedException e){
+        } catch (InterruptedException e) {
             log.error("exception caught during shutdown sender");
-        }
-        finally {
+        } finally {
             group.shutdownGracefully();
         }
         log.trace("shutdown complete");
