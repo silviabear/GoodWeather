@@ -40,7 +40,7 @@ public class NetworkMessageParser extends Parser {
 	private static LogReply parseLogRequest(LogRequest request) {
 		LogCommand c = request.getCommand();
 		switch(c) {
-		case GREP: return new LogReply(ShellExecutor.execute(request.getBody()),
+		case GREP: return new LogReply(ShellExecutor.execute("grep " + request.getBody()),
 				request.getRequestId(),
 				Adapter.getLocalAddress());
 		}
