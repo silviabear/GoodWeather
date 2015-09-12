@@ -6,7 +6,7 @@ abstract public class Reply extends Message implements Serializable {
 	
 	static final long serialVersionUID = 1L;
 	
-	private final long id;
+	private long id;
 	
 	protected String replierAddress;
 	

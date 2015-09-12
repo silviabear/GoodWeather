@@ -19,11 +19,6 @@ public abstract class Message implements Serializable {
 		return this.body;
 	}
 	
-	public Message() {
-		body = null;
-		timeStamp = null;
-	}
-	
 	public DateTime getTimeStamp() {
 		return this.timeStamp;
 	}

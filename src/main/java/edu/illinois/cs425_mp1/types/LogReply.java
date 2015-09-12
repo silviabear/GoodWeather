@@ -10,8 +10,4 @@ public final class LogReply extends Reply implements Serializable {
 		super(body, rid, replierAddress);
 	}
 	
-	public LogReply() {
-		
-	}
-	
 }
