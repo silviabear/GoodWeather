@@ -8,6 +8,8 @@ import edu.illinois.cs425_mp1.types.LogRequest;
 import edu.illinois.cs425_mp1.types.Reply;
 import edu.illinois.cs425_mp1.types.Request;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 
 /**
@@ -22,8 +24,11 @@ public class NetworkMessageParser extends Parser {
 	 * @param request
 	 * @return the wrapped reply with timestamp and reply message
 	 */
+	
+	private final static Logger log = LogManager.getLogger("parserLogger");
 	public static Reply acceptNetworkRequest(Request request) {
 		if(request instanceof LogRequest) {
+			log.trace("receive LogRequest")
 			return parseLogRequest((LogRequest)request);
 		}
 		return null;
@@ -39,12 +44,15 @@ public class NetworkMessageParser extends Parser {
 	
 	private static LogReply parseLogRequest(LogRequest request) {
 		LogCommand c = request.getCommand();
+		LogReply r = null;
 		switch(c) {
-		case GREP: return new LogReply(ShellExecutor.execute("grep " + request.getBody()),
+		case GREP: r = new LogReply(ShellExecutor.execute("grep " + request.getBody()),
 				request.getRequestId(),
 				Adapter.getLocalAddress());
+					break;
 		}
-		return null;
+		log.trace(r.getBody());
+		return r;
 	}
 	
 }
