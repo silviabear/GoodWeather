@@ -58,7 +58,7 @@ final public class Adapter {
 			public void run() {
 				try {
 					requestListener.run();
-					log.trace("listener run on port " + port);
+					log.trace("listener start running");
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
