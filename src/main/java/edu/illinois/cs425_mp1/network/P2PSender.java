@@ -1,5 +1,6 @@
 package edu.illinois.cs425_mp1.network;
 
+import edu.illinois.cs425_mp1.adapter.Adapter;
 import edu.illinois.cs425_mp1.types.Message;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -8,6 +9,7 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -61,7 +63,18 @@ public class P2PSender implements Sender {
      */
     public void send(Message msg) {
         log.trace("sender request to sends msg of " + msg.toString());
-        cf = channel.writeAndFlush(msg);
+        try {
+        	cf = channel.writeAndFlush(msg);
+        } catch (Exception e) {
+        	log.trace("node " + HOST + "failed, skip" );
+        	String[] addr = Adapter.getNeighbors();
+        	for(int i = 0; i < addr.length; i++) {
+        		if(addr[i].equals(HOST)) {
+        			addr[i] = null;
+        			break;
+        		}
+        	}
+        }
     }
 
     /**

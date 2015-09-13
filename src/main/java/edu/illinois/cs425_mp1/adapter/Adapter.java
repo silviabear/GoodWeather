@@ -115,7 +115,7 @@ final public class Adapter {
 		console = c;
 	}
 	
-	public String[] getNeighbors() {
+	public static String[] getNeighbors() {
 		return addresses;
 	}
 	
