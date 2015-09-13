@@ -127,4 +127,8 @@ final public class Adapter {
 		return console;
 	}
 	
+	public static P2PSender[] getChannels() {
+		return channels;
+	}
+	
 }

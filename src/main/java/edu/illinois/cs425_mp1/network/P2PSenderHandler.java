@@ -43,12 +43,6 @@ public class P2PSenderHandler extends ChannelInboundHandlerAdapter {
         Reply rpl = (Reply) reply;
         log.trace("receive reply: " + rpl.toString());
         NetworkMessageParser.acceptNetworkReply(rpl);
-//        try{
-//            ctx.channel().close().sync();
-//            log.trace("closing the current channel");
-//        } catch (Exception e){
-//        	log.trace("channel read fail");
-//        }
     }
 
     /**
@@ -60,8 +54,7 @@ public class P2PSenderHandler extends ChannelInboundHandlerAdapter {
      */
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        log.error("exception is caught in channel, details printed on console");
-        log.error("closing current channel");
+        cause.printStackTrace();
         ctx.close();
     }
 

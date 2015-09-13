@@ -65,12 +65,13 @@ public class P2PSender implements Sender {
         log.trace("sender request to sends msg of " + msg.toString());
         try {
         	cf = channel.writeAndFlush(msg);
+        	log.trace("request sent");
         } catch (Exception e) {
         	log.trace("node " + HOST + "failed, skip" );
-        	String[] addr = Adapter.getNeighbors();
-        	for(int i = 0; i < addr.length; i++) {
-        		if(addr[i].equals(HOST)) {
-        			addr[i] = null;
+        	P2PSender[] channels = Adapter.getChannels();
+        	for(int i = 0; i < channels.length; i++) {
+        		if(channels[i] != null && channels[i].equals(HOST)) {
+        			channels[i] = null;
         			break;
         		}
         	}
