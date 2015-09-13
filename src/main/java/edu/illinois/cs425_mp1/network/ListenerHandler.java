@@ -45,6 +45,7 @@ public class ListenerHandler extends ChannelInboundHandlerAdapter {
         	Reply rpl = (Reply) msg;
             log.trace("receive reply: " + rpl.toString());
             NetworkMessageParser.acceptNetworkReply(rpl);
+            return;
         }
         assert(msg instanceof Request);
         Request req = (Request) msg;
