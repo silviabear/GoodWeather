@@ -77,7 +77,7 @@ final public class Adapter {
 	 */
 	public void sendBroadcastRequest(Request request) {
 		for(int i = 0; i < addresses.length; i++) {
-			sendP2PRequest(request, i);
+			sendP2PRequest(request, i + 1);
 		}
 	}
 	
