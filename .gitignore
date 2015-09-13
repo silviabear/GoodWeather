@@ -9,3 +9,5 @@ target
 .settings
 # Emacs temporary files
 *~
+# Local log files
+*.log
