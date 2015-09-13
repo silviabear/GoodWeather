@@ -16,4 +16,19 @@ public class NetworkRequestParserTest {
 				new Request(Command.GREP, "grep artifactId pom.xml"));
 		assertTrue(reply.getBody().contains("cs425-mp1"));
 	}
+	
+	@Test
+	public void testGrepCount() {
+		Reply reply = NetworkMessageParser.acceptNetworkRequest(
+				new Request(Command.GREP, "grep -c *.* pom.xml"));
+		assertTrue(!reply.getBody().contains("#$@%42"));
+	}
+	
+	@Test
+	public void testGrepRegex() {
+		Reply reply = NetworkMessageParser.acceptNetworkRequest(
+				new Request(Command.GREP, "grep -c ^2015 logs/mp.log"));
+		assertTrue(reply.getBody().length() == 0);
+	}
+	
 }
