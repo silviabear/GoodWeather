@@ -8,6 +8,7 @@ import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
 
 /**
+ * Same as ListenerInitializer, DO NOT USE IT
  * Created by Wesley on 9/3/15.
  */
 public class P2PSenderInitializer extends ChannelInitializer<SocketChannel> {
