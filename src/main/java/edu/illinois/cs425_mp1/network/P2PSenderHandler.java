@@ -43,11 +43,6 @@ public class P2PSenderHandler extends ChannelInboundHandlerAdapter {
         Reply rpl = (Reply) reply;
         log.trace("receive reply: " + rpl.toString());
         NetworkMessageParser.acceptNetworkReply(rpl);
-        try{
-                ctx.channel().close().sync();
-        } catch (Exception e){
-        	log.trace("channel read fail");
-        }
     }
 
     /**
