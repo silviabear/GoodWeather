@@ -69,7 +69,7 @@ public class P2PSender implements Sender {
         	log.trace("node " + HOST + "failed, skip" );
         	String[] addr = Adapter.getNeighbors();
         	for(int i = 0; i < addr.length; i++) {
-        		if(addr[i].equals(HOST)) {
+        		if(addr[i] != null && addr[i].equals(HOST)) {
         			addr[i] = null;
         			break;
         		}
