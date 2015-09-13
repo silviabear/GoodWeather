@@ -1,10 +1,8 @@
 package edu.illinois.cs425_mp1.network;
 
 
-import edu.illinois.cs425_mp1.types.LogCommand;
-import edu.illinois.cs425_mp1.types.LogRequest;
+import edu.illinois.cs425_mp1.types.Command;
 import edu.illinois.cs425_mp1.types.Request;
-import edu.illinois.cs425_mp1.types.ShutdownRequest;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -30,9 +28,9 @@ public class EchoClientTest {
         int numberOfMessage = 10;
         ArrayList<Request> lis = new ArrayList<Request>();
         for(int i = 0; i < numberOfMessage; i++){
-            lis.add(new LogRequest(LogCommand.GREP, Integer.valueOf(i).toString()));
+            lis.add(new Request(Command.GREP, Integer.valueOf(i).toString()));
         }
-        lis.add(new ShutdownRequest());
+        lis.add(new Request(Command.SHUTDOWN, null));
         log.trace("Construction done");
 
         try {

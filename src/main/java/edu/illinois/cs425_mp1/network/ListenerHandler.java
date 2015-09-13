@@ -1,11 +1,11 @@
 package edu.illinois.cs425_mp1.network;
 
 import edu.illinois.cs425_mp1.parser.NetworkMessageParser;
+import edu.illinois.cs425_mp1.types.Command;
 import edu.illinois.cs425_mp1.types.Reply;
 import edu.illinois.cs425_mp1.types.Request;
-import edu.illinois.cs425_mp1.types.ShutdownRequest;
-
 import io.netty.channel.*;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -48,8 +48,8 @@ public class ListenerHandler extends ChannelInboundHandlerAdapter {
         Reply rep = NetworkMessageParser.acceptNetworkRequest(req);
         ChannelFuture cf = ctx.write(rep);
         log.trace("write message back");
-        if (req instanceof ShutdownRequest) {
-            cf.addListener(ChannelFutureListener.CLOSE);
+        if(rep.getCommand() == Command.SHUTDOWN) {
+        	cf.addListener(ChannelFutureListener.CLOSE);
             return;
         }
     }

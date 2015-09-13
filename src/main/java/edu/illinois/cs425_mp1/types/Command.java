@@ -1,11 +1,11 @@
 package edu.illinois.cs425_mp1.types;
 
-public enum LogCommand {
+public enum Command {
 
-	GREP("grep");
+	GREP("grep"), SHUTDOWN("shutdown");
 
 	String cmd;
-	LogCommand(String stringcmd){
+	Command(String stringcmd){
 		this.cmd = stringcmd;
 	}
 

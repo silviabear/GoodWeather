@@ -46,12 +46,13 @@ public class P2PSender implements Sender {
             log.trace("sender finished configuration, start connecting " + HOST + " @" + PORT);
             cf = b.connect(HOST, PORT).sync();
             channel = cf.channel();
+            log.trace("blah2");
         } catch (InterruptedException e){
             log.error("connecting failed due to interruption");
         } catch (Exception e){
             log.error("connecting failed");
         }
-
+        log.trace("finish connecting to " + HOST);
     }
 
     /**

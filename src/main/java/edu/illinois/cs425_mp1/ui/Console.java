@@ -8,10 +8,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import edu.illinois.cs425_mp1.adapter.Adapter;
-import edu.illinois.cs425_mp1.network.BroadcastSender;
-import edu.illinois.cs425_mp1.network.P2PSender;
-import edu.illinois.cs425_mp1.types.LogCommand;
-import edu.illinois.cs425_mp1.types.LogRequest;
+import edu.illinois.cs425_mp1.types.Command;
+import edu.illinois.cs425_mp1.types.Request;
 
 /**
  * This is the console
@@ -22,7 +20,7 @@ public class Console {
 	static Logger log = LogManager.getLogger("mainLogger");
 	private static Adapter adapter;
 	//port for listener is consistent universally
-	private static final int port = 6753;
+	public static final int port = 6753;
 	
 	public static void main(String[] args) {
 		log.info("Start Console init...");
@@ -37,14 +35,14 @@ public class Console {
 		String line = null;
 		while(true) {
 			System.out.println("Choose the num of operation:");
-			System.out.println("1. Query log. 0. Exit");
+			System.out.println("1. grep. 0. Exit");
 			line = read();
 			int num = parseNum(line);
 			switch(num) {
 			case -1: System.out.println("Please enter a valid number.");
 					continue;
 			case 0: System.exit(0);
-			case 1: logMenu();
+			case 1: grep();
 					break;
 			default: System.out.println("Invalid option");
 					continue;
@@ -71,48 +69,27 @@ public class Console {
 			int num = Integer.valueOf(line);
 			return num;
 		} catch (Exception e) {
-			//System.out.println("Invalid num");
 			return -1;
 		}
 	}
 
-	private int logMenu() {
-		System.out.println("Please enter the num of query:");
-		System.out.println("1. grep 0. Return to main menu");
+	private int grep() {
+		System.out.println("Please enter the argument after grep:");
+		System.out.println("For example: \"grep -c blah trace.log\"");
 		String line = read();
-		int num = parseNum(line);
-		switch(num){
-			case -1:System.out.println("Please enter a valid number");
-					return logMenu();
-			case 0: return 0;
-			case 1: System.out.println("Please enter the argument after grep:");
-					System.out.println("For example: \"-c blah\", no need to specify file name");
-					line = read();
-					String arg = line;
-					System.out.println("Please enter ip address of operation, 0 if broadcast");
-					line = read();
-					if(parseNum(line) != -1) {
-						handleLogRequest(LogCommand.GREP, arg, null);
-					} else {
-						handleLogRequest(LogCommand.GREP, arg, line);
-					}
-					return 0;
-			default: return -1;
-		}
-	}
-	
-	private int handleLogRequest(LogCommand command, String request, String address) {
-		LogRequest r = new LogRequest(command, request);
-		if(address == null) {
-			BroadcastSender sender = new BroadcastSender(adapter.getNeighbors(), port);
-			sender.send(r);
+		String arg = line;
+		System.out.println("Please enter the number of node, 0 if broadcast");
+		line = read();
+		Request request = new Request(Command.GREP, arg);
+		int i = parseNum(line);
+		if (i > 0) {
+			adapter.sendP2PRequest(request, i);
 		} else {
-			P2PSender sender = new P2PSender(address, port);
-			sender.run();
-			sender.send(r);
+			adapter.sendBroadcastRequest(request);
 		}
 		return 0;
 	}
+
 	
 	/**
 	 * Callback for adapter when new message received
