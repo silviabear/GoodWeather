@@ -10,9 +10,11 @@ public abstract class Message implements Serializable {
 	
 	protected final String body;
 	protected final DateTime timeStamp;
+	protected final Command command;
 	
-	public Message(String body) {
+	public Message(String body, Command command) {
 		this.body = body;
+		this.command = command;
 		timeStamp = new DateTime();
 	}
 	public String getBody() {
@@ -21,6 +23,10 @@ public abstract class Message implements Serializable {
 	
 	public DateTime getTimeStamp() {
 		return this.timeStamp;
+	}
+	
+	public Command getCommand() {
+		return this.command;
 	}
 
 

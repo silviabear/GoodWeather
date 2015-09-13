@@ -1,6 +1,6 @@
 package edu.illinois.cs425_mp1.network;
 
-import edu.illinois.cs425_mp1.exceptions.RemoteAddressClosedException;
+import edu.illinois.cs425_mp1.adapter.Adapter;
 import edu.illinois.cs425_mp1.types.Message;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -9,6 +9,7 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -35,7 +36,7 @@ public class P2PSender implements Sender {
     /**
      * Connecting the server(listener)
      */
-    public void run() throws RemoteAddressClosedException{
+    public void run(){
         log.trace("sender tries self-configuring on " + HOST + " @" + PORT);
         group = new NioEventLoopGroup();
         Bootstrap b = new Bootstrap();
@@ -47,42 +48,47 @@ public class P2PSender implements Sender {
             log.trace("sender finished configuration, start connecting " + HOST + " @" + PORT);
             cf = b.connect(HOST, PORT).sync();
             channel = cf.channel();
-        } catch (InterruptedException e) {
+            log.trace("blah2");
+        } catch (InterruptedException e){
             log.error("connecting failed due to interruption");
-        } catch (Exception e) {
-            log.error("connecting to " + HOST + "@" + PORT + "failed");
-            throw new RemoteAddressClosedException();
+        } catch (Exception e){
+            log.error("connecting failed");
         }
-
+        log.trace("finish connecting to " + HOST);
     }
 
     /**
      * Tell the sender to send message
-     *
      * @param msg
      */
-    public void send(Message msg) throws RemoteAddressClosedException{
+    public void send(Message msg) {
         log.trace("sender request to sends msg of " + msg.toString());
         try {
-            cf = channel.writeAndFlush(msg);
+        	cf = channel.writeAndFlush(msg);
         } catch (Exception e) {
-            log.error("remote address " + HOST + "@" + PORT + "not accessible");
-            log.info("message ignored due to fail :" + msg.toString());
-            throw new RemoteAddressClosedException();
+        	log.trace("node " + HOST + "failed, skip" );
+        	String[] addr = Adapter.getNeighbors();
+        	for(int i = 0; i < addr.length; i++) {
+        		if(addr[i].equals(HOST)) {
+        			addr[i] = null;
+        			break;
+        		}
+        	}
         }
     }
 
     /**
      * Tell the sender to shutdown
      */
-    public void close() {
+    public void close(){
         try {
             log.trace("sender tries to shutdown");
             channel.closeFuture().sync();
             cf.channel().close().sync();
-        } catch (InterruptedException e) {
+        } catch (InterruptedException e){
             log.error("exception caught during shutdown sender");
-        } finally {
+        }
+        finally {
             group.shutdownGracefully();
         }
         log.trace("shutdown complete");

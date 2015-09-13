@@ -2,7 +2,7 @@ package edu.illinois.cs425_mp1.types;
 
 import java.io.Serializable;
 
-abstract public class Request extends Message implements Serializable {
+public class Request extends Message implements Serializable {
 	
 	static final long serialVersionUID = 1L;
 	
@@ -10,12 +10,8 @@ abstract public class Request extends Message implements Serializable {
 	
 	private final long id;
 	
-	public Request(String body) {
-		super(body);
-		id = idCounter++;
-	}
-	
-	public Request() {
+	public Request(Command c, String body) {
+		super(body, c);
 		id = idCounter++;
 	}
 	

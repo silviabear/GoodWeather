@@ -1,11 +1,11 @@
 package edu.illinois.cs425_mp1.network;
 
 import edu.illinois.cs425_mp1.parser.NetworkMessageParser;
+import edu.illinois.cs425_mp1.types.Command;
 import edu.illinois.cs425_mp1.types.Reply;
 import edu.illinois.cs425_mp1.types.Request;
-import edu.illinois.cs425_mp1.types.ShutdownRequest;
-
 import io.netty.channel.*;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -47,9 +47,9 @@ public class ListenerHandler extends ChannelInboundHandlerAdapter {
         log.trace("parsing request and executing request");
         Reply rep = NetworkMessageParser.acceptNetworkRequest(req);
         ChannelFuture cf = ctx.write(rep);
-        log.trace("write reply back: " + rep.toString());
-        if (req instanceof ShutdownRequest) {
-            cf.addListener(ChannelFutureListener.CLOSE);
+        log.trace("write message back");
+        if(rep.getCommand() == Command.SHUTDOWN) {
+        	cf.addListener(ChannelFutureListener.CLOSE);
             return;
         }
     }
@@ -72,6 +72,7 @@ public class ListenerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         log.error("exception is caught in channel, details printed on console");
+        cause.printStackTrace();
         log.error("closing current channel");
         ctx.close();
     }
