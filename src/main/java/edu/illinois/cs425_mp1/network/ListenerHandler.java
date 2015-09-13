@@ -46,8 +46,8 @@ public class ListenerHandler extends ChannelInboundHandlerAdapter {
         log.trace("receive request: " + req.toString());
         log.trace("parsing request and executing request");
         Reply rep = NetworkMessageParser.acceptNetworkRequest(req);
-        ChannelFuture cf = ctx.write(rep);
-        log.trace("write message back");
+        log.trace("write message back: " + rep.toString());
+        ChannelFuture cf = ctx.writeAndFlush(rep);
         if(rep.getCommand() == Command.SHUTDOWN) {
         	cf.addListener(ChannelFutureListener.CLOSE);
             return;
