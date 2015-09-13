@@ -36,7 +36,9 @@ final public class Adapter {
 		"172.22.151.53",
 		"172.22.151.54",
 		"172.22.151.55",
-		"172.22.151.56"
+		"172.22.151.56",
+		"172.22.151.57",
+		"172.22.151.58",
 	};
 	
 	private static final P2PSender[] channels = new P2PSender[addresses.length];
