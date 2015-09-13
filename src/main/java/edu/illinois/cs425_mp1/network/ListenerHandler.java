@@ -41,6 +41,11 @@ public class ListenerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
         log.trace("message received at listener");
+        if(msg instanceof Reply) {
+        	Reply rpl = (Reply) msg;
+            log.trace("receive reply: " + rpl.toString());
+            NetworkMessageParser.acceptNetworkReply(rpl);
+        }
         assert(msg instanceof Request);
         Request req = (Request) msg;
         log.trace("receive request: " + req.toString());
