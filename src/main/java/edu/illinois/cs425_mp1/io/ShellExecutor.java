@@ -21,7 +21,9 @@ public class ShellExecutor {
 			s2.start ();
 			p.waitFor();
 			BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+			log.trace("shell created buffer");
 			String line = "";
+			log.trace("shell start appending to buffer");
 			while ((line = reader.readLine())!= null) {
 				output.append(line + "\n");
 			}
