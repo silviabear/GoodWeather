@@ -3,6 +3,7 @@ package edu.illinois.cs425_mp1.io;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -15,7 +16,6 @@ public class CollectedDataWriter {
 		if (!Files.exists(filePath)) {
 		    Files.createFile(filePath);
 		}
-		FileWriter fw = new FileWriter("all.log", true);
 		Files.write(filePath, line.getBytes(), StandardOpenOption.APPEND);
 	}
 	
