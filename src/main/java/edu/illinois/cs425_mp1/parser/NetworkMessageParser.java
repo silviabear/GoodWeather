@@ -21,7 +21,6 @@ public class NetworkMessageParser {
 	 * @param request
 	 * @return the wrapped reply with timestamp and reply message
 	 */
-	
 	private static Logger log = LogManager.getLogger("parserLogger");
 	public static Reply acceptNetworkRequest(Request request) {
 		Command c = request.getCommand();
