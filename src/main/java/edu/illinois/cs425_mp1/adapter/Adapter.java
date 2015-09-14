@@ -26,8 +26,6 @@ final public class Adapter {
 	
 	private static Console console = null;
 	
-	public static final String logPath = "trace.log";
-	
 	private Logger log = LogManager.getLogger("adapterLogger");
 	
 	// IP addresses of all neighbors
