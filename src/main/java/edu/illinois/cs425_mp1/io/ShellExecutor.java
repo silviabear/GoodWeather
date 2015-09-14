@@ -16,7 +16,9 @@ public class ShellExecutor {
 			p = Runtime.getRuntime().exec(command);
 			p.waitFor();
 			BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+			log.trace("shell created buffer");
 			String line = "";
+			log.trace("shell start appending to buffer");
 			while ((line = reader.readLine())!= null) {
 				output.append(line + "\n");
 			}
