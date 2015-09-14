@@ -16,11 +16,11 @@ public class ShellExecutor {
 			log.trace("shell execute: " + command);
 			p = Runtime.getRuntime().exec(command);
 			ShellStream s1 = new ShellStream(p.getInputStream ());
-			s2 = nx`ew ReadStream("stderr", p.getErrorStream ());
-			s1.start ();
+			ShellStream s2 = new ShellStream(p.getErrorStream ());
+			s1.start();
 			s2.start ();
 			p.waitFor();
-			BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+			BufferedReader reader = new BufferedReader(new InputStreamReader(s1.is));
 			log.trace("shell created buffer");
 			String line = "";
 			log.trace("shell start appending to buffer");
@@ -37,7 +37,7 @@ class ShellStream extends Thread {
     
 	InputStream is;
     Thread thread;      
-    public ReadStream(InputStream is) {
+    public ShellStream(InputStream is) {
         this.is = is;
     }       
     
