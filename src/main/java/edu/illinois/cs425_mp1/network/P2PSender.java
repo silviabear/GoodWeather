@@ -55,6 +55,7 @@ public class P2PSender implements Sender {
                     }
                 })
                 .option(ChannelOption.TCP_NODELAY, true);
+
         try {
             log.trace("sender finished configuration, start connecting " + HOST + " @" + PORT);
             cf = b.connect(HOST, PORT).sync();
