@@ -49,7 +49,7 @@ public class P2PSender implements Sender {
                         ChannelPipeline p = ch.pipeline();
                         p.addLast(
                                 new ObjectEncoder(),
-                                new ObjectDecoder(ClassResolvers.cacheDisabled(null)),
+                                new ObjectDecoder(200000000,ClassResolvers.cacheDisabled(null)),
 //                                                  new LoggingHandler(LogLevel.INFO),
                                 new ListenerHandler());
                     }
