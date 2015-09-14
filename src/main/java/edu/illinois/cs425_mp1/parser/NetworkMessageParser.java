@@ -40,12 +40,16 @@ public class NetworkMessageParser {
 		return null;
 	}
 	
-	public static void acceptNetworkReply(Reply reply) throws IOException {
+	public static void acceptNetworkReply(Reply reply) {
 		Command c = reply.getCommand();
 		if(c == Command.GREP) {
 			Adapter.getConsole().print("QUERY RESULT FROM: " + reply.getReplierAddress());
 			Adapter.getConsole().print("FETCH TIME: " + reply.getTimeStamp());
-			CollectedDataWriter.writeToLog(reply.getBody());
+			try {
+				CollectedDataWriter.writeToLog(reply.getBody());
+			} catch (IOException e) {
+				log.trace("Write to disk fail");
+			}
 			int count = StringUtils.countMatches(reply.getBody(), "\n");
 			Adapter.getConsole().print("QUERY RESULT COUNT: " + count);
 		}
