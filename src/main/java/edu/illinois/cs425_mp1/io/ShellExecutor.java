@@ -16,7 +16,7 @@ public class ShellExecutor {
 			log.trace("shell execute: " + command);
 			p = Runtime.getRuntime().exec(command);
 			ShellStream s1 = new ShellStream(p.getInputStream ());
-			s2 = nx`ew ReadStream("stderr", p.getErrorStream ());
+			ShellStream s2 = new ShellStream(p.getErrorStream());
 			s1.start ();
 			s2.start ();
 			p.waitFor();
@@ -37,7 +37,7 @@ class ShellStream extends Thread {
     
 	InputStream is;
     Thread thread;      
-    public ReadStream(InputStream is) {
+    public ShellStream(InputStream is) {
         this.is = is;
     }       
     
