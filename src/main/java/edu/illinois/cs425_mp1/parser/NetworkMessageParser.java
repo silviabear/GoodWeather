@@ -39,7 +39,7 @@ public class NetworkMessageParser {
 		return null;
 	}
 	
-	public static void acceptNetworkReply(Reply reply) {
+	public synchronized static void acceptNetworkReply(Reply reply) {
 		Command c = reply.getCommand();
 		if(c == Command.GREP) {
 			Adapter.getConsole().print("QUERY RESULT FROM: " + reply.getReplierAddress());

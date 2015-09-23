@@ -11,7 +11,7 @@ import java.nio.file.StandardOpenOption;
 
 public class CollectedDataWriter {
 	
-	public synchronized static void writeToLog(String line) throws IOException {
+	public static void writeToLog(String line) throws IOException {
 		Path filePath = Paths.get("all.log");
 		if (!Files.exists(filePath)) {
 		    Files.createFile(filePath);
