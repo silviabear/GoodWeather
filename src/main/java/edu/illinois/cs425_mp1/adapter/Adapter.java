@@ -1,6 +1,9 @@
 package edu.illinois.cs425_mp1.adapter;
 
 import java.net.InetAddress;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Collections;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -8,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 import edu.illinois.cs425_mp1.network.Listener;
 import edu.illinois.cs425_mp1.network.P2PSender;
 import edu.illinois.cs425_mp1.types.Request;
+import edu.illinois.cs425_mp1.types.Node;
 import edu.illinois.cs425_mp1.ui.Console;
 
 /**
@@ -28,9 +32,11 @@ final public class Adapter {
 	
 	private Logger log = LogManager.getLogger("adapterLogger");
 	
+	public final static List<Node> membershipList = Collections.synchronizedList(new ArrayList<Node>());
+	
 	// IP addresses of all neighbors
 	private final static String[] addresses = new String[]{
-		"172.22.151.52",
+		,
 		"172.22.151.53",
 		"172.22.151.54",
 		"172.22.151.55",
@@ -38,6 +44,8 @@ final public class Adapter {
 		"172.22.151.57",
 		"172.22.151.58",
 	};
+	
+	
 	
 	private static final P2PSender[] channels = new P2PSender[addresses.length];
 	
@@ -48,6 +56,12 @@ final public class Adapter {
 		} catch (Exception e) {
 			System.out.println("fail to inititate local node");
 			System.exit(1);
+		}
+		//Initiate membership
+		for(String address : addresses) {
+			if(!address.equals(localhost)) {
+				membershipList.add(new Node(address));
+			}
 		}
 	}
 	

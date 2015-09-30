@@ -1,10 +1,30 @@
 package edu.illinois.cs425_mp1.types;
 
+import org.joda.time.DateTime;
+
 public class Node {
 	final String host;
-	final int port;
-	public Node(String host, int port) {
+	private long counter;
+	private DateTime timeStamp;
+	private NodeStatus status;
+	public Node(String host) {
 		this.host = host;
-		this.port = port;
 	}
+	
+	public String getAddress() {
+		return host;
+	}
+	
+	public DateTime getTimeStamp() {
+		return timeStamp;
+	}
+	
+	public void setStatus(NodeStatus status) {
+		this.status = status;
+	}
+	
+	public NodeStatus getStatus() {
+		return status;
+	}
+	
 }
