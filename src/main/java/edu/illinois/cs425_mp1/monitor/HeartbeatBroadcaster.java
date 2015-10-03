@@ -2,6 +2,9 @@ package edu.illinois.cs425_mp1.monitor;
 
 import java.util.Random;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import edu.illinois.cs425_mp1.types.NodeStatus;
 
 public class HeartbeatBroadcaster implements Runnable {
@@ -14,12 +17,15 @@ public class HeartbeatBroadcaster implements Runnable {
 	//Broadcast frequency in ms
 	private final static long sleepInterval = 200;
 	
+	private Logger log = LogManager.getLogger("heartbeatLogger");
+	
 	public void run() {
+		log.trace("Broadcaster runs");
 		while(true) {
 			try {
 				Thread.sleep(sleepInterval);
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				log.trace("HeartbeatBroadcaster stopped");
 			}
 			HeartbeatAdapter.membershipList.updateSelfTimeStamp();
 			broadcast();
@@ -38,13 +44,13 @@ public class HeartbeatBroadcaster implements Runnable {
 		}
 	}
 	
-	public void broadcastLeave() {
+	public static void broadcastLeave() {
 		HeartbeatAdapter.membershipList.updateSelfTimeStamp();
 		HeartbeatAdapter.membershipList.updateSelfStatus(NodeStatus.LEAVE);
 		broadcast();
 	}
 	
-	public void broadcastJoin() {
+	public static void broadcastJoin() {
 		HeartbeatAdapter.membershipList.updateSelfTimeStamp();
 		HeartbeatAdapter.membershipList.updateSelfStatus(NodeStatus.ACTIVE);
 		broadcast();

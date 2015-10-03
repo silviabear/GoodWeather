@@ -26,6 +26,10 @@
             <AppenderRef ref="Console"/>
             <!--<AppenderRef ref="RollingFile"/>-->
         </Logger>
+         <Logger name="heartbeatLogger" level="trace" additivity="false">
+            <AppenderRef ref="Console"/>
+            <!--<AppenderRef ref="RollingFile"/>-->
+        </Logger>
         <Logger name="testLogger" level="trace" additivity="false">
             <AppenderRef ref="Console"/>
             <!--<AppenderRef ref="RollingFile"/>-->

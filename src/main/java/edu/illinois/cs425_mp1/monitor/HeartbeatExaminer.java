@@ -3,6 +3,8 @@ package edu.illinois.cs425_mp1.monitor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 
 import edu.illinois.cs425_mp1.adapter.Adapter;
@@ -16,7 +18,10 @@ public class HeartbeatExaminer implements Runnable {
 	private final long failInterval = 1000;
 	private final long kickoutInterval = 2000;
 	
+	private Logger log = LogManager.getLogger("heartbeatLogger");
+	
 	public void run() {
+		log.trace("Examiner runs");
 		while(true) {
 			try {
 				Thread.sleep(sleepInterval);
@@ -27,12 +32,16 @@ public class HeartbeatExaminer implements Runnable {
 				for(Integer index : HeartbeatAdapter.membershipList) {
 					DateTime time = new DateTime();
 					Node member = HeartbeatAdapter.membershipList.getNode(index);
+					NodeStatus status = member.getStatus();
+					if(status != NodeStatus.ACTIVE) {
+						continue;
+					}
 					if(member.getTimeStamp().getMillis() - time.getMillis() > kickoutInterval) {
-						System.out.println(member.getAddress() + " get cleaned out.");
+						log.trace(member.getAddress() + " get cleaned out.");
 						member.setStatus(NodeStatus.NONE);
 					}
 					else if(member.getTimeStamp().getMillis() - time.getMillis() > failInterval) {
-						System.out.println(member.getAddress() + " seems failed");
+						log.trace(member.getAddress() + " seems failed");
 						member.setStatus(NodeStatus.FAIL);
 					} else {
 						member.setStatus(NodeStatus.ACTIVE);

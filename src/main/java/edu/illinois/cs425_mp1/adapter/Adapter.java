@@ -26,7 +26,7 @@ final public class Adapter {
 	
 	private Thread mainLoop = null;
 	
-	private HeartbeatAdapter heartbeatAdapter = null;
+	private Thread heartbeat = null;
 	
 	private static Console console = null;
 	
@@ -63,19 +63,19 @@ final public class Adapter {
 	 */
 	public Adapter(int port) {
 		requestListener = new Listener(port);
-		heartbeatAdapter = new HeartbeatAdapter();
+		heartbeat = new Thread(new HeartbeatAdapter());
 		mainLoop = new Thread() {
 			public synchronized void run() {
 				log.trace("mainLoop runing");
 				try {
 					requestListener.run();
 				} catch (Exception e) {
-					e.printStackTrace();
+					log.trace("Main adapter stopped.");
 				}
 			}
 		};
 		mainLoop.start();
-		(new Thread(heartbeatAdapter)).start();
+		heartbeat.start();
 	}
 	
 	/**
@@ -140,11 +140,11 @@ final public class Adapter {
 	}
 	
 	public void leaveGroup() {
-		heartbeatAdapter.leaveGroup();
+		HeartbeatAdapter.leaveGroup();
 	}
 	
 	public void joinGtoup() {
-		heartbeatAdapter.joinGroup();
+		HeartbeatAdapter.joinGroup();
 	}
 	
 	public static MembershipList getMembershipList() {

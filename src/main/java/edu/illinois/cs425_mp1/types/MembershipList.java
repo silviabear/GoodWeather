@@ -17,6 +17,9 @@ public class MembershipList implements Iterable<Integer>{
 		this.selfIndex = selfIndex;
 	}
 	
+	/**
+	 * Update current node's timestamp to current time
+	 */
 	public void updateSelfTimeStamp() {
 		Node self = membershipList.get(selfIndex);
 		self.setTimeStamp(new DateTime());
@@ -43,16 +46,19 @@ public class MembershipList implements Iterable<Integer>{
 		Node neighbor = membershipList.get(nodeId);
 		DateTime newTimestamp = neighbor.getTimeStamp();
 		DateTime oldTimestamp = membershipList.get(nodeId).getTimeStamp();
-		if(newTimestamp.compareTo(oldTimestamp) < 0) {
-			return;
+		if(oldTimestamp == null || newTimestamp.compareTo(oldTimestamp) > 0) {
+			membershipList.put(nodeId, node);
 		}
-		membershipList.put(nodeId, node);
 	}
 	
 	public synchronized void add(Node node, Integer nodeId) {
 		membershipList.put(nodeId, node);
 	}
 
+	/**
+	 * Get the iterator of membershipList, 
+	 * when iterating the membershiplist object should be synchronized
+	 */
 	public Iterator<Integer> iterator() {
 		return membershipList.keySet().iterator();
 	}

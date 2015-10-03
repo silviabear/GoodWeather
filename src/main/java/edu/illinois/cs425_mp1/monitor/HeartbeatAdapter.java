@@ -12,11 +12,11 @@ public class HeartbeatAdapter implements Runnable {
 	
 	final static MembershipList membershipList = new MembershipList();
 	
-	private HeartbeatBroadcaster broadcaster = null;
+	private Thread broadcaster = null;
 	
-	private HeartbeatExaminer examiner = null;
+	private Thread examiner = null;
 	
-	private Logger log = LogManager.getLogger("adapterLogger");
+	private Logger log = LogManager.getLogger("heartbeatLogger");
 	
 	static {
 		// Inititate self status as ACTIVE, otherwise unknown
@@ -33,14 +33,14 @@ public class HeartbeatAdapter implements Runnable {
 	}
 
 	public HeartbeatAdapter() {
-		broadcaster = new HeartbeatBroadcaster();
-		examiner = new HeartbeatExaminer();
+		broadcaster = new Thread(new HeartbeatBroadcaster());
+		examiner = new Thread(new HeartbeatExaminer());
 	}
 	
 	public void run() {
 		log.trace("heartbeat adapter runing");
-		broadcaster.run();
-		examiner.run();
+		broadcaster.start();
+		examiner.start();
 	}
 	
 	/**
@@ -60,12 +60,12 @@ public class HeartbeatAdapter implements Runnable {
 		return membershipList;
 	}
 	
-	public void leaveGroup() {
-		broadcaster.broadcastLeave();
+	public static void leaveGroup() {
+		HeartbeatBroadcaster.broadcastLeave();
 	}
 	
-	public void joinGroup() {
-		broadcaster.broadcastJoin();
+	public static void joinGroup() {
+		HeartbeatBroadcaster.broadcastJoin();
 	}
 
 }
