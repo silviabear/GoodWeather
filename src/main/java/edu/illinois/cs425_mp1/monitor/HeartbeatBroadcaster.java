@@ -31,7 +31,7 @@ public class HeartbeatBroadcaster implements Runnable {
 		synchronized(HeartbeatAdapter.membershipList) {
 			Random r = new Random();
 			for(int i = 0; i < totalNumNode / broadcastRate; i++) {
-				int index = r.nextInt() % totalNumNode;
+				int index = Math.abs(r.nextInt()) % totalNumNode;
 				String addr = HeartbeatAdapter.getMembershipList().getNode(index).getAddress();
 				//TODO @Wesley create UDP send interface
 			}

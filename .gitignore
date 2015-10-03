@@ -12,3 +12,4 @@ cs425-mp1.iml
 *~
 # Local log files
 *.log
+logs/

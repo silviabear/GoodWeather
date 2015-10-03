@@ -1,8 +1,5 @@
 package edu.illinois.cs425_mp1.monitor;
 
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -15,15 +12,9 @@ public class HeartbeatAdapter implements Runnable {
 	
 	final static MembershipList membershipList = new MembershipList();
 	
-	//Maximum take 1000 waiting membershipList to be updated,
-	//Use FIFO queue
-	final static BlockingQueue<MembershipList> membershipQueue = new LinkedBlockingQueue<MembershipList>(1000);
-	
 	private HeartbeatBroadcaster broadcaster = null;
 	
 	private HeartbeatExaminer examiner = null;
-
-	private HeartbeatUpdater updater = null;
 	
 	private Logger log = LogManager.getLogger("adapterLogger");
 	
@@ -44,14 +35,12 @@ public class HeartbeatAdapter implements Runnable {
 	public HeartbeatAdapter() {
 		broadcaster = new HeartbeatBroadcaster();
 		examiner = new HeartbeatExaminer();
-		updater = new HeartbeatUpdater();
 	}
 	
 	public void run() {
 		log.trace("heartbeat adapter runing");
 		broadcaster.run();
 		examiner.run();
-		updater.run();
 	}
 	
 	/**
@@ -61,8 +50,10 @@ public class HeartbeatAdapter implements Runnable {
 	 * @param membershipList The membership list sent by any other node
 	 */
 	//TODO: @Wesly: parse received membership list directly to this method
-	public void acceptHeartbeat(MembershipList membershipList) {
-		membershipQueue.offer(membershipList);
+	public void acceptHeartbeat(MembershipList update) {
+		for(Integer nodeId : update) {
+			HeartbeatAdapter.membershipList.updateNeighborInfo(nodeId, update.getNode(nodeId));
+		}
 	}
 	
 	public static MembershipList getMembershipList() {
