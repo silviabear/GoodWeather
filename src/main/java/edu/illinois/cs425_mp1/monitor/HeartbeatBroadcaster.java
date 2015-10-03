@@ -38,13 +38,13 @@ public class HeartbeatBroadcaster implements Runnable {
 		}
 	}
 	
-	public static void broadcastLeave() {
+	public void broadcastLeave() {
 		HeartbeatAdapter.membershipList.updateSelfTimeStamp();
 		HeartbeatAdapter.membershipList.updateSelfStatus(NodeStatus.LEAVE);
 		broadcast();
 	}
 	
-	public static void broadcastJoin() {
+	public void broadcastJoin() {
 		HeartbeatAdapter.membershipList.updateSelfTimeStamp();
 		HeartbeatAdapter.membershipList.updateSelfStatus(NodeStatus.ACTIVE);
 		broadcast();

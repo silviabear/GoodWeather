@@ -9,9 +9,7 @@ import edu.illinois.cs425_mp1.monitor.HeartbeatAdapter;
 import edu.illinois.cs425_mp1.network.Listener;
 import edu.illinois.cs425_mp1.network.P2PSender;
 import edu.illinois.cs425_mp1.types.MembershipList;
-import edu.illinois.cs425_mp1.types.NodeStatus;
 import edu.illinois.cs425_mp1.types.Request;
-import edu.illinois.cs425_mp1.types.Node;
 import edu.illinois.cs425_mp1.ui.Console;
 
 /**
@@ -68,16 +66,16 @@ final public class Adapter {
 		heartbeatAdapter = new HeartbeatAdapter();
 		mainLoop = new Thread() {
 			public synchronized void run() {
-				log.trace("run");
+				log.trace("mainLoop runing");
 				try {
 					requestListener.run();
-					heartbeatAdapter.run();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		};
 		mainLoop.start();
+		(new Thread(heartbeatAdapter)).start();
 	}
 	
 	/**
@@ -142,10 +140,11 @@ final public class Adapter {
 	}
 	
 	public void leaveGroup() {
+		heartbeatAdapter.leaveGroup();
 	}
 	
 	public void joinGtoup() {
-		
+		heartbeatAdapter.joinGroup();
 	}
 	
 	public static MembershipList getMembershipList() {

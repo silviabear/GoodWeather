@@ -1,10 +1,6 @@
 package edu.illinois.cs425_mp1.monitor;
 
-import java.util.List;
-
-import edu.illinois.cs425_mp1.adapter.Adapter;
 import edu.illinois.cs425_mp1.types.MembershipList;
-import edu.illinois.cs425_mp1.types.Node;
 
 public class HeartbeatUpdater implements Runnable {
 

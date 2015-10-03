@@ -3,6 +3,9 @@ package edu.illinois.cs425_mp1.monitor;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import edu.illinois.cs425_mp1.adapter.Adapter;
 import edu.illinois.cs425_mp1.types.MembershipList;
 import edu.illinois.cs425_mp1.types.Node;
@@ -16,11 +19,13 @@ public class HeartbeatAdapter implements Runnable {
 	//Use FIFO queue
 	final static BlockingQueue<MembershipList> membershipQueue = new LinkedBlockingQueue<MembershipList>(1000);
 	
-	private Runnable broadcaster = null;
+	private HeartbeatBroadcaster broadcaster = null;
 	
-	private Runnable examiner = null;
+	private HeartbeatExaminer examiner = null;
 
-	private Runnable updater = null;
+	private HeartbeatUpdater updater = null;
+	
+	private Logger log = LogManager.getLogger("adapterLogger");
 	
 	static {
 		// Inititate self status as ACTIVE, otherwise unknown
@@ -43,6 +48,7 @@ public class HeartbeatAdapter implements Runnable {
 	}
 	
 	public void run() {
+		log.trace("heartbeat adapter runing");
 		broadcaster.run();
 		examiner.run();
 		updater.run();
@@ -63,7 +69,12 @@ public class HeartbeatAdapter implements Runnable {
 		return membershipList;
 	}
 	
-	public static void leaveGroup() {
+	public void leaveGroup() {
+		broadcaster.broadcastLeave();
+	}
+	
+	public void joinGroup() {
+		broadcaster.broadcastJoin();
 	}
 
 }
