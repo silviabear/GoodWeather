@@ -35,7 +35,7 @@ public class Console {
 		String line = null;
 		while(true) {
 			System.out.println("Choose the num of operation:");
-			System.out.println("1. grep. 0. Exit");
+			System.out.println("1. grep. 2. leave group 3. join group 0. Exit");
 			line = read();
 			int num = parseNum(line);
 			switch(num) {
@@ -44,6 +44,8 @@ public class Console {
 			case 0: System.exit(0);
 			case 1: grep();
 					break;
+			case 2: leave();
+			case 3: join();
 			default: System.out.println("Invalid option");
 					continue;
 			}
@@ -87,6 +89,16 @@ public class Console {
 		} else {
 			adapter.sendBroadcastRequest(request);
 		}
+		return 0;
+	}
+	
+	private int leave() {
+		adapter.leaveGroup();
+		return 0;
+	}
+	
+	private int join() {
+		adapter.joinGtoup();
 		return 0;
 	}
 

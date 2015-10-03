@@ -8,8 +8,11 @@ import java.util.Collections;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import edu.illinois.cs425_mp1.monitor.HeartbeatAdapter;
+import edu.illinois.cs425_mp1.monitor.HeartbeatBroadcaster;
 import edu.illinois.cs425_mp1.network.Listener;
 import edu.illinois.cs425_mp1.network.P2PSender;
+import edu.illinois.cs425_mp1.types.NodeStatus;
 import edu.illinois.cs425_mp1.types.Request;
 import edu.illinois.cs425_mp1.types.Node;
 import edu.illinois.cs425_mp1.ui.Console;
@@ -21,6 +24,8 @@ import edu.illinois.cs425_mp1.ui.Console;
  *
  */
 final public class Adapter {
+	
+	private final static Node self;
 
 	private static String localhost;
 	
@@ -28,15 +33,15 @@ final public class Adapter {
 	
 	private Thread mainLoop = null;
 	
+	private HeartbeatAdapter heartbeatAdaper = null;
+	
 	private static Console console = null;
 	
 	private Logger log = LogManager.getLogger("adapterLogger");
 	
-	public final static List<Node> membershipList = Collections.synchronizedList(new ArrayList<Node>());
-	
 	// IP addresses of all neighbors
 	private final static String[] addresses = new String[]{
-		,
+		"172.22.151.53",
 		"172.22.151.53",
 		"172.22.151.54",
 		"172.22.151.55",
@@ -57,12 +62,7 @@ final public class Adapter {
 			System.out.println("fail to inititate local node");
 			System.exit(1);
 		}
-		//Initiate membership
-		for(String address : addresses) {
-			if(!address.equals(localhost)) {
-				membershipList.add(new Node(address));
-			}
-		}
+		self = new Node(localhost, NodeStatus.ACTIVE);
 	}
 	
 	/**
@@ -145,4 +145,10 @@ final public class Adapter {
 		return channels;
 	}
 	
+	public void leaveGroup() {
+	}
+	
+	public void joinGtoup() {
+		
+	}
 }

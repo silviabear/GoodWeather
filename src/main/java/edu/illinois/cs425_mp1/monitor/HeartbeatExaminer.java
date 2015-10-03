@@ -23,9 +23,9 @@ public class HeartbeatExaminer implements Runnable {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			synchronized(Adapter.membershipList) {
+			synchronized(HeartbeatAdapter.membershipList) {
 				List<Node> removeList = new ArrayList<Node>();
-				for(Node member : Adapter.membershipList) {
+				for(Node member : HeartbeatAdapter.membershipList) {
 					DateTime time = new DateTime();
 					if(member.getTimeStamp().getMillis() - time.getMillis() > kickoutInterval) {
 						System.out.println(member.getAddress() + " get cleaned out.");

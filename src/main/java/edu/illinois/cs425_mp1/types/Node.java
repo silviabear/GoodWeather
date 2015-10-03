@@ -3,12 +3,14 @@ package edu.illinois.cs425_mp1.types;
 import org.joda.time.DateTime;
 
 public class Node {
+	//Address of host
 	final String host;
-	private long counter;
+	//Latest update time
 	private DateTime timeStamp;
 	private NodeStatus status;
-	public Node(String host) {
+	public Node(String host, NodeStatus status) {
 		this.host = host;
+		this.status = status;
 	}
 	
 	public String getAddress() {
