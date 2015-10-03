@@ -24,12 +24,12 @@ public class HeartbeatExaminer implements Runnable {
 				e.printStackTrace();
 			}
 			synchronized(HeartbeatAdapter.membershipList) {
-				List<Node> removeList = new ArrayList<Node>();
-				for(Node member : HeartbeatAdapter.membershipList) {
+				for(Integer index : HeartbeatAdapter.membershipList) {
 					DateTime time = new DateTime();
+					Node member = HeartbeatAdapter.membershipList.getNode(index);
 					if(member.getTimeStamp().getMillis() - time.getMillis() > kickoutInterval) {
 						System.out.println(member.getAddress() + " get cleaned out.");
-						removeList.add(member);
+						member.setStatus(NodeStatus.NONE);
 					}
 					else if(member.getTimeStamp().getMillis() - time.getMillis() > failInterval) {
 						System.out.println(member.getAddress() + " seems failed");
@@ -37,6 +37,7 @@ public class HeartbeatExaminer implements Runnable {
 					} else {
 						member.setStatus(NodeStatus.ACTIVE);
 					}
+					HeartbeatAdapter.membershipList.updateNeighborInfo(index, member);
 				}
 			}
 		}

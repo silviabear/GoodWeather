@@ -35,7 +35,7 @@ public class Console {
 		String line = null;
 		while(true) {
 			System.out.println("Choose the num of operation:");
-			System.out.println("1. grep. 2. leave group 3. join group 0. Exit");
+			System.out.println("1. grep. 2. list membership list 3. list self id 4. leave group 5. join group 0. Exit");
 			line = read();
 			int num = parseNum(line);
 			switch(num) {
@@ -44,8 +44,14 @@ public class Console {
 			case 0: System.exit(0);
 			case 1: grep();
 					break;
-			case 2: leave();
-			case 3: join();
+			case 2: listMembership();
+					break;
+			case 3: listSelfId();
+					break;
+			case 4: leaveGroup();
+					break;
+			case 5: joinGroup();
+					break;
 			default: System.out.println("Invalid option");
 					continue;
 			}
@@ -92,13 +98,21 @@ public class Console {
 		return 0;
 	}
 	
-	private int leave() {
+	private int leaveGroup() {
 		adapter.leaveGroup();
 		return 0;
 	}
 	
-	private int join() {
+	private int joinGroup() {
 		adapter.joinGtoup();
+		return 0;
+	}
+	
+	private int listMembership() {
+		return 0;
+	}
+	
+	private int listSelfId() {
 		return 0;
 	}
 

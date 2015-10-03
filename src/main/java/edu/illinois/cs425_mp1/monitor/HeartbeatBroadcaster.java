@@ -1,11 +1,13 @@
 package edu.illinois.cs425_mp1.monitor;
 
 import java.util.List;
+import java.util.Random;
 
 import org.joda.time.DateTime;
 
 import edu.illinois.cs425_mp1.adapter.Adapter;
 import edu.illinois.cs425_mp1.types.Node;
+import edu.illinois.cs425_mp1.types.NodeStatus;
 
 public class HeartbeatBroadcaster implements Runnable {
 	
@@ -24,18 +26,33 @@ public class HeartbeatBroadcaster implements Runnable {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			int index = HeartbeatAdapter.addressToNodeIndex(Adapter.getLocalAddress());
-			Node self = HeartbeatAdapter.membershipList.get(index);
-			self.setTimeStamp(new DateTime());
-			synchronized(HeartbeatAdapter.membershipList) {
-				//TODO @Wesley create UDP send interface
-			}
+			HeartbeatAdapter.membershipList.updateSelfTimeStamp();
+			broadcast();
 		}
 		
 	}
 	
-	public static void broadCastLeave(List<Node> membership) {
-		
+	private static void broadcast() {
+		synchronized(HeartbeatAdapter.membershipList) {
+			Random r = new Random();
+			for(int i = 0; i < totalNumNode / broadcastRate; i++) {
+				int index = r.nextInt() % totalNumNode;
+				String addr = HeartbeatAdapter.nodeIndexToAddress(index);
+				//TODO @Wesley create UDP send interface
+			}
+		}
+	}
+	
+	public static void broadcastLeave() {
+		HeartbeatAdapter.membershipList.updateSelfTimeStamp();
+		HeartbeatAdapter.membershipList.updateSelfStatus(NodeStatus.LEAVE);
+		broadcast();
+	}
+	
+	public static void broadcastJoin() {
+		HeartbeatAdapter.membershipList.updateSelfTimeStamp();
+		HeartbeatAdapter.membershipList.updateSelfStatus(NodeStatus.ACTIVE);
+		broadcast();
 	}
 	
 }

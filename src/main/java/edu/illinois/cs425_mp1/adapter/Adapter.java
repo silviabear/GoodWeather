@@ -12,6 +12,7 @@ import edu.illinois.cs425_mp1.monitor.HeartbeatAdapter;
 import edu.illinois.cs425_mp1.monitor.HeartbeatBroadcaster;
 import edu.illinois.cs425_mp1.network.Listener;
 import edu.illinois.cs425_mp1.network.P2PSender;
+import edu.illinois.cs425_mp1.types.MembershipList;
 import edu.illinois.cs425_mp1.types.NodeStatus;
 import edu.illinois.cs425_mp1.types.Request;
 import edu.illinois.cs425_mp1.types.Node;
@@ -33,7 +34,7 @@ final public class Adapter {
 	
 	private Thread mainLoop = null;
 	
-	private HeartbeatAdapter heartbeatAdaper = null;
+	private HeartbeatAdapter heartbeatAdapter = null;
 	
 	private static Console console = null;
 	
@@ -41,7 +42,7 @@ final public class Adapter {
 	
 	// IP addresses of all neighbors
 	private final static String[] addresses = new String[]{
-		"172.22.151.53",
+		"172.22.151.52",
 		"172.22.151.53",
 		"172.22.151.54",
 		"172.22.151.55",
@@ -71,11 +72,13 @@ final public class Adapter {
 	 */
 	public Adapter(int port) {
 		requestListener = new Listener(port);
+		heartbeatAdapter = new HeartbeatAdapter();
 		mainLoop = new Thread() {
 			public synchronized void run() {
 				log.trace("run");
 				try {
 					requestListener.run();
+					heartbeatAdapter.run();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -150,5 +153,9 @@ final public class Adapter {
 	
 	public void joinGtoup() {
 		
+	}
+	
+	public MembershipList getMembershipList() {
+		return HeartbeatAdapter.getMembershipList();
 	}
 }

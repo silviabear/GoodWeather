@@ -1,22 +1,20 @@
 package edu.illinois.cs425_mp1.monitor;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import edu.illinois.cs425_mp1.adapter.Adapter;
+import edu.illinois.cs425_mp1.types.MembershipList;
 import edu.illinois.cs425_mp1.types.Node;
 import edu.illinois.cs425_mp1.types.NodeStatus;
 
 public class HeartbeatAdapter implements Runnable {
 	
-	final static List<Node> membershipList = Collections.synchronizedList(new ArrayList<Node>());
+	final static MembershipList membershipList = new MembershipList();
 	
 	//Maximum take 1000 waiting membershipList to be updated,
 	//Use FIFO queue
-	final static BlockingQueue<List<Node>> membershipQueue = new LinkedBlockingQueue<List<Node>>(1000);
+	final static BlockingQueue<MembershipList> membershipQueue = new LinkedBlockingQueue<MembershipList>(1000);
 	
 	private Runnable broadcaster = null;
 	
@@ -26,10 +24,15 @@ public class HeartbeatAdapter implements Runnable {
 	
 	static {
 		// Inititate self status as ACTIVE, otherwise unknown
+		int i = 0;
 		for (String address : Adapter.getNeighbors()) {
-			NodeStatus status = Adapter.getLocalAddress().equals(address) ? 
-					NodeStatus.ACTIVE: NodeStatus.NONE;
-			membershipList.add(new Node(address, status));
+			NodeStatus status = NodeStatus.NONE;
+			if(Adapter.getLocalAddress().equals(address)) {
+				status = NodeStatus.ACTIVE;
+				membershipList.setSelfIndex(i);
+			}
+			membershipList.add(new Node(address, status), i);
+			i++;
 		}
 	}
 
@@ -52,7 +55,7 @@ public class HeartbeatAdapter implements Runnable {
 	 * @param membershipList The membership list sent by any other node
 	 */
 	//TODO: @Wesly: parse received membership list directly to this method
-	public void acceptHeartbeat(List<Node> membershipList) {
+	public void acceptHeartbeat(MembershipList membershipList) {
 		membershipQueue.offer(membershipList);
 	}
 	
@@ -65,6 +68,14 @@ public class HeartbeatAdapter implements Runnable {
 	public static int addressToNodeIndex(String addr) {
 		String[] nums = addr.split(".");
 		return Integer.parseInt(nums[3]) - 51;
+	}
+	
+	public static String nodeIndexToAddress(int index) {
+		return "172.22.151." + (new Integer(52 + index));
+	}
+	
+	public static MembershipList getMembershipList() {
+		return membershipList;
 	}
 
 }
