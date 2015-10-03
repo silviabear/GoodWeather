@@ -109,10 +109,12 @@ public class Console {
 	}
 	
 	private int listMembership() {
+		System.out.println(Adapter.getMembershipList());
 		return 0;
 	}
 	
 	private int listSelfId() {
+		System.out.println(Adapter.getMembershipList().getSelfId());
 		return 0;
 	}
 

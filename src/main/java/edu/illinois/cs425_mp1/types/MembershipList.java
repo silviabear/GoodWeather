@@ -65,6 +65,10 @@ public class MembershipList implements Iterable<Integer>{
 		return membershipList.get(nodeId);
 	}
 	
+	public int getSelfId() {
+		return selfIndex;
+	}
+	
 	
 	@Override
 	public String toString() {

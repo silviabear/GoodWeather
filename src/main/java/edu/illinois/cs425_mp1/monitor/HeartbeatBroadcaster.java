@@ -1,12 +1,7 @@
 package edu.illinois.cs425_mp1.monitor;
 
-import java.util.List;
 import java.util.Random;
 
-import org.joda.time.DateTime;
-
-import edu.illinois.cs425_mp1.adapter.Adapter;
-import edu.illinois.cs425_mp1.types.Node;
 import edu.illinois.cs425_mp1.types.NodeStatus;
 
 public class HeartbeatBroadcaster implements Runnable {
@@ -37,7 +32,7 @@ public class HeartbeatBroadcaster implements Runnable {
 			Random r = new Random();
 			for(int i = 0; i < totalNumNode / broadcastRate; i++) {
 				int index = r.nextInt() % totalNumNode;
-				String addr = HeartbeatAdapter.nodeIndexToAddress(index);
+				String addr = HeartbeatAdapter.getMembershipList().getNode(index).getAddress();
 				//TODO @Wesley create UDP send interface
 			}
 		}

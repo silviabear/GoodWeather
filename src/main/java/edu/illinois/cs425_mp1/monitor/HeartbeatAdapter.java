@@ -59,23 +59,11 @@ public class HeartbeatAdapter implements Runnable {
 		membershipQueue.offer(membershipList);
 	}
 	
-	/**
-	 * Translate ip addresses to node indexed, system dependent implementation
-	 * 
-	 * @param addr the address of a node
-	 * @return the node index
-	 */
-	public static int addressToNodeIndex(String addr) {
-		String[] nums = addr.split(".");
-		return Integer.parseInt(nums[3]) - 51;
-	}
-	
-	public static String nodeIndexToAddress(int index) {
-		return "172.22.151." + (new Integer(52 + index));
-	}
-	
 	public static MembershipList getMembershipList() {
 		return membershipList;
+	}
+	
+	public static void leaveGroup() {
 	}
 
 }

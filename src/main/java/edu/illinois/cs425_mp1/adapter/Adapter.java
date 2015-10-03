@@ -1,15 +1,11 @@
 package edu.illinois.cs425_mp1.adapter;
 
 import java.net.InetAddress;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Collections;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import edu.illinois.cs425_mp1.monitor.HeartbeatAdapter;
-import edu.illinois.cs425_mp1.monitor.HeartbeatBroadcaster;
 import edu.illinois.cs425_mp1.network.Listener;
 import edu.illinois.cs425_mp1.network.P2PSender;
 import edu.illinois.cs425_mp1.types.MembershipList;
@@ -25,8 +21,6 @@ import edu.illinois.cs425_mp1.ui.Console;
  *
  */
 final public class Adapter {
-	
-	private final static Node self;
 
 	private static String localhost;
 	
@@ -63,7 +57,6 @@ final public class Adapter {
 			System.out.println("fail to inititate local node");
 			System.exit(1);
 		}
-		self = new Node(localhost, NodeStatus.ACTIVE);
 	}
 	
 	/**
@@ -155,7 +148,8 @@ final public class Adapter {
 		
 	}
 	
-	public MembershipList getMembershipList() {
+	public static MembershipList getMembershipList() {
 		return HeartbeatAdapter.getMembershipList();
 	}
+
 }
