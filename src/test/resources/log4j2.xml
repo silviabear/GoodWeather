@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
     <Appenders>
-        <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
-        </Console>
-    </Appenders>
-
-    <Appenders>
         <RollingFile name="RollingFile" fileName="logs/mp.log"
                      filePattern="logs/$${date:yyyy-MM}/mp-%d{MM-dd-yyyy}-%i.log.gz">
             <PatternLayout>
@@ -17,6 +11,10 @@
                 <SizeBasedTriggeringPolicy size="250 MB"/>
             </Policies>
         </RollingFile>
+
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
     </Appenders>
 
     <Loggers>
@@ -29,12 +27,12 @@
             <AppenderRef ref="RollingFile"/>
         </Logger>
         <Logger name="testLogger" level="trace" additivity="false">
-            <!--<AppenderRef ref="Console"/>-->
-            <AppenderRef ref="RollingFile"/>
+            <AppenderRef ref="Console"/>
+            <!--<AppenderRef ref="RollingFile"/>-->
         </Logger>
         <Logger name="networkLogger" level="trace" additivity="false">
-            <!--<AppenderRef ref="Console"/>-->
-            <AppenderRef ref="RollingFile"/>
+            <AppenderRef ref="Console"/>
+            <!--<AppenderRef ref="RollingFile"/>-->
         </Logger>
         <Logger name="parserLogger" level="trace" additivity="false">
             <!--<AppenderRef ref="Console"/>-->
@@ -45,8 +43,8 @@
             <AppenderRef ref="RollingFile"/>
         </Logger>
         <Root level="error">
-            <!--<AppenderRef ref="Console"/>-->
-            <AppenderRef ref="RollingFile"/>
+            <AppenderRef ref="Console"/>
+            <!--<AppenderRef ref="RollingFile"/>-->
         </Root>
     </Loggers>
 </Configuration>
