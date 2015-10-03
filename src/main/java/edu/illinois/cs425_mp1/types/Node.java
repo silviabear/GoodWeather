@@ -25,6 +25,10 @@ public class Node {
 		this.status = status;
 	}
 	
+	public void setTimeStamp(DateTime timestamp) {
+		this.timeStamp = timeStamp;
+	}
+	
 	public NodeStatus getStatus() {
 		return status;
 	}
