@@ -37,14 +37,11 @@ public class HeartbeatExaminer implements Runnable {
 						|| index == HeartbeatAdapter.membershipList.getSelfId()) {
 					continue;
 				}
-				if(index == 1 || index == 0) {
-					System.out.println("examine " + time.getMillis() + " " + member.getTimeStamp().getMillis());
-				}
-				if (member.getTimeStamp().getMillis() - time.getMillis() > kickoutInterval) {
+				if (time.getMillis() - member.getTimeStamp().getMillis() > kickoutInterval) {
 					System.out.println("CLEAN");
 					log.trace(member.getAddress() + " get cleaned out.");
 					member.setStatus(NodeStatus.NONE);
-				} else if (member.getTimeStamp().getMillis() - time.getMillis() > failInterval) {
+				} else if (time.getMillis() - member.getTimeStamp().getMillis() > failInterval) {
 					System.out.println("DEAD");
 					log.trace(member.getAddress() + " seems failed");
 					member.setStatus(NodeStatus.FAIL);
