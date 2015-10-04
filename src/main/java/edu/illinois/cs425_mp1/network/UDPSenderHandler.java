@@ -31,7 +31,7 @@ public class UDPSenderHandler extends ChannelInboundHandlerAdapter {
     
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
-        System.out.println("Sender Active : " + ctx.channel().localAddress());
+        System.out.println("Sender Active : " + ctx.channel().remoteAddress());
         ctx.flush();
     }
 

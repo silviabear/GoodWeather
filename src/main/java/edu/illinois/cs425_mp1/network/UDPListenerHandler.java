@@ -30,7 +30,7 @@ public class UDPListenerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
-        System.out.println("Channel active : " + ctx.channel().localAddress());
+        System.out.println("Channel active : " + ctx.channel().remoteAddress());
         ctx.flush();
     }
 
