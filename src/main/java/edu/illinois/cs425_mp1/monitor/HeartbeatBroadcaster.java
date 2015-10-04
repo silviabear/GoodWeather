@@ -55,11 +55,10 @@ public class HeartbeatBroadcaster implements Runnable {
 	}
 	
 	private void broadcast() {
-		System.out.println("BROADCAST");
+		log.trace("BROADCAST");
 		HeartbeatAdapter.membershipList.updateSelfTimeStamp();
 		for(int i = 0; i < totalNumNode / broadcastRate; i++) {
 			int index = Math.abs(r.nextInt()) % totalNumNode;
-			System.out.println(HeartbeatAdapter.membershipList.getNode(index) + " " + index);
 			if(index == selfId) {
 				i--;
 				continue;
