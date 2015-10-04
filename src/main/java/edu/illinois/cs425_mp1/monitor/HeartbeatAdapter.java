@@ -81,7 +81,7 @@ public class HeartbeatAdapter implements Runnable {
 			if(newStatus.getTimeStamp() == null) {
 				continue;
 			}
-			if(oldStatus.getTimeStamp() == null 
+			if(oldStatus.getStatus() == NodeStatus.NONE 
 					|| oldStatus.getTimeStamp().compareTo(newStatus.getTimeStamp()) < 0) {
 				HeartbeatAdapter.membershipList.updateNeighborInfo(nodeId, newStatus);
 			}
