@@ -20,27 +20,29 @@ public class EchoUDPClientTest {
     public static void main(String args[]) {
 
         log.trace("Start EchoClientTest");
-        String target = "172.22.151.52";
+        String target = "127.0.0.1";
         int port = 6753;
         log.trace("Configuring Sender...");
         UDPSender client = new UDPSender(target, port);
 
         log.trace("Constructing meg to send");
         int numberOfMessage = 10;
-
-        ArrayList<MembershipList> lis = new ArrayList<MembershipList>();
-        for(int i = 0; i < numberOfMessage; i++){
-            lis.add(new MembershipList());
-        }
+//        ArrayList<Request> lis = new ArrayList<Request>();
+//        for(int i = 0; i < numberOfMessage; i++){
+//            lis.add(new Request(Command.GREP, Integer.valueOf(i).toString()));
+//        }
+//        lis.add(new Request(Command.SHUTDOWN, null));
+        MembershipList lis = new MembershipList();
         log.trace("Construction done");
 
         try {
             log.trace("Sender start connecting...");
             client.run();
 
-            for (MembershipList msg : lis) {
-                client.send(msg);
-            }
+//            for (Request msg : lis) {
+//                client.send(msg);
+//            }
+            client.send(lis);
 
 
         } catch(NullPointerException e){
