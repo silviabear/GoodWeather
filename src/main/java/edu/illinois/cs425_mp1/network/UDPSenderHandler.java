@@ -1,5 +1,6 @@
 package edu.illinois.cs425_mp1.network;
 
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
@@ -10,6 +11,7 @@ import org.apache.logging.log4j.Logger;
  * This is the UDP message sender handler
  * Created by Wesley on 10/1/15.
  */
+@ChannelHandler.Sharable
 public class UDPSenderHandler extends ChannelInboundHandlerAdapter {
     static Logger log = LogManager.getLogger("networkLogger");
 
