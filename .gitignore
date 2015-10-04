@@ -10,6 +10,8 @@ cs425-mp1.iml
 .settings
 # Emacs temporary files
 *~
+\#run.sh\#
+.\#run.sh
 # Local log files
 *.log
 logs/
