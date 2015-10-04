@@ -37,9 +37,8 @@ public class UDPListenerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object reply) {
-        System.out.println("BURRRRR");
     	if(reply instanceof MembershipList) {
-        	System.out.println("BLAHHHHHH");
+    		log.trace(reply);
         	HeartbeatAdapter.acceptHeartbeat((MembershipList)reply);
         }
         return;

@@ -22,7 +22,7 @@ public class HeartbeatBroadcaster implements Runnable {
 	private final static int broadcastRate = 2; 
 	
 	//Broadcast frequency in ms
-	private final static long sleepInterval = 200;
+	private final static long sleepInterval = 100;
 	
 	private Logger log = LogManager.getLogger("heartbeatLogger");
 	
@@ -56,12 +56,6 @@ public class HeartbeatBroadcaster implements Runnable {
 	}
 	
 	private void broadcast() {
-		for(int i = 0; i < totalNumNode; i++) {
-			if(i != selfId) {
-				senders[i].send(HeartbeatAdapter.membershipList);
-			}
-		}
-		/*
 		for(int i = 0; i < totalNumNode / broadcastRate; i++) {
 			int index = Math.abs(r.nextInt()) % totalNumNode;
 			if(index == selfId) {
@@ -69,7 +63,7 @@ public class HeartbeatBroadcaster implements Runnable {
 				continue;
 			}
 			senders[index].send(HeartbeatAdapter.membershipList);
-		}*/
+		}
 	}
 	
 	public void broadcastLeave() {

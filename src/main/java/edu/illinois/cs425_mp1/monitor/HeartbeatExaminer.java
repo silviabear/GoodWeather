@@ -22,34 +22,35 @@ public class HeartbeatExaminer implements Runnable {
 	
 	public void run() {
 		log.trace("Examiner runs");
-		while(true) {
+		while (true) {
 			try {
 				Thread.sleep(sleepInterval);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			synchronized(HeartbeatAdapter.membershipList) {
-				for(Integer index : HeartbeatAdapter.membershipList) {
-					DateTime time = new DateTime();
-					Node member = HeartbeatAdapter.membershipList.getNode(index);
-					NodeStatus status = member.getStatus();
-					if(status != NodeStatus.ACTIVE || index == HeartbeatAdapter.membershipList.getSelfId()) {
-						continue;
-					}
-					if(member.getTimeStamp().getMillis() - time.getMillis() > kickoutInterval) {
-						log.trace(member.getAddress() + " get cleaned out.");
-						member.setStatus(NodeStatus.NONE);
-					}
-					else if(member.getTimeStamp().getMillis() - time.getMillis() > failInterval) {
-						log.trace(member.getAddress() + " seems failed");
-						member.setStatus(NodeStatus.FAIL);
-					} else {
-						member.setStatus(NodeStatus.ACTIVE);
-					}
-					HeartbeatAdapter.membershipList.updateNeighborInfo(index, member);
+
+			for (Integer index : HeartbeatAdapter.membershipList) {
+				DateTime time = new DateTime();
+				Node member = HeartbeatAdapter.membershipList.getNode(index);
+				NodeStatus status = member.getStatus();
+				if (status != NodeStatus.ACTIVE
+						|| index == HeartbeatAdapter.membershipList.getSelfId()) {
+					continue;
 				}
+				if (member.getTimeStamp().getMillis() - time.getMillis() > kickoutInterval) {
+					log.trace(member.getAddress() + " get cleaned out.");
+					member.setStatus(NodeStatus.NONE);
+				} else if (member.getTimeStamp().getMillis() - time.getMillis() > failInterval) {
+					log.trace(member.getAddress() + " seems failed");
+					member.setStatus(NodeStatus.FAIL);
+				} else {
+					member.setStatus(NodeStatus.ACTIVE);
+				}
+				HeartbeatAdapter.membershipList.updateNeighborInfo(index,
+						member);
 			}
+
 		}
 	}
-	
+
 }
