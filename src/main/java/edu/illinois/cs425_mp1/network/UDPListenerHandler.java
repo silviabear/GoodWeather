@@ -54,6 +54,5 @@ public class UDPListenerHandler extends ChannelInboundHandlerAdapter {
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         log.trace("UDP excpetion caught");
 //        cause.printStackTrace();
-        ctx.close();
     }
 }
