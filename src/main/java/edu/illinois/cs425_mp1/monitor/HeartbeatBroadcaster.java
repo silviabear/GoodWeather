@@ -22,7 +22,7 @@ public class HeartbeatBroadcaster implements Runnable {
 	private final static int broadcastRate = 2; 
 	
 	//Broadcast frequency in ms
-	private final static long sleepInterval = 100;
+	private final static long sleepInterval = 0;
 	
 	private Logger log = LogManager.getLogger("heartbeatLogger");
 	
