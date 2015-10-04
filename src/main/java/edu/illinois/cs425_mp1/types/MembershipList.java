@@ -51,12 +51,8 @@ public class MembershipList implements Iterable<Integer>, Serializable {
 		if(nodeId == selfIndex) {
 			return;
 		}
-		Node neighbor = membershipList.get(nodeId);
-		DateTime newTimestamp = neighbor.getTimeStamp();
-		DateTime oldTimestamp = membershipList.get(nodeId).getTimeStamp();
-		if(oldTimestamp == null || newTimestamp.compareTo(oldTimestamp) > 0) {
-			membershipList.put(nodeId, node);
-		}
+		membershipList.put(nodeId, node);
+		System.out.println(nodeId + " " + this.membershipList.get(nodeId));
 	}
 	
 	public synchronized void add(Node node, Integer nodeId) {
