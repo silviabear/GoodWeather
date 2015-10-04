@@ -62,7 +62,7 @@ public class HeartbeatAdapter implements Runnable {
 		};
 		listenerThread.start();
 		broadcasterThread.start();
-		examinerThread.start();
+		//examinerThread.start();
 	}
 	
 	/**
