@@ -13,6 +13,11 @@ import org.apache.logging.log4j.Logger;
 public class UDPSenderHandler extends ChannelInboundHandlerAdapter {
     static Logger log = LogManager.getLogger("networkLogger");
 
+    private UDPSender sender;
+    public UDPSenderHandler(UDPSender sender){
+        this.sender = sender;
+    }
+
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
         log.trace("sender active");
@@ -36,7 +41,10 @@ public class UDPSenderHandler extends ChannelInboundHandlerAdapter {
      */
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        log.trace("UDP excpetion caught");
+        log.trace("Sender UDP exception caught (connection timed-out)");
+        log.trace("reinitilize sender");
+        this.sender.close();
+        this.sender.run();
 //        cause.printStackTrace();
     }
 }

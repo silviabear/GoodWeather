@@ -30,10 +30,12 @@ public class UDPSender implements Sender {
     private EventLoopGroup group;
     private Bootstrap boot = new Bootstrap();
     final ThreadFactory connectFactory = new DefaultThreadFactory("connect");
+    private UDPSenderHandler handler;
 
     public UDPSender(String host, int port) {
         this.HOST = host;
         this.PORT = port;
+        this.handler = new UDPSenderHandler(this);
     }
 
     /**
@@ -50,9 +52,10 @@ public class UDPSender implements Sender {
                             throws Exception {
                         ch.pipeline().addLast(
                                 new ObjectEncoder(),
-                                new ObjectDecoder(200000000, ClassResolvers.cacheDisabled(null)),
-                                new UDPSenderHandler());
+                                new ObjectDecoder(200000000, ClassResolvers.cacheDisabled(null)));
+                        ch.pipeline().addLast(handler);
                     }
+
                 });
         try {
             log.trace("sender finished configuration, start connecting " + HOST + " @" + PORT);

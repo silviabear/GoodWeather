@@ -53,7 +53,7 @@ public class UDPListenerHandler extends ChannelInboundHandlerAdapter {
      */
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        log.trace("UDP excpetion caught");
+            log.trace("UDP excpetion caught");
 //        cause.printStackTrace();
     }
 }
