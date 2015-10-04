@@ -33,6 +33,7 @@ public class UDPListenerHandler extends ChannelInboundHandlerAdapter {
         System.out.println("Channel active : " + ctx.channel().localAddress());
     }
 
+
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object reply) {
         System.out.println("BURRRRR");

@@ -19,7 +19,6 @@ import io.netty.util.concurrent.DefaultThreadFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.net.InetSocketAddress;
 import java.util.concurrent.ThreadFactory;
 
 /**
@@ -36,9 +35,9 @@ public class UDPSender implements Sender {
     private ChannelFuture cf;
     private Channel channel;
     private EventLoopGroup group;
-
+    private Bootstrap boot = new Bootstrap();
     final ThreadFactory connectFactory = new DefaultThreadFactory("connect");
-    
+
     public UDPSender(String host, int port) {
         this.HOST = host;
         this.PORT = port;
@@ -48,26 +47,8 @@ public class UDPSender implements Sender {
      * Connecting the UDP listener
      */
     public void run() {
-    	Bootstrap boot = new Bootstrap();
         log.trace("sender tries self-configuring on " + HOST + " @" + PORT);
         group = new NioEventLoopGroup(1, connectFactory, NioUdtProvider.BYTE_PROVIDER);
-
-//        group = new NioEventLoopGroup();
-//        Bootstrap b = new Bootstrap();
-//        b.group(group)
-//                .channel(NioDatagramChannel.class)
-//                .option(ChannelOption.SO_BROADCAST, true)
-//                .handler(new ChannelInitializer<DatagramChannel>() {
-//                    @Override
-//                    public void initChannel(DatagramChannel ch) throws Exception {
-//                        ChannelPipeline p = ch.pipeline();
-//                        p.addLast(
-//                                new ObjectEncoder(),
-//                                new ObjectDecoder(200000000, ClassResolvers.cacheDisabled(null)),
-//                                new UDPSenderHandler());
-//                    }
-//                });
-
         boot.group(group)
                 .channelFactory(NioUdtProvider.BYTE_CONNECTOR)
                 .handler(new ChannelInitializer<UdtChannel>() {
@@ -82,9 +63,8 @@ public class UDPSender implements Sender {
                 });
         try {
             log.trace("sender finished configuration, start connecting " + HOST + " @" + PORT);
-            cf = boot.connect(HOST,PORT).sync();
+            cf = boot.connect(HOST, PORT).sync();
             channel = cf.channel();
-            log.trace("blah2");
         } catch (InterruptedException e) {
             log.error("connecting failed due to interruption");
         } catch (Exception e) {
@@ -93,24 +73,29 @@ public class UDPSender implements Sender {
         log.trace("finish connecting to " + HOST);
     }
 
+
     /**
      * Tell the sender to send message
      *
      * @param msg
      */
     public void send(Object obj) {
-        //log.trace("udp sender sends msg: " + obj.toString());
         try {
-//            cf = channel.writeAndFlush(new DatagramPacket(
-//                    Unpooled.copiedBuffer("Hello?", CharsetUtil.UTF_8),
-//                    new InetSocketAddress(HOST, PORT))).sync();
-            cf = channel.writeAndFlush(obj);
-            log.trace("request sent");
+            if (channel == null) {
+                cf = boot.connect(HOST, PORT).sync();
+                channel = cf.channel();
+            }
+            // Message will be ignored since remote is not ready
+            if (channel != null) {
+                cf = channel.writeAndFlush(obj);
+                log.trace("request sent");
+            }
         } catch (Exception e) {
-        	e.printStackTrace();
+            e.printStackTrace();
             log.trace("node " + HOST + " failed, skip");
         }
     }
+
 
     /**
      * Tell the sender to shutdown
@@ -121,6 +106,7 @@ public class UDPSender implements Sender {
 //            if (!channel.closeFuture().await(5000)) {
 //                log.trace("sender timed-out");
 //            }
+            channel.closeFuture().sync();
             cf.channel().close().sync();
         } catch (InterruptedException e) {
             log.error("exception caught during shutdown sender");
