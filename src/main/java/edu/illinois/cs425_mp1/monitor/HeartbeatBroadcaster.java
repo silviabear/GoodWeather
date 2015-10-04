@@ -26,6 +26,10 @@ public class HeartbeatBroadcaster implements Runnable {
 
 	static final int selfId = HeartbeatAdapter.getMembershipList().getSelfId();
 	
+	static int randomSeed = 56; 
+	
+	static Random r = new Random(randomSeed);
+	
 	public void run() {
 		log.trace("Broadcaster runs");
 		String[] addr = Adapter.getNeighbors();
@@ -49,9 +53,9 @@ public class HeartbeatBroadcaster implements Runnable {
 	
 	private void broadcast() {
 		synchronized(HeartbeatAdapter.membershipList) {
-			Random r = new Random();
 			for(int i = 0; i < totalNumNode / broadcastRate; i++) {
 				int index = Math.abs(r.nextInt()) % totalNumNode;
+				r = new Random(++randomSeed);
 				if(index == selfId) {
 					i--;
 					continue;
