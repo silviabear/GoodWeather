@@ -41,9 +41,11 @@ public class HeartbeatExaminer implements Runnable {
 					System.out.println("examine " + time + " " + member.getTimeStamp());
 				}
 				if (member.getTimeStamp().getMillis() - time.getMillis() > kickoutInterval) {
+					System.out.println("CLEAN");
 					log.trace(member.getAddress() + " get cleaned out.");
 					member.setStatus(NodeStatus.NONE);
 				} else if (member.getTimeStamp().getMillis() - time.getMillis() > failInterval) {
+					System.out.println("DEAD");
 					log.trace(member.getAddress() + " seems failed");
 					member.setStatus(NodeStatus.FAIL);
 				} else {
