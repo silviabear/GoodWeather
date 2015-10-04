@@ -55,6 +55,7 @@ public class HeartbeatBroadcaster implements Runnable {
 		synchronized(HeartbeatAdapter.membershipList) {
 			for(int i = 0; i < totalNumNode; i++) {
 				if(i != selfId) {
+					System.out.println("SEND FOR " + i);
 					senders[i].send(HeartbeatAdapter.membershipList);
 				}
 			}
