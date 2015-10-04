@@ -81,7 +81,7 @@ public class UDPSender implements Sender {
             // Message will be ignored since remote is not ready
             if (channel != null) {
                 cf = channel.writeAndFlush(obj);
-//                log.trace("request sent" + channel.remoteAddress());
+                log.trace("request sent" + channel.remoteAddress());
 //                log.trace(obj);
             }
         } catch (Exception e) {
