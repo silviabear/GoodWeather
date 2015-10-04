@@ -89,11 +89,11 @@ public class UDPSender implements Sender {
             if (channel != null) {
                 cf = channel.writeAndFlush(obj);
                 log.trace("request sent");
+                log.trace(obj);
             }
         } catch (Exception e) {
             //e.printStackTrace();
             log.trace("node " + HOST + " failed, skip");
-            log.trace(obj);
         }
     }
 

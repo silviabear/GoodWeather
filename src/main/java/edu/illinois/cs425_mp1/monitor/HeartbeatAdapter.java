@@ -56,6 +56,7 @@ public class HeartbeatAdapter implements Runnable {
 		listenerThread = new Thread() {
 			@Override
 			public void run() {
+				log.trace("heartbeat listener starts");
 				listener.run();
 			}
 		};
