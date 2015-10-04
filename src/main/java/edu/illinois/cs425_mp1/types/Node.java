@@ -1,8 +1,10 @@
 package edu.illinois.cs425_mp1.types;
 
+import java.io.Serializable;
+
 import org.joda.time.DateTime;
 
-public class Node {
+public class Node implements Serializable {
 	//Address of host
 	final String host;
 	//Latest update time
