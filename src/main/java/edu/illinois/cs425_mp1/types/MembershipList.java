@@ -1,5 +1,6 @@
 package edu.illinois.cs425_mp1.types;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -8,7 +9,7 @@ import java.util.Map;
 import org.joda.time.DateTime;
 
 
-public class MembershipList implements Iterable<Integer>, Seriazable {
+public class MembershipList implements Iterable<Integer>, Serializable {
 
 	final Map<Integer, Node> membershipList = Collections.synchronizedMap(new HashMap<Integer, Node>());
 	private int selfIndex;
