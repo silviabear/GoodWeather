@@ -67,7 +67,9 @@ public class HeartbeatBroadcaster implements Runnable {
 			senders[index].send(HeartbeatAdapter.membershipList);
 		}*/
 		for(int i = 0; i < totalNumNode; i++) {
-			senders[i].send(HeartbeatAdapter.membershipList);
+			if(i != selfId) {
+				senders[i].send(HeartbeatAdapter.membershipList);
+			}
 		}
 	}
 	
