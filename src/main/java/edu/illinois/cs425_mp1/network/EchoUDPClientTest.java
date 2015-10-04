@@ -1,6 +1,7 @@
 package edu.illinois.cs425_mp1.network;
 
 import edu.illinois.cs425_mp1.types.Command;
+import edu.illinois.cs425_mp1.types.MembershipList;
 import edu.illinois.cs425_mp1.types.Request;
 
 import org.apache.logging.log4j.LogManager;
@@ -19,25 +20,24 @@ public class EchoUDPClientTest {
     public static void main(String args[]) {
 
         log.trace("Start EchoClientTest");
-        String target = "127.0.0.1";
+        String target = "172.22.151.52";
         int port = 6753;
         log.trace("Configuring Sender...");
         UDPSender client = new UDPSender(target, port);
 
         log.trace("Constructing meg to send");
         int numberOfMessage = 10;
-        ArrayList<Request> lis = new ArrayList<Request>();
+        ArrayList<MembershipList> lis = new ArrayList<MembershipList>();
         for(int i = 0; i < numberOfMessage; i++){
-            lis.add(new Request(Command.GREP, Integer.valueOf(i).toString()));
+            lis.add(new MembershipList());
         }
-        lis.add(new Request(Command.SHUTDOWN, null));
         log.trace("Construction done");
 
         try {
             log.trace("Sender start connecting...");
             client.run();
 
-            for (Request msg : lis) {
+            for (MembershipList msg : lis) {
                 client.send(msg);
             }
 
