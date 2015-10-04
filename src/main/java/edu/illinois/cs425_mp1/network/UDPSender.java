@@ -77,7 +77,7 @@ public class UDPSender implements Sender {
     /**
      * Tell the sender to send message
      *
-     * @param msg
+     * @param obj
      */
     public void send(Object obj) {
         try {

@@ -27,6 +27,7 @@ public class EchoUDPClientTest {
 
         log.trace("Constructing meg to send");
         int numberOfMessage = 10;
+
         ArrayList<MembershipList> lis = new ArrayList<MembershipList>();
         for(int i = 0; i < numberOfMessage; i++){
             lis.add(new MembershipList());
