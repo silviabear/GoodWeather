@@ -49,6 +49,7 @@ public class HeartbeatBroadcaster implements Runnable {
 			} catch (InterruptedException e) {
 				log.trace("HeartbeatBroadcaster stopped");
 			}
+			System.out.println("UPDATE TIMESTAMP");
 			HeartbeatAdapter.membershipList.updateSelfTimeStamp();
 			broadcast();
 		}
