@@ -60,7 +60,7 @@ public class HeartbeatBroadcaster implements Runnable {
 		HeartbeatAdapter.membershipList.updateSelfTimeStamp();
 		for(int i = 0; i < totalNumNode / broadcastRate; i++) {
 			int index = Math.abs(r.nextInt()) % totalNumNode;
-			if(index == selfId || HeartbeatAdapter.membershipList.getNode(index).getStatus() != NodeStatus.ACTIVE) {
+			if(index == selfId || HeartbeatAdapter.membershipList.getNode(index).getStatus() == NodeStatus.FAIL) {
 				i--;
 				continue;
 			}
