@@ -8,7 +8,7 @@ import java.util.Map;
 import org.joda.time.DateTime;
 
 
-public class MembershipList implements Iterable<Integer>{
+public class MembershipList implements Iterable<Integer>, Seriazable {
 
 	final Map<Integer, Node> membershipList = Collections.synchronizedMap(new HashMap<Integer, Node>());
 	private int selfIndex;
