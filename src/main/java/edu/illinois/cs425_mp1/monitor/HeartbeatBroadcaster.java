@@ -8,7 +8,9 @@ import org.apache.logging.log4j.Logger;
 import edu.illinois.cs425_mp1.adapter.Adapter;
 import edu.illinois.cs425_mp1.network.Sender;
 import edu.illinois.cs425_mp1.network.UDPSender;
+import edu.illinois.cs425_mp1.types.Command;
 import edu.illinois.cs425_mp1.types.NodeStatus;
+import edu.illinois.cs425_mp1.types.Request;
 
 public class HeartbeatBroadcaster implements Runnable {
 	
@@ -55,7 +57,8 @@ public class HeartbeatBroadcaster implements Runnable {
 		synchronized(HeartbeatAdapter.membershipList) {
 			for(int i = 0; i < totalNumNode; i++) {
 				if(i != selfId) {
-					senders[i].send(HeartbeatAdapter.membershipList);
+					//senders[i].send(HeartbeatAdapter.membershipList);
+					senders[i].send(new Request(Command.GREP, "ewf"));
 					System.out.println("SEND FOR " + i);
 				}
 			}

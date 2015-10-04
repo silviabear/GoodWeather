@@ -11,7 +11,7 @@ import edu.illinois.cs425_mp1.types.NodeStatus;
 
 public class HeartbeatAdapter implements Runnable {
 	
-	final static MembershipList membershipList = new MembershipList();
+	static MembershipList membershipList = new MembershipList();
 
 	public final static int port = 6754;
 	
@@ -62,7 +62,7 @@ public class HeartbeatAdapter implements Runnable {
 		};
 		listenerThread.start();
 		broadcasterThread.start();
-		//examinerThread.start();
+		examinerThread.start();
 	}
 	
 	/**
