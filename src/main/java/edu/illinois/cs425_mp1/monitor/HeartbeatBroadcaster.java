@@ -9,6 +9,7 @@ import edu.illinois.cs425_mp1.adapter.Adapter;
 import edu.illinois.cs425_mp1.network.Sender;
 import edu.illinois.cs425_mp1.network.UDPSender;
 import edu.illinois.cs425_mp1.types.Command;
+import edu.illinois.cs425_mp1.types.MembershipList;
 import edu.illinois.cs425_mp1.types.NodeStatus;
 import edu.illinois.cs425_mp1.types.Request;
 
@@ -54,24 +55,27 @@ public class HeartbeatBroadcaster implements Runnable {
 	}
 	
 	private void broadcast() {
+		MembershipList packet = new MembershipList();
 		synchronized(HeartbeatAdapter.membershipList) {
-			for(int i = 0; i < totalNumNode; i++) {
-				if(i != selfId) {
-					//senders[i].send(HeartbeatAdapter.membershipList);
-					senders[i].send(new Request(Command.GREP, "ewf"));
-					System.out.println("SEND FOR " + i);
-				}
+			for(Integer i : HeartbeatAdapter.membershipList) {
+				packet.add(HeartbeatAdapter.membershipList.getNode(i), i);
 			}
-			/*
-			for(int i = 0; i < totalNumNode / broadcastRate; i++) {
-				int index = Math.abs(r.nextInt()) % totalNumNode;
-				if(index == selfId) {
-					i--;
-					continue;
-				}
-				senders[index].send(HeartbeatAdapter.membershipList);
-			}*/
 		}
+		for(int i = 0; i < totalNumNode; i++) {
+			if(i != selfId) {
+				//senders[i].send(HeartbeatAdapter.membershipList);
+				senders[i].send(packet);
+			}
+		}
+		/*
+		for(int i = 0; i < totalNumNode / broadcastRate; i++) {
+			int index = Math.abs(r.nextInt()) % totalNumNode;
+			if(index == selfId) {
+				i--;
+				continue;
+			}
+			senders[index].send(HeartbeatAdapter.membershipList);
+		}*/
 	}
 	
 	public void broadcastLeave() {
