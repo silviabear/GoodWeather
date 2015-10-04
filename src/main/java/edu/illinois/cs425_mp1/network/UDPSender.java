@@ -91,7 +91,7 @@ public class UDPSender implements Sender {
                 log.trace("request sent");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             log.trace("node " + HOST + " failed, skip");
         }
     }
