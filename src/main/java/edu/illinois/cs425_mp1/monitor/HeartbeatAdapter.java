@@ -89,6 +89,7 @@ public class HeartbeatAdapter implements Runnable {
 	
 	public void joinGroup() {
 		broadcaster.broadcastJoin();
+		broadcasterThread = new Thread(broadcaster);
 		broadcasterThread.start();
 	}
 
