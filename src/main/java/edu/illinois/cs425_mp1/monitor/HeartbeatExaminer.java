@@ -37,8 +37,8 @@ public class HeartbeatExaminer implements Runnable {
 				if (time.getMillis() - member.getTimeStamp().getMillis() > failInterval) {
 					log.trace(member.getAddress() + " seems failed");
 					member.setStatus(NodeStatus.FAIL);
-					HeartbeatBroadcaster.senders[index] = new UDPSender(Adapter.getNeighbors()[index], HeartbeatAdapter.port);
-					HeartbeatBroadcaster.senders[index].run();
+//					HeartbeatBroadcaster.senders[index] = new UDPSender(Adapter.getNeighbors()[index], HeartbeatAdapter.port);
+//					HeartbeatBroadcaster.senders[index].run();
 				} else {
 					member.setStatus(NodeStatus.ACTIVE);
 				}
