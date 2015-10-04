@@ -58,7 +58,8 @@ public class HeartbeatBroadcaster implements Runnable {
 	private void broadcast() {
 		for(int i = 0; i < totalNumNode / broadcastRate; i++) {
 			int index = Math.abs(r.nextInt()) % totalNumNode;
-			if(index == selfId) {
+			if(index == selfId || 
+					HeartbeatAdapter.membershipList.getNode(index).getStatus() != NodeStatus.ACTIVE) {
 				i--;
 				continue;
 			}
