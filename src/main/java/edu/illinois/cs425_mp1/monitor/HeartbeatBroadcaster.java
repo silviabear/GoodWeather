@@ -10,6 +10,7 @@ import edu.illinois.cs425_mp1.network.Sender;
 import edu.illinois.cs425_mp1.network.UDPSender;
 import edu.illinois.cs425_mp1.types.Command;
 import edu.illinois.cs425_mp1.types.MembershipList;
+import edu.illinois.cs425_mp1.types.Node;
 import edu.illinois.cs425_mp1.types.NodeStatus;
 import edu.illinois.cs425_mp1.types.Request;
 
@@ -55,17 +56,17 @@ public class HeartbeatBroadcaster implements Runnable {
 	}
 	
 	private void broadcast() {
-		Request r = new Request(Command.GREP, "fdsfsd");
 		for(int i = 0; i < totalNumNode; i++) {
 			if(i != selfId) {
 				//senders[i].send(HeartbeatAdapter.membershipList);
 				MembershipList packet = new MembershipList();
-				synchronized(HeartbeatAdapter.membershipList) {
+				/*synchronized(HeartbeatAdapter.membershipList) {
 					for(Integer index : HeartbeatAdapter.membershipList) {
 						packet.add(HeartbeatAdapter.membershipList.getNode(index), i);
 					}
-				}
-				senders[i].send(new MembershipList());
+				}*/
+				packet.add(new Node("wdwsd", NodeStatus.ACTIVE), 1);
+				senders[i].send(packet);
 				senders[i].send(r);
 			}
 		}
