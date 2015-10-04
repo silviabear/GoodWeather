@@ -11,7 +11,7 @@ public class HeartbeatExaminer implements Runnable {
 
 	//Time intervals in ms
 	private final long sleepInterval = 100;
-	private final long failInterval = 3000;
+	private final long failInterval = 4000;
 	private final long kickoutInterval = 5000;
 	
 	private Logger log = LogManager.getLogger("heartbeatLogger");
