@@ -106,14 +106,8 @@ public class UDPSender implements Sender {
             cf = channel.writeAndFlush(obj);
             log.trace("request sent");
         } catch (Exception e) {
-            log.trace("node " + HOST + "failed, skip");
-            P2PSender[] channels = Adapter.getChannels();
-            for (int i = 0; i < channels.length; i++) {
-                if (channels[i] != null && channels[i].equals(HOST)) {
-                    channels[i] = null;
-                    break;
-                }
-            }
+        	log.trace(e.printStackTrace());
+            log.trace("node " + HOST + " failed, skip");
         }
     }
 
