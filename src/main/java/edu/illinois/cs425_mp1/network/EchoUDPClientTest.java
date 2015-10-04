@@ -1,6 +1,7 @@
 package edu.illinois.cs425_mp1.network;
 
 import edu.illinois.cs425_mp1.types.Command;
+import edu.illinois.cs425_mp1.types.MembershipList;
 import edu.illinois.cs425_mp1.types.Request;
 
 import org.apache.logging.log4j.LogManager;
@@ -26,20 +27,22 @@ public class EchoUDPClientTest {
 
         log.trace("Constructing meg to send");
         int numberOfMessage = 10;
-        ArrayList<Request> lis = new ArrayList<Request>();
-        for(int i = 0; i < numberOfMessage; i++){
-            lis.add(new Request(Command.GREP, Integer.valueOf(i).toString()));
-        }
-        lis.add(new Request(Command.SHUTDOWN, null));
+//        ArrayList<Request> lis = new ArrayList<Request>();
+//        for(int i = 0; i < numberOfMessage; i++){
+//            lis.add(new Request(Command.GREP, Integer.valueOf(i).toString()));
+//        }
+//        lis.add(new Request(Command.SHUTDOWN, null));
+        MembershipList lis = new MembershipList();
         log.trace("Construction done");
 
         try {
             log.trace("Sender start connecting...");
             client.run();
 
-            for (Request msg : lis) {
-                client.send(msg);
-            }
+//            for (Request msg : lis) {
+//                client.send(msg);
+//            }
+            client.send(lis);
 
 
         } catch(NullPointerException e){
