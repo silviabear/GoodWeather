@@ -32,7 +32,6 @@ public class HeartbeatBroadcaster implements Runnable {
 		for(int i = 0; i < addr.length; i++) {
 			if(i != selfId) {
 				senders[i] = new UDPSender(addr[i], HeartbeatAdapter.port);
-				senders[i].run();
 			}
 		}
 		while(true) {
@@ -56,6 +55,7 @@ public class HeartbeatBroadcaster implements Runnable {
 					i--;
 					continue;
 				}
+				senders[index].run();
 				senders[index].send(HeartbeatAdapter.membershipList);
 			}
 		}

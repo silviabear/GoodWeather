@@ -37,6 +37,9 @@ public class UDPSender implements Sender {
     private Channel channel;
     private EventLoopGroup group;
 
+    final Bootstrap boot = new Bootstrap();
+    final ThreadFactory connectFactory = new DefaultThreadFactory("connect");
+    
     public UDPSender(String host, int port) {
         this.HOST = host;
         this.PORT = port;
@@ -47,7 +50,6 @@ public class UDPSender implements Sender {
      */
     public void run() {
         log.trace("sender tries self-configuring on " + HOST + " @" + PORT);
-        final ThreadFactory connectFactory = new DefaultThreadFactory("connect");
         group = new NioEventLoopGroup(1, connectFactory, NioUdtProvider.BYTE_PROVIDER);
 
 //        group = new NioEventLoopGroup();
@@ -66,7 +68,6 @@ public class UDPSender implements Sender {
 //                    }
 //                });
 
-        final Bootstrap boot = new Bootstrap();
         boot.group(group)
                 .channelFactory(NioUdtProvider.BYTE_CONNECTOR)
                 .handler(new ChannelInitializer<UdtChannel>() {
