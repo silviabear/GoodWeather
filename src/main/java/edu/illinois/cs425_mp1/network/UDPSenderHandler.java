@@ -5,6 +5,7 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.DatagramPacket;
 import io.netty.util.CharsetUtil;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,6 +28,12 @@ public class UDPSenderHandler extends ChannelInboundHandlerAdapter {
 //        log.trace("received msg UDP: " + msg.content().toString(CharsetUtil.UTF_8));
 //        return;
 //    }
+    
+    @Override
+    public void channelActive(ChannelHandlerContext ctx) {
+        System.out.println("Channel active : " + ctx.channel().localAddress());
+        ctx.flush();
+    }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object reply){
