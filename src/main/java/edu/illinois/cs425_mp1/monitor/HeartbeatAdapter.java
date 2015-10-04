@@ -37,6 +37,7 @@ public class HeartbeatAdapter implements Runnable {
 			if(Adapter.getLocalAddress().equals(address)) {
 				status = NodeStatus.ACTIVE;
 				membershipList.setSelfIndex(i);
+				System.out.println("SELFINDEX" + i);
 			}
 			membershipList.add(new Node(address, status), i);
 			i++;
