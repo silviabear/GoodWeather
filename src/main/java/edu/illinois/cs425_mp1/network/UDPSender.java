@@ -103,7 +103,7 @@ public class UDPSender implements Sender {
 //            if (!channel.closeFuture().await(5000)) {
 //                log.trace("sender timed-out");
 //            }
-            channel.closeFuture().sync();
+            cf.channel().closeFuture().sync();
             cf.channel().close().sync();
         } catch (InterruptedException e) {
             log.error("exception caught during shutdown sender");
