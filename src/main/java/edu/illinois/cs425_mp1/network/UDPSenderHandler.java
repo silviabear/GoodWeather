@@ -45,7 +45,7 @@ public class UDPSenderHandler extends ChannelInboundHandlerAdapter {
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         log.trace("Sender UDP exception caught (connection timed-out)");
         log.trace("reinitilize sender");
-        this.sender.close();
+//        this.sender.close();
         this.sender.run();
 //        cause.printStackTrace();
     }
