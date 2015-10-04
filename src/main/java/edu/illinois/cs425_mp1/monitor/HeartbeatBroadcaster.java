@@ -55,7 +55,6 @@ public class HeartbeatBroadcaster implements Runnable {
 		synchronized(HeartbeatAdapter.membershipList) {
 			for(int i = 0; i < totalNumNode / broadcastRate; i++) {
 				int index = Math.abs(r.nextInt()) % totalNumNode;
-				r = new Random(++randomSeed);
 				if(index == selfId) {
 					i--;
 					continue;
