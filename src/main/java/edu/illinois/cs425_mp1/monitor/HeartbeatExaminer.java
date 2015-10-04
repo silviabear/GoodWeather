@@ -29,8 +29,7 @@ public class HeartbeatExaminer implements Runnable {
 				DateTime time = new DateTime();
 				Node member = HeartbeatAdapter.membershipList.getNode(index);
 				NodeStatus status = member.getStatus();
-				if (status != NodeStatus.ACTIVE
-						|| index == HeartbeatAdapter.membershipList.getSelfId()) {
+				if (index == HeartbeatAdapter.membershipList.getSelfId()) {
 					continue;
 				}
 				if (time.getMillis() - member.getTimeStamp().getMillis() > kickoutInterval) {
