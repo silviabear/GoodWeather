@@ -4,6 +4,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 
+import edu.illinois.cs425_mp1.adapter.Adapter;
+import edu.illinois.cs425_mp1.network.UDPSender;
 import edu.illinois.cs425_mp1.types.Node;
 import edu.illinois.cs425_mp1.types.NodeStatus;
 
@@ -35,6 +37,8 @@ public class HeartbeatExaminer implements Runnable {
 				if (time.getMillis() - member.getTimeStamp().getMillis() > failInterval) {
 					log.trace(member.getAddress() + " seems failed");
 					member.setStatus(NodeStatus.FAIL);
+					HeartbeatBroadcaster.senders[index] = new UDPSender(Adapter.getNeighbors()[index], HeartbeatAdapter.port);
+					HeartbeatBroadcaster.senders[index].run();
 				} else {
 					member.setStatus(NodeStatus.ACTIVE);
 				}

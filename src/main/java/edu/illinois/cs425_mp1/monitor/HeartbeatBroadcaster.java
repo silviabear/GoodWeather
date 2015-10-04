@@ -26,7 +26,7 @@ public class HeartbeatBroadcaster implements Runnable {
 	
 	private Logger log = LogManager.getLogger("heartbeatLogger");
 	
-	final UDPSender[] senders = new UDPSender[7];
+	static final UDPSender[] senders = new UDPSender[7];
 
 	static final int selfId = HeartbeatAdapter.getMembershipList().getSelfId();
 	
