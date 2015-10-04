@@ -38,7 +38,7 @@ public class HeartbeatExaminer implements Runnable {
 					continue;
 				}
 				if(index == 1 || index == 0) {
-					System.out.println("examine " + time + " " + member.getTimeStamp());
+					System.out.println("examine " + time.getMillis() + " " + member.getTimeStamp().getMillis());
 				}
 				if (member.getTimeStamp().getMillis() - time.getMillis() > kickoutInterval) {
 					System.out.println("CLEAN");
