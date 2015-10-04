@@ -1,5 +1,7 @@
 package edu.illinois.cs425_mp1.network;
 
+import edu.illinois.cs425_mp1.network.UDPListener;
+
 /**
  * This is the test for UDP connection
  * Created by Wesley on 10/2/15.

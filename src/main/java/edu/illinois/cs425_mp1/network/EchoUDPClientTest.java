@@ -1,8 +1,8 @@
 package edu.illinois.cs425_mp1.network;
 
-
 import edu.illinois.cs425_mp1.types.Command;
 import edu.illinois.cs425_mp1.types.Request;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
