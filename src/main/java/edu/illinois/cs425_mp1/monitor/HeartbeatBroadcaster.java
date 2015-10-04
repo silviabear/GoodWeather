@@ -64,7 +64,7 @@ public class HeartbeatBroadcaster implements Runnable {
 					packet.add(HeartbeatAdapter.membershipList.getNode(index), i);
 				}*/
 				packet.add(new Node("blah", NodeStatus.ACTIVE), 1);
-				senders[i].send(new MembershipList());
+				senders[i].send(packet);
 				senders[i].send(r);
 			}
 		}
