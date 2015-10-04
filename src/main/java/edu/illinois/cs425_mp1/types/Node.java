@@ -27,7 +27,7 @@ public class Node implements Serializable {
 		this.status = status;
 	}
 	
-	public void setTimeStamp(DateTime timestamp) {
+	public void setTimeStamp(DateTime timeStamp) {
 		this.timeStamp = timeStamp;
 	}
 	
