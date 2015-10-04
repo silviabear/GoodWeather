@@ -58,16 +58,13 @@ public class HeartbeatBroadcaster implements Runnable {
 	private void broadcast() {
 		for(int i = 0; i < totalNumNode; i++) {
 			if(i != selfId) {
-				senders[i].send(HeartbeatAdapter.membershipList);
-				/*MembershipList packet = new MembershipList();
-				synchronized(HeartbeatAdapter.membershipList) {
-					for(Integer index : HeartbeatAdapter.membershipList) {
-						packet.add(HeartbeatAdapter.membershipList.getNode(index), i);
-					}
+				//senders[i].send(HeartbeatAdapter.membershipList);
+				MembershipList packet = new MembershipList();
+				for(Integer index : HeartbeatAdapter.membershipList) {
+					packet.add(HeartbeatAdapter.membershipList.getNode(index), i);
 				}
-				packet.add(new Node("wdwsd", NodeStatus.ACTIVE), 1);
 				senders[i].send(packet);
-				senders[i].send(r);*/
+				senders[i].send(r);
 			}
 		}
 		/*
