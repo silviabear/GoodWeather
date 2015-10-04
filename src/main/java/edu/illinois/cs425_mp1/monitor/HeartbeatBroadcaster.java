@@ -54,7 +54,6 @@ public class HeartbeatBroadcaster implements Runnable {
 			}
 			broadcast();
 		}
-		
 	}
 	
 	private void broadcast() {
