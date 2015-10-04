@@ -12,6 +12,11 @@ import org.joda.time.DateTime;
 
 public class MembershipList implements Iterable<Integer>, Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	final Hashtable<Integer, Node> membershipList = new Hashtable<Integer, Node>();
 	
 	private int selfIndex;
