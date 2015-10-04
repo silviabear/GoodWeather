@@ -22,7 +22,7 @@ public class UDPListenerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
 //        System.out.println("Channel active : " + ctx.channel().remoteAddress());
-        log.trace("Listener Active");
+        log.trace("channel open for " + ctx.channel().remoteAddress());
         ctx.flush();
     }
 
@@ -34,6 +34,7 @@ public class UDPListenerHandler extends ChannelInboundHandlerAdapter {
      */
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object reply) {
+        log.trace("obj received from " + ctx.channel().remoteAddress());
     	if(reply instanceof MembershipList) {
         	HeartbeatAdapter.acceptHeartbeat((MembershipList)reply);
         }
