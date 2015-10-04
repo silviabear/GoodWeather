@@ -44,6 +44,9 @@ public class HeartbeatBroadcaster implements Runnable {
 			}
 		}
 		while(true) {
+			if (Thread.currentThread().isInterrupted()) {
+				return;
+			}
 			try {
 				Thread.sleep(sleepInterval);
 			} catch (InterruptedException e) {

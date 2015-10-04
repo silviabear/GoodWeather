@@ -74,7 +74,12 @@ public class HeartbeatAdapter implements Runnable {
 	//TODO: @Wesly: parse received membership list directly to this method
 	public static void acceptHeartbeat(MembershipList update) {
 		for(Integer nodeId : update) {
+			Node oldStatus = HeartbeatAdapter.membershipList.getNode(nodeId);
+			Node newStatus = update.getNode(nodeId);
+			if(oldStatus.getTimeStamp() == null 
+					|| oldStatus.getTimeStamp().compareTo(newStatus.getTimeStamp()) < 0) {
 			HeartbeatAdapter.membershipList.updateNeighborInfo(nodeId, update.getNode(nodeId));
+			}
 		}
 	}
 	
