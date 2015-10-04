@@ -49,14 +49,13 @@ public class HeartbeatBroadcaster implements Runnable {
 			} catch (InterruptedException e) {
 				log.trace("HeartbeatBroadcaster stopped");
 			}
-			System.out.println("UPDATE TIMESTAMP");
-			HeartbeatAdapter.membershipList.updateSelfTimeStamp();
 			broadcast();
 		}
 		
 	}
 	
 	private void broadcast() {
+		HeartbeatAdapter.membershipList.updateSelfTimeStamp();
 		for(int i = 0; i < totalNumNode / broadcastRate; i++) {
 			int index = Math.abs(r.nextInt()) % totalNumNode;
 			System.out.println(HeartbeatAdapter.membershipList.getNode(index) + " " + index);
@@ -69,13 +68,11 @@ public class HeartbeatBroadcaster implements Runnable {
 	}
 	
 	public void broadcastLeave() {
-		HeartbeatAdapter.membershipList.updateSelfTimeStamp();
 		HeartbeatAdapter.membershipList.updateSelfStatus(NodeStatus.LEAVE);
 		broadcast();
 	}
 	
 	public void broadcastJoin() {
-		HeartbeatAdapter.membershipList.updateSelfTimeStamp();
 		HeartbeatAdapter.membershipList.updateSelfStatus(NodeStatus.ACTIVE);
 		broadcast();
 	}
