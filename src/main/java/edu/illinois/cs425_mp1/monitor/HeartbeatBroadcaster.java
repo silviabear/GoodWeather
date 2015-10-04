@@ -5,6 +5,9 @@ import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import edu.illinois.cs425_mp1.adapter.Adapter;
+import edu.illinois.cs425_mp1.network.Sender;
+import edu.illinois.cs425_mp1.network.UDPSender;
 import edu.illinois.cs425_mp1.types.NodeStatus;
 
 public class HeartbeatBroadcaster implements Runnable {
@@ -19,8 +22,19 @@ public class HeartbeatBroadcaster implements Runnable {
 	
 	private Logger log = LogManager.getLogger("heartbeatLogger");
 	
+	final UDPSender[] senders = new UDPSender[7];
+
+	static final int selfId = HeartbeatAdapter.getMembershipList().getSelfId();
+	
 	public void run() {
 		log.trace("Broadcaster runs");
+		String[] addr = Adapter.getNeighbors();
+		for(int i = 0; i < addr.length; i++) {
+			if(i != selfId) {
+				senders[i] = new UDPSender(addr[i], HeartbeatAdapter.port);
+				senders[i].run();
+			}
+		}
 		while(true) {
 			try {
 				Thread.sleep(sleepInterval);
@@ -33,24 +47,27 @@ public class HeartbeatBroadcaster implements Runnable {
 		
 	}
 	
-	private static void broadcast() {
+	private void broadcast() {
 		synchronized(HeartbeatAdapter.membershipList) {
 			Random r = new Random();
 			for(int i = 0; i < totalNumNode / broadcastRate; i++) {
 				int index = Math.abs(r.nextInt()) % totalNumNode;
-				String addr = HeartbeatAdapter.getMembershipList().getNode(index).getAddress();
-				//TODO @Wesley create UDP send interface
+				if(index == selfId) {
+					i--;
+					continue;
+				}
+				senders[i].send(HeartbeatAdapter.membershipList);
 			}
 		}
 	}
 	
-	public static void broadcastLeave() {
+	public void broadcastLeave() {
 		HeartbeatAdapter.membershipList.updateSelfTimeStamp();
 		HeartbeatAdapter.membershipList.updateSelfStatus(NodeStatus.LEAVE);
 		broadcast();
 	}
 	
-	public static void broadcastJoin() {
+	public void broadcastJoin() {
 		HeartbeatAdapter.membershipList.updateSelfTimeStamp();
 		HeartbeatAdapter.membershipList.updateSelfStatus(NodeStatus.ACTIVE);
 		broadcast();

@@ -6,8 +6,12 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.DatagramPacket;
 import io.netty.util.CharsetUtil;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import edu.illinois.cs425_mp1.monitor.HeartbeatAdapter;
+import edu.illinois.cs425_mp1.types.MembershipList;
 
 
 /**
@@ -31,8 +35,9 @@ public class UDPListenerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object reply) {
-        System.out.println("Message received active");
-        System.out.println(reply.toString());
+        if(reply instanceof MembershipList) {
+        	HeartbeatAdapter.acceptHeartbeat((MembershipList)reply);
+        }
         return;
     }
 

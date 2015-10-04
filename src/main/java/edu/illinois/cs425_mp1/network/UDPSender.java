@@ -97,13 +97,13 @@ public class UDPSender implements Sender {
      *
      * @param msg
      */
-    public void send(Message msg) {
-        log.trace("udp sender sends msg: " + msg.toString());
+    public void send(Object obj) {
+        log.trace("udp sender sends msg: " + obj.toString());
         try {
 //            cf = channel.writeAndFlush(new DatagramPacket(
 //                    Unpooled.copiedBuffer("Hello?", CharsetUtil.UTF_8),
 //                    new InetSocketAddress(HOST, PORT))).sync();
-            cf = channel.writeAndFlush(msg);
+            cf = channel.writeAndFlush(obj);
             log.trace("request sent");
         } catch (Exception e) {
             log.trace("node " + HOST + "failed, skip");
