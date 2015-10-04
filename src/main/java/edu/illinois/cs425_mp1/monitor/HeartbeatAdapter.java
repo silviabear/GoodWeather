@@ -34,10 +34,10 @@ public class HeartbeatAdapter implements Runnable {
 		int i = 0;
 		for (String address : Adapter.getNeighbors()) {
 			NodeStatus status = NodeStatus.NONE;
+			System.out.println("SELFADDRESS" + address);
 			if(Adapter.getLocalAddress().equals(address)) {
 				status = NodeStatus.ACTIVE;
 				membershipList.setSelfIndex(i);
-				System.out.println("SELFINDEX" + i);
 			}
 			membershipList.add(new Node(address, status), i);
 			i++;
