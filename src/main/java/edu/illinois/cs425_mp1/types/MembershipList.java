@@ -51,6 +51,9 @@ public class MembershipList implements Iterable<Integer>, Serializable {
 		if(nodeId == selfIndex) {
 			return;
 		}
+		if(node == null) {
+			System.out.println("BURRRRR");
+		}
 		membershipList.put(nodeId, node);
 	}
 	
