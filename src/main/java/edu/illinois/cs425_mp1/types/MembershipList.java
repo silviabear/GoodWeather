@@ -3,6 +3,7 @@ package edu.illinois.cs425_mp1.types;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -11,7 +12,7 @@ import org.joda.time.DateTime;
 
 public class MembershipList implements Iterable<Integer>, Serializable {
 
-	final Map<Integer, Node> membershipList = Collections.synchronizedMap(new HashMap<Integer, Node>());
+	final Hashtable<Integer, Node> membershipList = new Hashtable<Integer, Node>();
 	
 	private int selfIndex;
 	
