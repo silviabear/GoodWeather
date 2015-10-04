@@ -52,7 +52,6 @@ public class MembershipList implements Iterable<Integer>, Serializable {
 			return;
 		}
 		membershipList.put(nodeId, node);
-		System.out.println(nodeId + " " + this.membershipList.get(nodeId));
 	}
 	
 	public synchronized void add(Node node, Integer nodeId) {
