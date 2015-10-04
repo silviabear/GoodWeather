@@ -82,7 +82,7 @@ public class UDPSender implements Sender {
             if (channel != null) {
                 cf = channel.writeAndFlush(obj);
                 log.trace("request sent" + channel.remoteAddress());
-                log.trace(obj);
+//                log.trace(obj);
             }
         } catch (Exception e) {
             //e.printStackTrace();
