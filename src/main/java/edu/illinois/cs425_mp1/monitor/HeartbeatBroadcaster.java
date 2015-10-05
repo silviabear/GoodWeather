@@ -52,6 +52,7 @@ public class HeartbeatBroadcaster implements Runnable {
 			} catch (InterruptedException e) {
 				log.trace("HeartbeatBroadcaster stopped");
 			}
+			
 			broadcast();
 		}
 	}

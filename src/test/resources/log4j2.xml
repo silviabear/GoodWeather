@@ -31,8 +31,8 @@
             <!--<AppenderRef ref="RollingFile"/>-->
         </Logger>
         <Logger name="networkLogger" level="trace" additivity="false">
-            <AppenderRef ref="Console"/>
-            <!--<AppenderRef ref="RollingFile"/>-->
+            <!--<AppenderRef ref="Console"/>-->
+            <AppenderRef ref="RollingFile"/>
         </Logger>
         <Logger name="parserLogger" level="trace" additivity="false">
             <!--<AppenderRef ref="Console"/>-->
