@@ -9,6 +9,10 @@ import io.netty.util.CharsetUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import edu.illinois.cs425_mp1.adapter.Adapter;
+import edu.illinois.cs425_mp1.monitor.HeartbeatAdapter;
+import edu.illinois.cs425_mp1.monitor.HeartbeatBroadcaster;
+
 import java.util.Objects;
 
 /**
@@ -52,6 +56,16 @@ public class UDPSenderHandler extends ChannelInboundHandlerAdapter {
         ctx.close();
         String info = ctx.channel().remoteAddress().toString();
         String addr = info.split(":")[0].substring(1);
-        System.out.println(addr);
+        String[] neighbors = Adapter.getNeighbors();
+        int nodeId = 0;
+        for(int i = 0; i < neighbors.length; i++) {
+        	if(neighbors[i].equals(addr)) {
+        		nodeId = i;
+        		break;
+        	}
+        }
+        System.out.println("node " + nodeId + " FAIL");
+        HeartbeatBroadcaster.senders[nodeId] = new UDPSender(addr, HeartbeatAdapter.port);
+        HeartbeatBroadcaster.senders[nodeId].run();
     }
 }
