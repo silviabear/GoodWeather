@@ -34,6 +34,9 @@ public class HeartbeatExaminer implements Runnable {
 						|| index == HeartbeatAdapter.membershipList.getSelfId()) {
 					continue;
 				}
+				if(status == NodeStatus.NONE) {
+					HeartbeatAdapter.membershipList.aliveNeighbors.add(index);
+				}
 				if (time.getMillis() - member.getTimeStamp().getMillis() > failInterval) {
 					log.trace(member.getAddress() + " seems failed");
 					member.setStatus(NodeStatus.FAIL);
