@@ -78,6 +78,9 @@ public class HeartbeatAdapter implements Runnable {
 			}
 			Node oldStatus = HeartbeatAdapter.membershipList.getNode(nodeId);
 			Node newStatus = update.getNode(nodeId);
+			if(newStatus.getStatus() == NodeStatus.FAIL) {
+				continue;
+			}
 			if(oldStatus.getTimeStamp() == null 
 					|| oldStatus.getTimeStamp().compareTo(newStatus.getTimeStamp()) < 0) {
 				HeartbeatAdapter.membershipList.updateNeighborInfo(nodeId, newStatus);
