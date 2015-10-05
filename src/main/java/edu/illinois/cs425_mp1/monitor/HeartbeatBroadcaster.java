@@ -62,6 +62,9 @@ public class HeartbeatBroadcaster implements Runnable {
 		Set<Integer> aliveNeighbors = HeartbeatAdapter.membershipList.aliveNeighbors;
 		Integer[] nodes = new Integer[aliveNeighbors.size()];
 		nodes = aliveNeighbors.toArray(nodes);
+		if(nodes.length == 0) {
+			return;
+		}
 		for(int i = 0; i < nodes.length / broadcastRate + 1; i++) {
 			int index = Math.abs(r.nextInt()) % nodes.length;
 			senders[index].send(HeartbeatAdapter.membershipList);
