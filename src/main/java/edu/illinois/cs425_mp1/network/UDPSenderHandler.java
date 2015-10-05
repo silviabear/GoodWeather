@@ -7,15 +7,12 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-<<<<<<< HEAD
 import edu.illinois.cs425_mp1.adapter.Adapter;
 import edu.illinois.cs425_mp1.monitor.HeartbeatAdapter;
 import edu.illinois.cs425_mp1.monitor.HeartbeatBroadcaster;
 
-import java.util.Objects;
 
-=======
->>>>>>> 795e067f989e54386f27266b00ae87c62165929d
+
 /**
  * This is the UDP message sender handler
  * Created by Wesley on 10/1/15.
@@ -52,7 +49,6 @@ public class UDPSenderHandler extends ChannelInboundHandlerAdapter {
      */
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-<<<<<<< HEAD
         log.trace("UDP excpetion caught");
         cause.printStackTrace();
         ctx.close();
@@ -69,12 +65,5 @@ public class UDPSenderHandler extends ChannelInboundHandlerAdapter {
         System.out.println("node " + nodeId + " FAIL");
         HeartbeatBroadcaster.senders[nodeId] = new UDPSender(addr, HeartbeatAdapter.port);
         HeartbeatBroadcaster.senders[nodeId].run();
-=======
-        log.trace("Sender UDP exception caught (connection timed-out)");
-        log.trace("reinitilize sender");
-        this.sender.close();
-        this.sender.run();
-//        cause.printStackTrace();
->>>>>>> 795e067f989e54386f27266b00ae87c62165929d
     }
 }
