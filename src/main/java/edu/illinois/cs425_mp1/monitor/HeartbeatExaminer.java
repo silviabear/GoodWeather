@@ -30,12 +30,12 @@ public class HeartbeatExaminer implements Runnable {
 				DateTime time = new DateTime();
 				Node member = HeartbeatAdapter.membershipList.getNode(index);
 				NodeStatus status = member.getStatus();
+				if(status == NodeStatus.NONE) {
+					HeartbeatAdapter.membershipList.aliveNeighbors.add(index);
+				}
 				if (status == NodeStatus.NONE
 						|| index == HeartbeatAdapter.membershipList.getSelfId()) {
 					continue;
-				}
-				if(status == NodeStatus.NONE) {
-					HeartbeatAdapter.membershipList.aliveNeighbors.add(index);
 				}
 				if (time.getMillis() - member.getTimeStamp().getMillis() > failInterval) {
 					log.trace(member.getAddress() + " seems failed");
