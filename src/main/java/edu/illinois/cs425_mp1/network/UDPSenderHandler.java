@@ -21,11 +21,6 @@ import edu.illinois.cs425_mp1.monitor.HeartbeatBroadcaster;
 public class UDPSenderHandler extends ChannelInboundHandlerAdapter {
     static Logger log = LogManager.getLogger("networkLogger");
 
-    private UDPSender sender;
-    public UDPSenderHandler(UDPSender sender){
-        this.sender = sender;
-    }
-
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
         log.trace("sender active");
