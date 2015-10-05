@@ -41,8 +41,8 @@ public class HeartbeatExaminer implements Runnable {
 					log.trace(member.getAddress() + " seems failed");
 					member.setStatus(NodeStatus.FAIL);
 					HeartbeatAdapter.membershipList.aliveNeighbors.remove(index);
-					HeartbeatBroadcaster.senders[index] = new UDPSender(Adapter.getNeighbors()[index], HeartbeatAdapter.port);
-					HeartbeatBroadcaster.senders[index].run();
+					//HeartbeatBroadcaster.senders[index] = new UDPSender(Adapter.getNeighbors()[index], HeartbeatAdapter.port);
+					//HeartbeatBroadcaster.senders[index].run();
 				} else {
 					HeartbeatAdapter.membershipList.aliveNeighbors.add(index);
 					member.setStatus(NodeStatus.ACTIVE);
