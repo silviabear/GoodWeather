@@ -20,7 +20,7 @@ public class HeartbeatBroadcaster implements Runnable {
 	private final static int totalNumNode = HeartbeatAdapter.membershipList.size();
 	
 	//Means among broadcastRate of neighbors, randomly pick one for broadcasting
-	private final static int broadcastRate = 2; 
+	private final static int broadcastRate = 3; 
 	
 	//Broadcast frequency in ms
 	private final static long sleepInterval = 0;
@@ -66,7 +66,7 @@ public class HeartbeatBroadcaster implements Runnable {
 		if(nodes.length == 0) {
 			return;
 		}
-		for(int i = 0; i < nodes.length / broadcastRate + 1; i++) {
+		for(int i = 0; i < nodes.length / broadcastRate * 2 + 1; i++) {
 			int index = Math.abs(r.nextInt()) % nodes.length;
 			senders[nodes[index]].send(HeartbeatAdapter.membershipList);
 		}
