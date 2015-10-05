@@ -21,8 +21,6 @@ public class MembershipList implements Iterable<Integer>, Serializable {
 
 	final Hashtable<Integer, Node> membershipList = new Hashtable<Integer, Node>();
 	
-	public final Set<Integer> aliveNeighbors = new HashSet<Integer>();
-	
 	private int selfIndex;
 	
 	

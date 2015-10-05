@@ -59,15 +59,13 @@ public class HeartbeatBroadcaster implements Runnable {
 	
 	private void broadcast() {
 		HeartbeatAdapter.membershipList.updateSelfTimeStamp();
-		Set<Integer> aliveNeighbors = HeartbeatAdapter.membershipList.aliveNeighbors;
-		Integer[] nodes = new Integer[aliveNeighbors.size()];
-		nodes = aliveNeighbors.toArray(nodes);
-		if(nodes.length == 0) {
-			return;
-		}
-		for(int i = 0; i < nodes.length / broadcastRate * 2 + 1; i++) {
-			int index = Math.abs(r.nextInt()) % nodes.length;
-			senders[nodes[index]].send(HeartbeatAdapter.membershipList);
+		for(int i = 0; i < totalNumNode / broadcastRate * 2 + 1; i++) {
+			int index = Math.abs(r.nextInt()) % totalNumNode;
+			if(index == selfId) {
+				i--;
+				continue;
+			}
+			senders[index].send(HeartbeatAdapter.membershipList);
 		}
 
 	}
