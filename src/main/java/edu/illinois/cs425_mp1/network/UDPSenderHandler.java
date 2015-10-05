@@ -50,5 +50,7 @@ public class UDPSenderHandler extends ChannelInboundHandlerAdapter {
         log.trace("UDP excpetion caught");
         cause.printStackTrace();
         ctx.close();
+        String addr = ctx.channel().remoteAddress().toString();
+        System.out.println(addr);
     }
 }
