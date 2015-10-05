@@ -60,6 +60,7 @@ public class HeartbeatBroadcaster implements Runnable {
 	private void broadcast() {
 		HeartbeatAdapter.membershipList.updateSelfTimeStamp();
 		Set<Integer> aliveNeighbors = HeartbeatAdapter.membershipList.aliveNeighbors;
+		System.out.println(aliveNeighbors);
 		Integer[] nodes = new Integer[aliveNeighbors.size()];
 		nodes = aliveNeighbors.toArray(nodes);
 		if(nodes.length == 0) {
