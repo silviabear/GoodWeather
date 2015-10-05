@@ -65,14 +65,7 @@ public class HeartbeatBroadcaster implements Runnable {
 				i--;
 				continue;
 			}
-			final int id = index;
-			Thread t = new Thread() {
-				@Override
-				public void run() {
-					senders[id].send(HeartbeatAdapter.membershipList);
-				}
-			};
-			t.start();
+			senders[index].send(HeartbeatAdapter.membershipList);
 		}
 
 	}
