@@ -1,6 +1,7 @@
 package edu.illinois.cs425_mp1.monitor;
 
 import java.util.Random;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,14 +20,18 @@ public class HeartbeatBroadcaster implements Runnable {
 	private final static int totalNumNode = HeartbeatAdapter.membershipList.size();
 	
 	//Means among broadcastRate of neighbors, randomly pick one for broadcasting
-	private final static int broadcastRate = 2; 
+	private final static int broadcastRate = 3; 
 	
 	//Broadcast frequency in ms
 	private final static long sleepInterval = 0;
 	
 	private Logger log = LogManager.getLogger("heartbeatLogger");
 	
+<<<<<<< HEAD
 	public static final UDPSender[] senders = new UDPSender[7];
+=======
+	static final UDPSender[] senders = new UDPSender[7];
+>>>>>>> 795e067f989e54386f27266b00ae87c62165929d
 
 	static final int selfId = HeartbeatAdapter.getMembershipList().getSelfId();
 	
@@ -59,7 +64,7 @@ public class HeartbeatBroadcaster implements Runnable {
 	
 	private void broadcast() {
 		HeartbeatAdapter.membershipList.updateSelfTimeStamp();
-		for(int i = 0; i < totalNumNode / broadcastRate; i++) {
+		for(int i = 0; i < totalNumNode / broadcastRate * 2 + 1; i++) {
 			int index = Math.abs(r.nextInt()) % totalNumNode;
 			if(index == selfId) {
 				i--;
@@ -67,6 +72,7 @@ public class HeartbeatBroadcaster implements Runnable {
 			}
 			senders[index].send(HeartbeatAdapter.membershipList);
 		}
+
 	}
 	
 	public void broadcastLeave() {

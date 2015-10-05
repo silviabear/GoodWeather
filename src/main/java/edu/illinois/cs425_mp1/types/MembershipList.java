@@ -3,9 +3,11 @@ package edu.illinois.cs425_mp1.types;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import org.joda.time.DateTime;
 
@@ -20,6 +22,7 @@ public class MembershipList implements Iterable<Integer>, Serializable {
 	final Hashtable<Integer, Node> membershipList = new Hashtable<Integer, Node>();
 	
 	private int selfIndex;
+	
 	
 	public void setSelfIndex(int selfIndex) {
 		this.selfIndex = selfIndex;

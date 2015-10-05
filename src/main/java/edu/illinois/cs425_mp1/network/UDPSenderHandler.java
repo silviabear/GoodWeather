@@ -1,44 +1,45 @@
 package edu.illinois.cs425_mp1.network;
 
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.channel.socket.DatagramPacket;
-import io.netty.util.CharsetUtil;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+<<<<<<< HEAD
 import edu.illinois.cs425_mp1.adapter.Adapter;
 import edu.illinois.cs425_mp1.monitor.HeartbeatAdapter;
 import edu.illinois.cs425_mp1.monitor.HeartbeatBroadcaster;
 
 import java.util.Objects;
 
+=======
+>>>>>>> 795e067f989e54386f27266b00ae87c62165929d
 /**
  * This is the UDP message sender handler
  * Created by Wesley on 10/1/15.
  */
+@ChannelHandler.Sharable
 public class UDPSenderHandler extends ChannelInboundHandlerAdapter {
     static Logger log = LogManager.getLogger("networkLogger");
 
-    /**
-     * UDP sender should not receive any message through the network
-     * @param ctx
-     * @param msg
-     */
-//    @Override
-//    public void channelRead0(ChannelHandlerContext ctx, DatagramPacket msg) {
-//        log.trace("received msg UDP: " + msg.content().toString(CharsetUtil.UTF_8));
-//        return;
-//    }
-    
+    private UDPSender sender;
+    public UDPSenderHandler(UDPSender sender){
+        this.sender = sender;
+    }
+
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
-        System.out.println("Sender Active : " + ctx.channel().remoteAddress());
+        log.trace("sender active");
         ctx.flush();
     }
 
+    /**
+     * Sender should not receive anything from remote
+     * @param ctx
+     * @param reply
+     */
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object reply){
         return;
@@ -51,6 +52,7 @@ public class UDPSenderHandler extends ChannelInboundHandlerAdapter {
      */
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+<<<<<<< HEAD
         log.trace("UDP excpetion caught");
         cause.printStackTrace();
         ctx.close();
@@ -67,5 +69,12 @@ public class UDPSenderHandler extends ChannelInboundHandlerAdapter {
         System.out.println("node " + nodeId + " FAIL");
         HeartbeatBroadcaster.senders[nodeId] = new UDPSender(addr, HeartbeatAdapter.port);
         HeartbeatBroadcaster.senders[nodeId].run();
+=======
+        log.trace("Sender UDP exception caught (connection timed-out)");
+        log.trace("reinitilize sender");
+        this.sender.close();
+        this.sender.run();
+//        cause.printStackTrace();
+>>>>>>> 795e067f989e54386f27266b00ae87c62165929d
     }
 }
