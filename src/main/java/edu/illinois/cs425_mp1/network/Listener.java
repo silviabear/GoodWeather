@@ -46,7 +46,7 @@ public class Listener {
                                           ChannelPipeline p = ch.pipeline();
                                           p.addLast(
                                                   new ObjectEncoder(),
-                                                  new ObjectDecoder(200000000,ClassResolvers.cacheDisabled(null)),
+                                                  new ObjectDecoder(600000000,ClassResolvers.cacheDisabled(null)),
 //                                                  new LoggingHandler(LogLevel.INFO),
                                                   new ListenerHandler());
                                       }

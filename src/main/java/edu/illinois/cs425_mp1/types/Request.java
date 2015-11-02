@@ -18,5 +18,10 @@ public class Request extends Message implements Serializable {
 	public long getRequestId() {
 		return id;
 	}
+
+    @Override
+    public String toString(){
+        return this.command + ":" + this.body;
+    }
 	
 }

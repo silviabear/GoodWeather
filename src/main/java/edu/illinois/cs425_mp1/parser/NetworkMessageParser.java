@@ -36,6 +36,14 @@ public class NetworkMessageParser {
 					Command.GREP
 					);
 		}
+        //TODO: Define what write will do
+        if(c == Command.WRITE) {
+            log.trace("receive write request");
+        }
+        //TODO: Define what read will do
+        if(c == Command.READ) {
+            log.trace("receive read request");
+        }
 		return null;
 	}
 	
