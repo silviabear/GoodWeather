@@ -14,6 +14,10 @@ import io.netty.handler.codec.serialization.ObjectEncoder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+
 /**
  * This is the p2p message sender, one way communication. a proper close() should be called after every run()
  * Created by Wesley on 8/31/15.
@@ -91,12 +95,32 @@ public class P2PSender implements Sender {
     }
 
     /**
+     * Tell the sender to send file
+     * Note sending of file cannot be serialized
+     *
+     * @param path
+     * @throws IOException (contains FileNotFoundException)
+     */
+    public void sendFile(String path) throws IOException {
+        log.trace("sender sends file: " + path);
+        long length = -1;
+        RandomAccessFile raf = new RandomAccessFile(path, "r");
+        length = raf.length();
+        if (length < 0 && raf != null)
+            raf.close();
+//        cf = channel.write(path + "\n");
+        cf = channel.write("OK: " + raf.length() + '\n');
+        cf = channel.write(new DefaultFileRegion(raf.getChannel(), 0, length));
+        cf = channel.writeAndFlush("\n");
+        log.trace("file length " + length);
+    }
+
+    /**
      * Tell the sender to shutdown
      */
     public void close() {
         try {
             log.trace("sender tries to shutdown");
-            channel.closeFuture().sync();
             cf.channel().close().sync();
         } catch (InterruptedException e) {
             log.error("exception caught during shutdown sender");

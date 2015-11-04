@@ -1,6 +1,9 @@
 package edu.illinois.cs425_mp1.parser;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.channels.FileChannel;
 
 import edu.illinois.cs425_mp1.adapter.Adapter;
 import edu.illinois.cs425_mp1.io.CollectedDataWriter;
@@ -9,6 +12,7 @@ import edu.illinois.cs425_mp1.types.Command;
 import edu.illinois.cs425_mp1.types.Reply;
 import edu.illinois.cs425_mp1.types.Request;
 
+import io.netty.channel.DefaultFileRegion;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -38,7 +42,7 @@ public class NetworkMessageParser {
 		}
         //TODO: Define what write will do
         if(c == Command.WRITE) {
-            log.trace("receive write request");
+
         }
         //TODO: Define what read will do
         if(c == Command.READ) {
