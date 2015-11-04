@@ -1,41 +1,19 @@
 package edu.illinois.cs425_mp1.network;
 
-import edu.illinois.cs425_mp1.parser.NetworkMessageParser;
-import edu.illinois.cs425_mp1.types.Command;
-import edu.illinois.cs425_mp1.types.Reply;
-import edu.illinois.cs425_mp1.types.Request;
 import io.netty.channel.*;
-
-import io.netty.handler.codec.LineBasedFrameDecoder;
-import io.netty.handler.codec.string.StringDecoder;
-import io.netty.handler.codec.string.StringEncoder;
-import io.netty.handler.stream.ChunkedWriteHandler;
-import io.netty.util.CharsetUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.net.InetSocketAddress;
-import java.nio.channels.FileChannel;
 
 
 /**
- * This Class is the listener file handler class that handles all incoming files
+ * This Class is the file listener handler class that handles all files transfer
  * Created by Wesley on 8/31/15.
  */
 @ChannelHandler.Sharable
-public class ListenerFileHandler extends SimpleChannelInboundHandler<String> {
+public class FileListenerHandler extends SimpleChannelInboundHandler<String> {
 
     static Logger log = LogManager.getLogger("networkLogger");
-
-    private String filePath = null;
-
-    private StringEncoder STRING_ENCODER = new StringEncoder(CharsetUtil.UTF_8);
-    private LineBasedFrameDecoder LINE_DECODER = new LineBasedFrameDecoder(8192);
-    private StringDecoder STRING_DECODER = new StringDecoder(CharsetUtil.UTF_8);
-    private ChunkedWriteHandler CHUNKED_HANDLER = new ChunkedWriteHandler();
 
     /**
      * Will be called when channel is active
@@ -46,7 +24,7 @@ public class ListenerFileHandler extends SimpleChannelInboundHandler<String> {
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
         InetSocketAddress remote = (InetSocketAddress) ctx.channel().remoteAddress();
-        log.trace("channel opens for address " + remote.getHostString());
+        log.trace("file channel opens for address " + remote.getHostString());
         ctx.flush();
     }
 
@@ -58,8 +36,6 @@ public class ListenerFileHandler extends SimpleChannelInboundHandler<String> {
      */
     @Override
     public void channelRead0(ChannelHandlerContext ctx, String msg) {
-        log.trace("message received at listener");
-        System.out.println(msg);
         log.trace(msg);
 
     }
@@ -71,6 +47,7 @@ public class ListenerFileHandler extends SimpleChannelInboundHandler<String> {
      */
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) {
+        log.trace("read complete");
         ctx.flush();
     }
 

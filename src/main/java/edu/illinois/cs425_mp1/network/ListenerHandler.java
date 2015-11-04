@@ -30,13 +30,6 @@ public class ListenerHandler extends ChannelInboundHandlerAdapter {
 
     static Logger log = LogManager.getLogger("networkLogger");
 
-    private String filePath = null;
-
-    private StringEncoder STRING_ENCODER = new StringEncoder(CharsetUtil.UTF_8);
-    private LineBasedFrameDecoder LINE_DECODER = new LineBasedFrameDecoder(8192);
-    private StringDecoder STRING_DECODER = new StringDecoder(CharsetUtil.UTF_8);
-    private ChunkedWriteHandler CHUNKED_HANDLER = new ChunkedWriteHandler();
-
     /**
      * Will be called when channel is active
      *
@@ -67,55 +60,24 @@ public class ListenerHandler extends ChannelInboundHandlerAdapter {
         }
         if (msg instanceof Request) {
             Request req = (Request) msg;
-            if (req.getCommand() == Command.WRITE) {
-                log.trace("receive file write request to " + req.getBody());
-                filePath = req.getBody();
-                ctx.pipeline().addLast(STRING_ENCODER,
-                                       LINE_DECODER,
-                                       STRING_DECODER,
-                                       CHUNKED_HANDLER);
-                return;
-            } else {
-                log.trace("receive request: " + req.toString());
-                log.trace("parsing request and executing request");
-                Reply rep = NetworkMessageParser.acceptNetworkRequest(req);
-                log.trace("write message back: " + rep.toString());
-                ChannelFuture cf = ctx.writeAndFlush(rep);
-
-                if (rep.getCommand() == Command.SHUTDOWN) {
-                    cf.addListener(ChannelFutureListener.CLOSE);
-                    return;
-                }
+            if (req.getCommand() == Command.READ){
+                // TODO: use file sender to send file over
             }
+
+            log.trace("receive request: " + req.toString());
+            log.trace("parsing request and executing request");
+            Reply rep = NetworkMessageParser.acceptNetworkRequest(req);
+            log.trace("write message back: " + rep.toString());
+            ChannelFuture cf = ctx.writeAndFlush(rep);
+
+            if (rep.getCommand() == Command.SHUTDOWN) {
+                cf.addListener(ChannelFutureListener.CLOSE);
+                return;
+            }
+
             return;
         }
-        if (msg instanceof DefaultFileRegion) {
-            // Received a place to store file before
-            log.trace("receive file body");
-            if (filePath != null) {
-                try {
-                    RandomAccessFile raf = new RandomAccessFile(filePath, "rw");
-                    FileChannel rafChannel = raf.getChannel();
-                    log.trace("write to " + filePath);
-                    ((DefaultFileRegion) msg).transferTo(rafChannel, 0);
-                    log.trace("finished write to " + filePath);
-                } catch (FileNotFoundException e) {
-                    //DO NOTHING!
-                } catch (IOException e) {
-                    log.error("cannot write to " + filePath);
-                } finally {
-                    // reset filePath to null
-                    log.trace("finished write request");
-                    ctx.pipeline().remove(STRING_ENCODER);
-                    ctx.pipeline().remove(LINE_DECODER);
-                    ctx.pipeline().remove(STRING_DECODER);
-                    ctx.pipeline().remove(CHUNKED_HANDLER);
-                    filePath = null;
-                }
-            } else {
-                log.trace("no path specified, file body get dropped");
-            }
-        }
+
     }
 
     /**

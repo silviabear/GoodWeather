@@ -8,9 +8,14 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
+import io.netty.handler.codec.LineBasedFrameDecoder;
 import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
+import io.netty.handler.codec.string.StringDecoder;
+import io.netty.handler.codec.string.StringEncoder;
+import io.netty.handler.stream.ChunkedWriteHandler;
+import io.netty.util.CharsetUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,7 +27,7 @@ import java.io.RandomAccessFile;
  * This is the p2p message sender, one way communication. a proper close() should be called after every run()
  * Created by Wesley on 8/31/15.
  */
-public class P2PSender implements Sender {
+public class FileSender implements Sender {
 
     static Logger log = LogManager.getLogger("networkLogger");
 
@@ -33,7 +38,7 @@ public class P2PSender implements Sender {
     private Channel channel;
     private EventLoopGroup group;
 
-    public P2PSender(String host, int port) {
+    public FileSender(String host, int port) {
         this.HOST = host;
         this.PORT = port;
     }
@@ -52,9 +57,10 @@ public class P2PSender implements Sender {
                     public void initChannel(SocketChannel ch) throws Exception {
                         ChannelPipeline p = ch.pipeline();
                         p.addLast(
-                                new ObjectEncoder(),
-                                new ObjectDecoder(600000000, ClassResolvers.cacheDisabled(null)),
-                                new ListenerHandler());
+                                new StringEncoder(CharsetUtil.UTF_8),
+                                new LineBasedFrameDecoder(8192),
+                                new StringDecoder(CharsetUtil.UTF_8),
+                                new ChunkedWriteHandler());
                     }
                 })
                 .option(ChannelOption.TCP_NODELAY, true);
@@ -73,24 +79,27 @@ public class P2PSender implements Sender {
     }
 
     /**
-     * Tell the sender to send message
+     * Tell the sender to send file
+     * Note sending of file cannot be serialized
      *
-     * @param msg
+     * @param path
+     * @throws IOException (contains FileNotFoundException)
      */
-    public void send(Message msg) {
-        log.trace("sender sends msg: " + msg.toString());
+    public void sendFile(String path) throws IOException {
+        log.trace("sender sends file: " + path);
+        long length = -1;
         try {
-            cf = channel.writeAndFlush(msg);
-            log.trace("request sent");
-        } catch (Exception e) {
-            log.trace("node " + HOST + "failed, skip");
-            P2PSender[] channels = Adapter.getChannels();
-            for (int i = 0; i < channels.length; i++) {
-                if (channels[i] != null && channels[i].equals(HOST)) {
-                    channels[i] = null;
-                    break;
-                }
-            }
+            RandomAccessFile raf = new RandomAccessFile(path, "r");
+            length = raf.length();
+            if (length < 0 && raf != null)
+                raf.close();
+            cf = channel.write("OK:" + raf.length() + '\n');
+            cf = channel.write(new DefaultFileRegion(raf.getChannel(), 0, length));
+            cf = channel.writeAndFlush("\n");
+            log.trace("file length " + length);
+        } catch (FileNotFoundException e){
+            cf = channel.write("FileNotFound\n");
+            cf = channel.writeAndFlush("\n");
         }
     }
 
