@@ -35,24 +35,47 @@ public class Console {
 		String line = null;
 		while(true) {
 			System.out.println("Choose the num of operation:");
-			System.out.println("1. grep. 2. list membership list 3. list self id 4. leave group 5. join group 0. Exit");
+			System.out.println("1. grep. 2. list membership list 3. list self id 4. leave group 5. join group " +
+					"6. put sdfsfile 7. get sdfsfile 8. delete sdfsfile 9.store file 10. list sdfsfile 0. Exit");
 			line = read();
 			int num = parseNum(line);
 			switch(num) {
 			case -1: System.out.println("Please enter a valid number.");
 					continue;
-			case 0: System.exit(0);
-			case 1: grep();
+				case 0:
+					System.exit(0);
+				case 1:
+					grep();
 					break;
-			case 2: listMembership();
+				case 2:
+					listMembership();
 					break;
-			case 3: listSelfId();
+				case 3:
+					listSelfId();
 					break;
-			case 4: leaveGroup();
+				case 4:
+					leaveGroup();
 					break;
-			case 5: joinGroup();
+				case 5:
+					joinGroup();
 					break;
-			default: System.out.println("Invalid option");
+				case 6:
+					getFile();
+					break;
+				case 7:
+					putFile();
+					break;
+				case 8:
+					deleteFile();
+					break;
+				case 9:
+					storeFile();
+					break;
+				case 10:
+					listFile();
+					break;
+				default:
+					System.out.println("Invalid option");
 					continue;
 			}
 		}
@@ -79,6 +102,53 @@ public class Console {
 		} catch (Exception e) {
 			return -1;
 		}
+	}
+
+	private int putFile() {
+		System.out.println("Enter 'localfilename' 'sdfsfilename'");
+		String input = read();
+		String[] filenames = input.replace("\n", "").split(" ");
+		if(filenames.length != 2) {
+			putFile();
+		} else {
+			String localfilename = filenames[0];
+			String sdfsfilename = filenames[1];
+			//TODO: @Wesley
+		}
+		return 0;
+	}
+
+	private int getFile() {
+		System.out.println("Enter 'sdfsfilename' 'localfilename'");
+		String input = read();
+		String[] filenames = input.replace("\n", "").split(" ");
+		if(filenames.length != 2) {
+			putFile();
+		} else {
+			String localfilename = filenames[1];
+			String sdfsfilename = filenames[0];
+			//TODO: @Wesley
+		}
+		return 0;
+	}
+
+	private int deleteFile() {
+		System.out.println("Enter 'sdfsfilename'");
+		String sdfsfilename = read().replace("\n", "");
+		//TODO: @Wesley
+		return 0;
+	}
+
+	private int storeFile() {
+		//TODO: @Wesley
+		return 0;
+	}
+
+	private int listFile() {
+		System.out.println("Enter 'sdfsfilename'");
+		String sdfsfilename = read().replace("\n", "");
+		//TODO: @Wesley
+		return 0;
 	}
 
 	private int grep() {
