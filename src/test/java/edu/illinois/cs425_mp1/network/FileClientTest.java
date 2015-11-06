@@ -1,5 +1,8 @@
 package edu.illinois.cs425_mp1.network;
 
+import edu.illinois.cs425_mp1.types.Command;
+import edu.illinois.cs425_mp1.types.FileRequest;
+
 /**
  * Created by Wesley on 11/2/15.
  */
@@ -9,12 +12,14 @@ public class FileClientTest {
 
         String target = "127.0.0.1";
         int port = 6753;
-        FileSender client = new FileSender(target, port);
+        P2PSender client = new P2PSender(target, port);
 
 
         try {
             client.run();
-            client.sendFile("testfile");
+            FileRequest req = new FileRequest(Command.PUT, "testdata/a/b/c/savefile.lol");
+            req.fillBufferOnLocal("pom.xml");
+            client.send(req);
 
         } catch(NullPointerException e){
 

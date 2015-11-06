@@ -1,5 +1,8 @@
 package edu.illinois.cs425_mp1.io;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,5 +18,16 @@ public class CollectedDataWriter {
 		}
 		Files.write(filePath, line.getBytes(), StandardOpenOption.APPEND);
 	}
-	
+
+    public static void writeToFile(String path, StringBuilder content) throws IOException {
+        File file = new File(path);
+        file.getParentFile().mkdirs();
+        BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+        writer.append(content.toString());
+        writer.flush();
+        writer.close();
+    }
+
+
+
 }

@@ -1,24 +1,15 @@
 package edu.illinois.cs425_mp1.network;
-
 import edu.illinois.cs425_mp1.parser.NetworkMessageParser;
 import edu.illinois.cs425_mp1.types.Command;
+import edu.illinois.cs425_mp1.types.FileRequest;
 import edu.illinois.cs425_mp1.types.Reply;
 import edu.illinois.cs425_mp1.types.Request;
 import io.netty.channel.*;
 
-import io.netty.handler.codec.LineBasedFrameDecoder;
-import io.netty.handler.codec.string.StringDecoder;
-import io.netty.handler.codec.string.StringEncoder;
-import io.netty.handler.stream.ChunkedWriteHandler;
-import io.netty.util.CharsetUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.net.InetSocketAddress;
-import java.nio.channels.FileChannel;
 
 
 /**
@@ -60,21 +51,22 @@ public class ListenerHandler extends ChannelInboundHandlerAdapter {
         }
         if (msg instanceof Request) {
             Request req = (Request) msg;
-            if (req.getCommand() == Command.READ){
-                // TODO: use file sender to send file over
+            if (msg instanceof FileRequest) {
+                log.trace("receive file req: " + req.getCommand());
+                FileRequest freq = (FileRequest) msg;
+                NetworkMessageParser.acceptNetworkFileRequest(ctx, freq);
+            } else {
+                log.trace("receive request: " + req.toString());
+                log.trace("parsing request and executing request");
+                Reply rep = NetworkMessageParser.acceptNetworkRequest(req);
+                log.trace("write message back: " + rep.toString());
+                ChannelFuture cf = ctx.writeAndFlush(rep);
+
+                if (rep.getCommand() == Command.SHUTDOWN) {
+                    cf.addListener(ChannelFutureListener.CLOSE);
+                    return;
+                }
             }
-
-            log.trace("receive request: " + req.toString());
-            log.trace("parsing request and executing request");
-            Reply rep = NetworkMessageParser.acceptNetworkRequest(req);
-            log.trace("write message back: " + rep.toString());
-            ChannelFuture cf = ctx.writeAndFlush(rep);
-
-            if (rep.getCommand() == Command.SHUTDOWN) {
-                cf.addListener(ChannelFutureListener.CLOSE);
-                return;
-            }
-
             return;
         }
 

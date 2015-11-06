@@ -82,20 +82,21 @@ public class FileSender implements Sender {
      * Tell the sender to send file
      * Note sending of file cannot be serialized
      *
-     * @param path
+     * @param localPath
      * @throws IOException (contains FileNotFoundException)
      */
-    public void sendFile(String path) throws IOException {
-        log.trace("sender sends file: " + path);
+    public void sendFile(String localPath, String tgrPath) throws IOException {
+        log.trace("sender sends file: " + localPath);
         long length = -1;
         try {
-            RandomAccessFile raf = new RandomAccessFile(path, "r");
+            RandomAccessFile raf = new RandomAccessFile(localPath, "r");
             length = raf.length();
             if (length < 0 && raf != null)
                 raf.close();
             cf = channel.write("OK:" + raf.length() + '\n');
+            cf = channel.write("Path:" + tgrPath + '\n');
             cf = channel.write(new DefaultFileRegion(raf.getChannel(), 0, length));
-            cf = channel.writeAndFlush("\n");
+            cf = channel.writeAndFlush("\nEof\n");
             log.trace("file length " + length);
         } catch (FileNotFoundException e){
             cf = channel.write("FileNotFound\n");

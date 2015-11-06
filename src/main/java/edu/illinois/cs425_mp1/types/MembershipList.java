@@ -23,7 +23,6 @@ public class MembershipList implements Iterable<Integer>, Serializable {
 	
 	private int selfIndex;
 	
-	
 	public void setSelfIndex(int selfIndex) {
 		this.selfIndex = selfIndex;
 	}
@@ -46,9 +45,7 @@ public class MembershipList implements Iterable<Integer>, Serializable {
 	/**
 	 * Update a neighbor's status and timestamp, if nodeId == selfId, take no effect
 	 * 
-	 * @param nodeId 
-	 * @param status
-	 * @param timeStamp
+	 * @param nodeId
 	 */
 	public void updateNeighborInfo(int nodeId, Node node) {
 		if(nodeId == selfIndex) {

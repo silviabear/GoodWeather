@@ -1,69 +1,143 @@
 package edu.illinois.cs425_mp1.parser;
 
-import java.io.FileNotFoundException;
+import java.io.File;
 import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.nio.channels.FileChannel;
 
 import edu.illinois.cs425_mp1.adapter.Adapter;
 import edu.illinois.cs425_mp1.io.CollectedDataWriter;
 import edu.illinois.cs425_mp1.io.ShellExecutor;
 import edu.illinois.cs425_mp1.types.Command;
+import edu.illinois.cs425_mp1.types.FileRequest;
 import edu.illinois.cs425_mp1.types.Reply;
 import edu.illinois.cs425_mp1.types.Request;
 
-import io.netty.channel.DefaultFileRegion;
+import io.netty.channel.ChannelHandlerContext;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
  * Receive the request from network and parse the execution results.
- * 
+ *
  * @author silvia
- * 
  */
 public class NetworkMessageParser {
-	/**
-	 * 
-	 * @param request
-	 * @return the wrapped reply with timestamp and reply message
-	 */
-	private static Logger log = LogManager.getLogger("parserLogger");
-	public static Reply acceptNetworkRequest(Request request) {
-		Command c = request.getCommand();
-		if(c == Command.GREP) {
-			log.trace("receive grep request");
-			return new Reply(ShellExecutor.execute(request.getBody()),
-					request.getRequestId(),
-					Adapter.getLocalAddress(),
-					Command.GREP
-					);
-		}
-        //TODO: Define what write will do
-        if(c == Command.WRITE) {
+    /**
+     * @param request
+     * @return the wrapped reply with timestamp and reply message
+     */
+    private static Logger log = LogManager.getLogger("parserLogger");
 
+    public static Reply acceptNetworkRequest(Request request) {
+        Command c = request.getCommand();
+        if (c == Command.GREP) {
+            log.trace("receive grep request");
+            return new Reply(ShellExecutor.execute(request.getBody()),
+                    request.getRequestId(),
+                    Adapter.getLocalAddress(),
+                    Command.GREP
+            );
         }
-        //TODO: Define what read will do
-        if(c == Command.READ) {
-            log.trace("receive read request");
+        return null;
+    }
+
+    /**
+     * This method handles all the file request, and reply back (if possible)
+     *
+     * @param ctx
+     * @param req
+     */
+    public static void acceptNetworkFileRequest(ChannelHandlerContext ctx, FileRequest req) {
+        FileRequest frequest = (FileRequest) req;
+        Command c = frequest.getCommand();
+        if (c == Command.PUT) {
+            log.trace("receive PUT command");
+            //StringBuilder contains file
+            //Body is the path
+            String tgrpath = Adapter.getDFSLocation() + frequest.getBody();
+            try {
+                CollectedDataWriter.writeToFile(tgrpath, frequest.getBuffer());
+            } catch (IOException e) {
+                log.error("error on writing to " + tgrpath);
+                log.trace("cannot write to local file, send error msg back");
+                Command puterror = Command.PUTBACK;
+                puterror.setCmd("Put failed: " + Adapter.getLocalAddress());
+                ctx.writeAndFlush(new FileRequest(puterror, ""));
+                return;
+            }
+            //TODO: update local tracker
+            ctx.writeAndFlush(new FileRequest(Command.PUTBACK, ""));
+        } else if (c == Command.PUTBACK) {
+            log.trace("receive PUTBACK command");
+            //TODO: print on console put succeed
+        } else if (c == Command.GET) {
+            log.trace("receive GET command for " + frequest.getBody());
+            //Body is the path of
+            //StringBuilder is empty
+            String tgrpath = Adapter.getDFSLocation() + getCommandDFSPath(frequest.getBody());
+            FileRequest reply = new FileRequest(Command.GETBACK, frequest.getBody());
+            try {
+                reply.fillBufferOnLocal(tgrpath);
+            } catch (IOException e) {
+                //No such file exist
+                log.error("try get " + tgrpath + " but not such file");
+                Command geterror = Command.GETBACK;
+                geterror.setCmd("Get failed: " + Adapter.getLocalAddress());
+                ctx.writeAndFlush(new FileRequest(geterror, ""));
+                return;
+            }
+            ctx.writeAndFlush(reply);
+        } else if (c == Command.GETBACK) {
+            log.trace("receive GETBACK command");
+            //TODO: print on console
+            if (c.toString().equals("done")) {
+                try {
+                    String tgrpath = getCommandLocalPath(frequest.getBody());
+                    CollectedDataWriter.writeToFile(tgrpath, frequest.getBuffer());
+                } catch (IOException e) {
+                    //TODO: print on console
+                }
+            }
+
+        } else if (c == Command.DELETE) {
+            //TODO: handle delete
+        } else {
+            log.trace("Unknow file request " + frequest.getCommand());
         }
-		return null;
-	}
-	
-	public synchronized static void acceptNetworkReply(Reply reply) {
-		Command c = reply.getCommand();
-		if(c == Command.GREP) {
-			Adapter.getConsole().print("QUERY RESULT FROM: " + reply.getReplierAddress());
-			Adapter.getConsole().print("FETCH TIME: " + reply.getTimeStamp());
-			try {
-				CollectedDataWriter.writeToLog(reply.getBody());
-			} catch (IOException e) {
-				log.trace("Write to disk fail");
-			}
-			int count = StringUtils.countMatches(reply.getBody(), "\n");
-			Adapter.getConsole().print("QUERY RESULT COUNT: " + count);
-		}
-	}
-	
+        return;
+
+    }
+
+    public synchronized static void acceptNetworkReply(Reply reply) {
+        Command c = reply.getCommand();
+        if (c == Command.GREP) {
+            Adapter.getConsole().print("QUERY RESULT FROM: " + reply.getReplierAddress());
+            Adapter.getConsole().print("FETCH TIME: " + reply.getTimeStamp());
+            try {
+                CollectedDataWriter.writeToLog(reply.getBody());
+            } catch (IOException e) {
+                log.trace("Write to disk fail");
+            }
+            int count = StringUtils.countMatches(reply.getBody(), "\n");
+            Adapter.getConsole().print("QUERY RESULT COUNT: " + count);
+        }
+    }
+
+    /**
+     * This is the parser for get
+     * of format "abc:def"
+     * abc is location on DFS
+     * def is location on local (to which should be write)
+     *
+     * @param body
+     * @return
+     */
+    private static String getCommandDFSPath(String body) {
+        return body.split(":")[0];
+    }
+
+    private static String getCommandLocalPath(String body) {
+        return body.split(":")[1];
+    }
+
 }

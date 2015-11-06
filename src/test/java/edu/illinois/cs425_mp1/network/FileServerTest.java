@@ -8,7 +8,7 @@ public class FileServerTest {
     public static void main(String[] args) throws Exception {
 
         int port = 6753;
-        FileListener lis = new FileListener(port);
+        Listener lis = new Listener(port);
 
         lis.run();
 
