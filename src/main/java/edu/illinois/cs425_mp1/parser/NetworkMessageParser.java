@@ -1,6 +1,5 @@
 package edu.illinois.cs425_mp1.parser;
 
-import java.io.File;
 import java.io.IOException;
 
 import edu.illinois.cs425_mp1.adapter.Adapter;
@@ -66,20 +65,30 @@ public class NetworkMessageParser {
                 return;
             }
             //TODO: update local tracker
+//            Adapter.updateFileMeta(frequest.getBody(), Adapter.getLocalAddress());
+            Adapter.updateLocalFileList(frequest.getBody());
             ctx.writeAndFlush(new FileRequest(Command.PUTBACK, ""));
         } else if (c == Command.PUTBACK) {
             log.trace("receive PUTBACK command");
-            //TODO: print on console put succeed
+//            Adapter.getConsole().print(c.toString());
         } else if (c == Command.GET) {
             log.trace("receive GET command for " + frequest.getBody());
-            //Body is the path of
+            //Body is the path
             //StringBuilder is empty
             String tgrpath = Adapter.getDFSLocation() + getCommandDFSPath(frequest.getBody());
             FileRequest reply = new FileRequest(Command.GETBACK, frequest.getBody());
+            if (!Adapter.haveFile(getCommandDFSPath(frequest.getBody()))) {
+                // not in ArrayList
+                log.error("try get " + tgrpath + " but not such file");
+                Command geterror = Command.GETBACK;
+                geterror.setCmd("Get failed: " + Adapter.getLocalAddress());
+                ctx.writeAndFlush(new FileRequest(geterror, ""));
+                return;
+            }
             try {
                 reply.fillBufferOnLocal(tgrpath);
             } catch (IOException e) {
-                //No such file exist
+                // in list but not in disk
                 log.error("try get " + tgrpath + " but not such file");
                 Command geterror = Command.GETBACK;
                 geterror.setCmd("Get failed: " + Adapter.getLocalAddress());
@@ -89,21 +98,34 @@ public class NetworkMessageParser {
             ctx.writeAndFlush(reply);
         } else if (c == Command.GETBACK) {
             log.trace("receive GETBACK command");
-            //TODO: print on console
+//            Adapter.getConsole().print(c.toString());
             if (c.toString().equals("done")) {
                 try {
                     String tgrpath = getCommandLocalPath(frequest.getBody());
                     CollectedDataWriter.writeToFile(tgrpath, frequest.getBuffer());
                 } catch (IOException e) {
-                    //TODO: print on console
+                    Adapter.getConsole().print("Cannot write to local disk");
+                    return;
                 }
             }
 
         } else if (c == Command.DELETE) {
-            //TODO: handle delete
+            // delete
+            // body is the dfsfile path
+            if (Adapter.haveFile(frequest.getBody())) {
+                Adapter.deleteLocalFileList(frequest.getBody());
+            }
+        } else if (c == Command.QUERY) {
+            //send local store list back
+            FileRequest toSend = new FileRequest(Command.QUERYBACK, Adapter.getLocalAddress());
+            toSend.fillStoreOnList();
+            ctx.writeAndFlush(toSend);
+        } else if (c == Command.QUERYBACK) {
+            Adapter.mergeFileStoreList(frequest.getList(), frequest.getBody());
         } else {
             log.trace("Unknow file request " + frequest.getCommand());
         }
+
         return;
 
     }

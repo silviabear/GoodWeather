@@ -3,6 +3,7 @@ package edu.illinois.cs425_mp1.ui;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 import edu.illinois.cs425_mp1.types.FileRequest;
 import org.apache.logging.log4j.LogManager;
@@ -115,7 +116,6 @@ public class Console {
         } else {
             String localfilename = filenames[0];
             String sdfsfilename = filenames[1];
-            //TODO: @Wesley
             //Construct fileReuqst
             FileRequest tosend = new FileRequest(Command.PUT, sdfsfilename);
             try {
@@ -142,7 +142,13 @@ public class Console {
         } else {
             String localfilename = filenames[1];
             String sdfsfilename = filenames[0];
-            //TODO: @Wesley
+            String reqBody = sdfsfilename + ":" + localfilename;
+            FileRequest tosend = new FileRequest(Command.GET, sdfsfilename);
+            int nodeId = adapter.fileLocationHashing(sdfsfilename);
+            int numOfReplica = adapter.getNumberOfReplica();
+            for (int i = 0; i < numOfReplica; i++) {
+                adapter.sendP2PRequest(tosend, nodeId + i);
+            }
         }
         return 0;
     }
@@ -150,19 +156,36 @@ public class Console {
     private int deleteFile() {
         System.out.println("Enter 'sdfsfilename'");
         String sdfsfilename = read().replace("\n", "");
-        //TODO: @Wesley
+        FileRequest tosend = new FileRequest(Command.DELETE, sdfsfilename);
+        int numOfReplica = adapter.getNumberOfReplica();
+        int nodeId = adapter.fileLocationHashing(sdfsfilename);
+        for( int i = 0; i < numOfReplica; i++){
+            adapter.sendP2PRequest(tosend, nodeId + i);
+        }
         return 0;
     }
 
     private int storeFile() {
-        //TODO: @Wesley
+        ArrayList<String> stores = adapter.getLocalDFSFileList();
+        print("File stored at " + Adapter.getLocalAddress());
+        for(String item : stores)
+            print(item);
         return 0;
     }
 
     private int listFile() {
         System.out.println("Enter 'sdfsfilename'");
         String sdfsfilename = read().replace("\n", "");
-        //TODO: @Wesley
+        Adapter.updateFileStoreList();
+        //check its right
+        FileRequest tosend = new FileRequest(Command.QUERY, "");
+        adapter.sendBroadcastRequest(tosend);
+        try{
+            Thread.sleep(2000);
+        } catch (Exception e){
+            Thread.currentThread().interrupt();
+        }
+        print(Adapter.getFileStoreString());
         return 0;
     }
 
@@ -201,6 +224,15 @@ public class Console {
     private int listSelfId() {
         System.out.println(Adapter.getMembershipList().getSelfId());
         return 0;
+    }
+
+    /**
+     * High level wrapper (TBD)
+     * @param f
+     * @param sdfsfilename
+     */
+    private void sendFile(FileRequest f, String sdfsfilename){
+
     }
 
 

@@ -101,7 +101,7 @@ public class P2PSender implements Sender {
         try {
             log.trace("sender tries to shutdown");
             cf.channel().close().sync();
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             log.error("exception caught during shutdown sender");
         } finally {
             group.shutdownGracefully();

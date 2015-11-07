@@ -1,8 +1,11 @@
 package edu.illinois.cs425_mp1.adapter;
 
+import java.lang.reflect.Array;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import edu.illinois.cs425_mp1.network.FileListener;
 import edu.illinois.cs425_mp1.network.FileSender;
@@ -55,12 +58,14 @@ final public class Adapter {
      * Following are file related variables
      * fileStoreLocation is only a local count
      **/
-    protected static HashMap<String, ArrayList<String>> fileStoreLocation = new HashMap<String, ArrayList<String>>();
+    private static HashMap<String, ArrayList<String>> fileStoreLocation = new HashMap<String, ArrayList<String>>();
 
     //TODO: test on vm the path
     private static String DFSFileLocation = "";
 
     private static int numOfReplica = 3;
+
+    private static ArrayList<String> dfsLocalFiles = new ArrayList<String>();
 
 
     static {
@@ -159,15 +164,16 @@ final public class Adapter {
         return channels;
     }
 
-    public static HashMap<String, ArrayList<String>> getStoreInfo(){
-        return fileStoreLocation;
-    }
-
     public static String getDFSLocation() {
         return DFSFileLocation;
     }
 
-    public static int getNumberOfReplica(){
+    public static ArrayList<String> getLocalDFSFileList() {
+        return dfsLocalFiles;
+    }
+
+
+    public static int getNumberOfReplica() {
         return numOfReplica;
     }
 
@@ -183,17 +189,84 @@ final public class Adapter {
         return HeartbeatAdapter.getMembershipList();
     }
 
+    public static int getNodeId(String host) {
+        for (int i = 0; i < addresses.length; i++) {
+            if (addresses[i].equals(host))
+                return i;
+        }
+        return -1;
+    }
+
     /**
      * This will determine which node should this file goes to
+     *
      * @param sdfsfilepath
      * @return
      */
-    public int fileLocationHashing(String sdfsfilepath){
+    public int fileLocationHashing(String sdfsfilepath) {
         int sum = 0;
-        for(int i = 0; i < sdfsfilepath.length(); i++){
-            sum += (int)sdfsfilepath.charAt(i) * 23; //WTF?
+        for (int i = 0; i < sdfsfilepath.length(); i++) {
+            sum += (int) sdfsfilepath.charAt(i) * 23; //WTF?
         }
         return sum % addresses.length;
     }
 
+
+    public static void updateLocalFileList(String file) {
+        dfsLocalFiles.add(file);
+    }
+
+    public static void deleteLocalFileList(String file) {
+        dfsLocalFiles.remove(file);
+    }
+
+    public static boolean haveFile(String file) {
+        return dfsLocalFiles.contains(file);
+    }
+
+    public static synchronized void mergeFileStoreList(ArrayList<String> fileStore, String host) {
+        for (String dfsfile : fileStore) {
+            if (fileStoreLocation.containsKey(dfsfile)) {
+                if (!fileStoreLocation.get(dfsfile).contains(host))
+                    fileStoreLocation.get(dfsfile).add(host);
+            } else {
+                ArrayList<String> list = new ArrayList<String>();
+                list.add(host);
+                fileStoreLocation.put(dfsfile, list);
+            }
+        }
+    }
+
+    public static void updateFileStoreList(){
+        fileStoreLocation.clear();
+    }
+
+    public static String getFileStoreString(){
+        StringBuilder builder = new StringBuilder();
+        Iterator it = fileStoreLocation.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry)it.next();
+            String key = pair.getKey().toString();
+            for( String item : (ArrayList<String>)pair.getValue()){
+                builder.append(key);
+                builder.append(" : ");
+                builder.append(item);
+                builder.append("\n");
+            }
+            it.remove(); // avoids a ConcurrentModificationException
+        }
+        return builder.toString();
+    }
+
+    public static boolean checkFileStoreCorrect(){
+        Iterator it = fileStoreLocation.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry)it.next();
+            ArrayList<String> list = (ArrayList<String>)pair.getValue();
+            if(list.size() != 3)
+                return false;
+            it.remove(); // avoids a ConcurrentModificationException
+        }
+        return true;
+    }
 }
