@@ -51,6 +51,7 @@ public class NetworkMessageParser {
         Command c = frequest.getCommand();
         if (c == Command.PUT) {
             log.trace("receive PUT command");
+
             //StringBuilder contains file
             //Body is the path
             String tgrpath = Adapter.getDFSLocation() + frequest.getBody();
