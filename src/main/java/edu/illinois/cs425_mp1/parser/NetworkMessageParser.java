@@ -56,7 +56,7 @@ public class NetworkMessageParser {
             String tgrpath = Adapter.getDFSLocation() + frequest.getBody();
             try {
                 CollectedDataWriter.writeToFile(tgrpath, frequest.getBuffer());
-            } catch (IOException e) {
+            } catch (Exception e) {
                 log.error("error on writing to " + tgrpath);
                 log.trace("cannot write to local file, send error msg back");
                 Command puterror = Command.PUTBACK;
@@ -87,7 +87,7 @@ public class NetworkMessageParser {
             }
             try {
                 reply.fillBufferOnLocal(tgrpath);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 // in list but not in disk
                 log.error("try get " + tgrpath + " but not such file");
                 Command geterror = Command.GETBACK;

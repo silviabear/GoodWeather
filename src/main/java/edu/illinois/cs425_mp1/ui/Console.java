@@ -63,10 +63,10 @@ public class Console {
                     joinGroup();
                     break;
                 case 6:
-                    getFile();
+                    putFile();
                     break;
                 case 7:
-                    putFile();
+                    getFile();
                     break;
                 case 8:
                     deleteFile();
@@ -138,7 +138,7 @@ public class Console {
         String input = read();
         String[] filenames = input.replace("\n", "").split(" ");
         if (filenames.length != 2) {
-            putFile();
+            getFile();
         } else {
             String localfilename = filenames[1];
             String sdfsfilename = filenames[0];

@@ -61,7 +61,7 @@ final public class Adapter {
     private static HashMap<String, ArrayList<String>> fileStoreLocation = new HashMap<String, ArrayList<String>>();
 
     //TODO: test on vm the path
-    private static String DFSFileLocation = "";
+    private static String DFSFileLocation = "dfs/";
 
     private static int numOfReplica = 3;
 
