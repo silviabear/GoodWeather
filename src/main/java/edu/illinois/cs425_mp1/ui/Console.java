@@ -126,8 +126,8 @@ public class Console {
             }
             int nodeId = adapter.fileLocationHashing(sdfsfilename);
             int numOfReplica = adapter.getNumberOfReplica();
-            for (int i = 1; i <= numOfReplica; i++) {
-                adapter.sendP2PRequest(tosend, nodeId + i);
+            for (int i = 0; i < numOfReplica; i++) {
+                adapter.sendP2PRequest(tosend, (nodeId + i)%7 + 1);
             }
         }
         return 0;
