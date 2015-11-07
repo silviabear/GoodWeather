@@ -190,7 +190,7 @@ final public class Adapter {
     }
 
     public static int getNodeId(String host) {
-        for (int i = 0; i < addresses.length; i++) {
+        for (int i = 1; i <= addresses.length; i++) {
             if (addresses[i].equals(host))
                 return i;
         }
