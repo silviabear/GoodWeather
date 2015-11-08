@@ -202,45 +202,45 @@ public class Console {
         adapter.sendBroadcastRequest(tosend);
         wait(2000);
         //check all files have exactly 3 replica
-        ArrayList<String> needsReplica = Adapter.checkFileStoreCorrect();
-
-        if (needsReplica.size() == 0) {
-            print(Adapter.getFileStoreString());
-            return 0;
-        } else {
-            Set<String> aliveNodes = Adapter.getAliveHosts();
-            for (String fileToBeReplicated : needsReplica) {
-
-                ArrayList<String> currentCopyHosts = Adapter.getFileStoreAddress(fileToBeReplicated);
-                String firstHost = currentCopyHosts.get(0);
-                FileRequest getit = new FileRequest(Command.GET, fileToBeReplicated+":tmp/"+fileToBeReplicated);
-                adapter.sendP2PRequest(getit, Adapter.getNodeId(firstHost));
-                wait(1000);
-                FileRequest sendit = new FileRequest(Command.PUT, fileToBeReplicated);
-                try {
-                    sendit.fillBufferOnLocal("tmp/" + fileToBeReplicated);
-                } catch(Exception e){
-                    print("cannot replicate");
-                }
-                int numOfCopies = Adapter.getNumberOfReplica() - currentCopyHosts.size();
-                for(int i = 0; i < numOfCopies; i++){
-                    for(String candidate: aliveNodes){
-                        if(!currentCopyHosts.contains(candidate)){
-                            adapter.sendP2PRequest(sendit, Adapter.getNodeId(candidate));
-                            i++;
-                            if(i == numOfCopies)
-                                break;
-                        }
-                    }
-                }
-            }
-
-        }
-        Adapter.updateFileStoreList();
-        //check its right
-        tosend = new FileRequest(Command.QUERY, "");
-        adapter.sendBroadcastRequest(tosend);
-        wait(2000);
+//        ArrayList<String> needsReplica = Adapter.checkFileStoreCorrect();
+//
+//        if (needsReplica.size() == 0) {
+//            print(Adapter.getFileStoreString());
+//            return 0;
+//        } else {
+//            Set<String> aliveNodes = Adapter.getAliveHosts();
+//            for (String fileToBeReplicated : needsReplica) {
+//
+//                ArrayList<String> currentCopyHosts = Adapter.getFileStoreAddress(fileToBeReplicated);
+//                String firstHost = currentCopyHosts.get(0);
+//                FileRequest getit = new FileRequest(Command.GET, fileToBeReplicated+":tmp/"+fileToBeReplicated);
+//                adapter.sendP2PRequest(getit, Adapter.getNodeId(firstHost));
+//                wait(1000);
+//                FileRequest sendit = new FileRequest(Command.PUT, fileToBeReplicated);
+//                try {
+//                    sendit.fillBufferOnLocal("tmp/" + fileToBeReplicated);
+//                } catch(Exception e){
+//                    print("cannot replicate");
+//                }
+//                int numOfCopies = Adapter.getNumberOfReplica() - currentCopyHosts.size();
+//                for(int i = 0; i < numOfCopies; i++){
+//                    for(String candidate: aliveNodes){
+//                        if(!currentCopyHosts.contains(candidate)){
+//                            adapter.sendP2PRequest(sendit, Adapter.getNodeId(candidate));
+//                            i++;
+//                            if(i == numOfCopies)
+//                                break;
+//                        }
+//                    }
+//                }
+//            }
+//
+//        }
+//        Adapter.updateFileStoreList();
+//        //check its right
+//        tosend = new FileRequest(Command.QUERY, "");
+//        adapter.sendBroadcastRequest(tosend);
+//        wait(2000);
 
         print(Adapter.getFileStoreString());
         return 0;
