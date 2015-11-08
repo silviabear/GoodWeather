@@ -214,6 +214,7 @@ public class Console {
             for (String fileToBeReplicated : needsReplica) {
                 log.trace(fileToBeReplicated + " needs replicate");
                 ArrayList<String> currentCopyHosts = Adapter.getFileStoreAddress(fileToBeReplicated);
+                log.trace(fileToBeReplicated + " has " + currentCopyHosts.size());
                 String firstHost = currentCopyHosts.get(0);
                 FileRequest getit = new FileRequest(Command.GET, fileToBeReplicated+":tmp/"+fileToBeReplicated);
                 adapter.sendP2PRequest(getit, Adapter.getNodeId(firstHost));
