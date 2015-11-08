@@ -59,9 +59,7 @@ public class NetworkMessageParser {
             } catch (Exception e) {
                 log.error("error on writing to " + tgrpath);
                 log.trace("cannot write to local file, send error msg back");
-                Command puterror = Command.PUTBACK;
-                puterror.setCmd("Put failed: " + Adapter.getLocalAddress());
-                ctx.writeAndFlush(new FileRequest(puterror, ""));
+                ctx.writeAndFlush(new FileRequest(Command.ERROR, ""));
                 return;
             }
             //TODO: update local tracker
@@ -80,9 +78,7 @@ public class NetworkMessageParser {
             if (!Adapter.existLocalFileList(getCommandDFSPath(frequest.getBody()))) {
                 // not in ArrayList
                 log.error("try get " + tgrpath + " but not such file");
-                Command geterror = Command.GETBACK;
-                geterror.setCmd("Get failed: " + Adapter.getLocalAddress());
-                ctx.writeAndFlush(new FileRequest(geterror, ""));
+                ctx.writeAndFlush(new FileRequest(Command.ERROR, ""));
                 return;
             }
             try {
@@ -90,9 +86,7 @@ public class NetworkMessageParser {
             } catch (Exception e) {
                 // in list but not in disk
                 log.error("try get " + tgrpath + " but not such file");
-                Command geterror = Command.GETBACK;
-                geterror.setCmd("Get failed, file not on remote disk: " + Adapter.getLocalAddress());
-                ctx.writeAndFlush(new FileRequest(geterror, ""));
+                ctx.writeAndFlush(new FileRequest(Command.ERROR, ""));
                 return;
             }
             ctx.writeAndFlush(reply);
@@ -122,8 +116,8 @@ public class NetworkMessageParser {
             ctx.writeAndFlush(toSend);
         } else if (c == Command.QUERYBACK) {
             Adapter.mergeFileStoreList(frequest.getList(), frequest.getBody());
-        } else {
-            log.trace("Unknow file request " + frequest.getCommand());
+        } else if (c == Command.ERROR) {
+            Adapter.getConsole().print("Operation failed");
         }
 
         return;

@@ -50,7 +50,6 @@ final public class Adapter {
 
     private static final P2PSender[] channels = new P2PSender[addresses.length];
 
-
     /**
      * Following are file related variables
      * fileStoreLocation is only a local count
