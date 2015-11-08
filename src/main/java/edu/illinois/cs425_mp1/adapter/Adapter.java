@@ -82,8 +82,8 @@ final public class Adapter {
      */
     public Adapter(int port) {
         requestListener = new Listener(port);
-        heartbeatAdapter = new HeartbeatAdapter();
-        heartbeatThread = new Thread(heartbeatAdapter);
+//        heartbeatAdapter = new HeartbeatAdapter();
+//        heartbeatThread = new Thread(heartbeatAdapter);
         mainLoop = new Thread() {
             public synchronized void run() {
                 log.trace("mainLoop runing");
@@ -95,7 +95,7 @@ final public class Adapter {
             }
         };
         mainLoop.start();
-        heartbeatThread.start();
+//        heartbeatThread.start();
     }
 
     /**
