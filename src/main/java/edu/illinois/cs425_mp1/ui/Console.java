@@ -210,7 +210,7 @@ public class Console {
             print(Adapter.getFileStoreString());
             return 0;
         } else {
-            Set<String> aliveNodes = Adapter.getAliveHosts();
+            ArrayList<String> aliveNodes = Adapter.getAliveHosts();
             for (String fileToBeReplicated : needsReplica) {
                 log.trace(fileToBeReplicated + " needs replicate");
                 ArrayList<String> currentCopyHosts = Adapter.getFileStoreAddress(fileToBeReplicated);
@@ -221,7 +221,7 @@ public class Console {
                 log.trace("get done");
                 FileRequest sendit = new FileRequest(Command.PUT, fileToBeReplicated);
                 try {
-                    sendit.fillBufferOnLocal("tmp/" + fileToBeReplicated);
+                    sendit.fillBufferOnLocal(Adapter.getDFSOutputLocation() + "tmp/" + fileToBeReplicated);
                 } catch(Exception e){
                     print("cannot replicate");
                 }
