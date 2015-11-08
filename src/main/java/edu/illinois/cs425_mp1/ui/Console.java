@@ -20,7 +20,7 @@ import edu.illinois.cs425_mp1.types.Request;
  */
 public class Console {
 
-    static Logger log = LogManager.getLogger("mainLogger");
+    static Logger log = LogManager.getLogger("consoleLogger");
     private static Adapter adapter;
     //port for listener is consistent universally
     public static final int port = 6753;
