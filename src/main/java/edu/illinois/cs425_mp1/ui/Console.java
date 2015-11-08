@@ -167,10 +167,8 @@ public class Console {
 //            adapter.sendP2PRequest(tosend, Adapter.getNodeId(hostsThatHaveFiles.get(0)));
 //        }
             int nodeId = adapter.fileLocationHashing(sdfsfilename);
-            int numOfReplica = adapter.getNumberOfReplica();
-            for (int i = 0; i < numOfReplica; i++) {
-                adapter.sendP2PRequest(tosend, (nodeId + i) % 7 + 1);
-            }
+            adapter.sendP2PRequest(tosend, nodeId + 1);
+
         }
         return 0;
     }
