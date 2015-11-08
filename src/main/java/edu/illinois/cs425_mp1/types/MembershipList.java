@@ -31,10 +31,7 @@ public class MembershipList implements Iterable<Integer>, Serializable {
 	 * Update current node's timestamp to current time
 	 */
 	public void updateSelfTimeStamp() {
-		Node self = membershipList.get(selfIndex);
-		self.setTimeStamp(new DateTime());
-		self.incrementCounter();
-		membershipList.put(selfIndex, self);
+		membershipList.get(selfIndex).incrementCounter();
 	}
 	
 	public void updateSelfStatus(NodeStatus status) {
@@ -52,6 +49,7 @@ public class MembershipList implements Iterable<Integer>, Serializable {
 		if(nodeId == selfIndex) {
 			return;
 		}
+		membershipList.remove(nodeId);
 		membershipList.put(nodeId, node);
 	}
 	
