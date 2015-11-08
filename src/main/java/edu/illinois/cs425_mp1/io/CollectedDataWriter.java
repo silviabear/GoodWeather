@@ -19,7 +19,7 @@ public class CollectedDataWriter {
 		Files.write(filePath, line.getBytes(), StandardOpenOption.APPEND);
 	}
 
-    public static void writeToFile(String path, StringBuilder content) throws IOException {
+    public synchronized static void writeToFile(String path, StringBuilder content) throws IOException {
         File file = new File(path);
         file.getParentFile().mkdirs();
         BufferedWriter writer = new BufferedWriter(new FileWriter(file));
