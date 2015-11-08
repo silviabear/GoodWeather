@@ -117,6 +117,11 @@ public class NetworkMessageParser {
             Adapter.mergeFileStoreList(frequest.getList(), frequest.getBody());
         } else if (c == Command.ERROR) {
             Adapter.getConsole().print("Operation failed");
+        } else if (c == Command.REPLICATE){
+            String tgr = frequest.getBody();
+
+        } else {
+            log.error("Not valid request ");
         }
 
         return;

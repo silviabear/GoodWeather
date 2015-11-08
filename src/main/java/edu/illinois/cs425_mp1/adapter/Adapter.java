@@ -274,7 +274,7 @@ final public class Adapter {
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry) it.next();
             ArrayList<String> list = (ArrayList<String>) pair.getValue();
-            if (list.size() != 3)
+            if (list.size() != getNumberOfReplica())
                 result.add((String) pair.getKey());
             it.remove(); // avoids a ConcurrentModificationException
         }
