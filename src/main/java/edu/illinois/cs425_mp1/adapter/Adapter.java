@@ -59,6 +59,8 @@ final public class Adapter {
     //TODO: test on vm the path
     private static String DFSFileLocation = "dfs/";
 
+    private static String DFSOutputLocation = "output/";
+
     private static int numOfReplica = 3;
 
     private static ArrayList<String> dfsLocalFiles = new ArrayList<String>();
@@ -164,6 +166,10 @@ final public class Adapter {
         return DFSFileLocation;
     }
 
+    public static String getDFSOutputLocation() {
+        return DFSOutputLocation;
+    }
+
     public static ArrayList<String> getLocalDFSFileList() {
         return dfsLocalFiles;
     }
@@ -188,7 +194,7 @@ final public class Adapter {
     public static int getNodeId(String host) {
         for (int i = 0; i < addresses.length; i++) {
             if (addresses[i].equals(host))
-                return i+1;
+                return i + 1;
         }
         return -1;
     }
@@ -233,25 +239,25 @@ final public class Adapter {
         }
     }
 
-    public static void updateFileStoreList(){
+    public static void updateFileStoreList() {
         fileStoreLocation.clear();
     }
 
-    public static ArrayList<String> getFileStoreAddress(String dfsfile){
+    public static ArrayList<String> getFileStoreAddress(String dfsfile) {
         return fileStoreLocation.get(dfsfile);
     }
 
-    public static Set<String> getAliveHosts(){
+    public static Set<String> getAliveHosts() {
         return fileStoreLocation.keySet();
     }
 
-    public static String getFileStoreString(){
+    public static String getFileStoreString() {
         StringBuilder builder = new StringBuilder();
         Iterator it = fileStoreLocation.entrySet().iterator();
         while (it.hasNext()) {
-            Map.Entry pair = (Map.Entry)it.next();
+            Map.Entry pair = (Map.Entry) it.next();
             String key = pair.getKey().toString();
-            for( String item : (ArrayList<String>)pair.getValue()){
+            for (String item : (ArrayList<String>) pair.getValue()) {
                 builder.append(key);
                 builder.append(" : ");
                 builder.append(item);
@@ -262,14 +268,14 @@ final public class Adapter {
         return builder.toString();
     }
 
-    public static ArrayList<String> checkFileStoreCorrect(){
+    public static ArrayList<String> checkFileStoreCorrect() {
         ArrayList<String> result = new ArrayList<String>();
         Iterator it = fileStoreLocation.entrySet().iterator();
         while (it.hasNext()) {
-            Map.Entry pair = (Map.Entry)it.next();
-            ArrayList<String> list = (ArrayList<String>)pair.getValue();
-            if(list.size() != 3)
-                result.add((String)pair.getKey());
+            Map.Entry pair = (Map.Entry) it.next();
+            ArrayList<String> list = (ArrayList<String>) pair.getValue();
+            if (list.size() != 3)
+                result.add((String) pair.getKey());
             it.remove(); // avoids a ConcurrentModificationException
         }
         return result;

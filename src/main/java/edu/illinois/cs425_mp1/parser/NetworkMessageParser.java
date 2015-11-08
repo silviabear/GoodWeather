@@ -93,15 +93,14 @@ public class NetworkMessageParser {
         } else if (c == Command.GETBACK) {
             log.trace("receive GETBACK command");
             Adapter.getConsole().print(c.toString());
-            if (c.toString().equals("done")) {
-                try {
-                    String tgrpath = getCommandLocalPath(frequest.getBody());
-                    CollectedDataWriter.writeToFile(tgrpath, frequest.getBuffer());
-                } catch (IOException e) {
-                    Adapter.getConsole().print("Cannot write to local disk");
-                    return;
-                }
+            try {
+                String tgrpath = getCommandLocalPath(frequest.getBody());
+                CollectedDataWriter.writeToFile(Adapter.getDFSOutputLocation() + tgrpath, frequest.getBuffer());
+            } catch (IOException e) {
+                Adapter.getConsole().print("Cannot write to local disk");
+                return;
             }
+
 
         } else if (c == Command.DELETE) {
             // delete
