@@ -38,8 +38,7 @@ public class HeartbeatExaminer implements Runnable {
 				} else {
 					member.setStatus(NodeStatus.ACTIVE);
 				}
-				HeartbeatAdapter.membershipList.updateNeighborInfo(index,
-						member);
+				//HeartbeatAdapter.membershipList.updateNeighborInfo(index, member);
 			}
 
 		}
