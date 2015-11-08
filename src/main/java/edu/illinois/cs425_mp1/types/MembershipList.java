@@ -79,6 +79,7 @@ public class MembershipList implements Iterable<Integer>, Serializable {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
+		synchronized(membershipList) {
 		for(Integer nodeId : membershipList.keySet()) {
 			Node node = membershipList.get(nodeId);
 			sb.append(nodeId);
@@ -89,6 +90,7 @@ public class MembershipList implements Iterable<Integer>, Serializable {
 			sb.append(" ");
 			sb.append(node.getStatus());
 			sb.append("\n");
+		}
 		}
 		return sb.toString();
 	}
