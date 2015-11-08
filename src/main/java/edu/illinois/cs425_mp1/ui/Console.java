@@ -151,19 +151,18 @@ public class Console {
                 adapter.sendP2PRequest(tosend, selfId);
                 return 0;
             }
-            Adapter.updateFileStoreList();
-            //check its right
-            tosend = new FileRequest(Command.QUERY, "");
-            adapter.sendBroadcastRequest(tosend);
-            try {
-                Thread.sleep(2000);
-            } catch (Exception e) {
-                Thread.currentThread().interrupt();
-            }
             ArrayList<String> hostsThatHaveFiles = Adapter.getFileStoreAddress(sdfsfilename);
             if (hostsThatHaveFiles == null) {
-                print("File not exist in system");
-                return 0;
+                Adapter.updateFileStoreList();
+                //check its right
+                tosend = new FileRequest(Command.QUERY, "");
+                adapter.sendBroadcastRequest(tosend);
+                try {
+                    Thread.sleep(2000);
+                } catch (Exception e) {
+                    Thread.currentThread().interrupt();
+                }
+                hostsThatHaveFiles = Adapter.getFileStoreAddress(sdfsfilename);
             }
             adapter.sendP2PRequest(tosend, Adapter.getNodeId(hostsThatHaveFiles.get(0)));
         }
