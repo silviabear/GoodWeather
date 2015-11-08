@@ -9,6 +9,8 @@ import edu.illinois.cs425_mp1.types.MembershipList;
 import edu.illinois.cs425_mp1.types.Node;
 import edu.illinois.cs425_mp1.types.NodeStatus;
 
+import org.joda.time.DateTime;
+
 public class HeartbeatAdapter implements Runnable {
 	
 	static MembershipList membershipList = new MembershipList();
@@ -82,8 +84,17 @@ public class HeartbeatAdapter implements Runnable {
 				continue;
 			}
 			if(oldStatus.getTimeStamp() == null 
-					|| oldStatus.getTimeStamp().compareTo(newStatus.getTimeStamp()) < 0) {
-				HeartbeatAdapter.membershipList.updateNeighborInfo(nodeId, newStatus);
+					|| oldStatus.getCounter() < newStatus.getCounter()) {
+				HeartbeatAdapter.membershipList.getNode(nodeId).setTimeStamp(new DateTime());
+				if(newStatus.getStatus() == NodeStatus.ACTIVE) {
+					HeartbeatAdapter.membershipList.getNode(nodeId).setStatus(NodeStatus.ACTIVE);
+				} else if(newStatus.getStatus() == NodeStatus.FAIL) {
+					HeartbeatAdapter.membershipList.getNode(nodeId).setStatus(NodeStatus.FAIL);
+				} else if(newStatus.getStatus() == NodeStatus.LEAVE) {
+					HeartbeatAdapter.membershipList.getNode(nodeId).setStatus(NodeStatus.LEAVE);
+				} else {
+					HeartbeatAdapter.membershipList.getNode(nodeId).setStatus(NodeStatus.NONE);
+				}
 			}
 		}
 	}

@@ -17,13 +17,16 @@ public class HeartbeatExaminer implements Runnable {
 	
 	public void run() {
 		log.trace("Examiner runs");
+		int selfId = HeartbeatAdapter.membershipList.getSelfId();
+		HeartbeatAdapter.membershipList.updateSelfStatus(NodeStatus.ACTIVE);
+		HeartbeatAdapter.membershipList.getNode(selfId).setTimeStamp(new DateTime());
 		while (true) {
 			try {
 				Thread.sleep(sleepInterval);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-
+			synchronized(HeartbeatAdapter.membershipList) {
 			for (Integer index : HeartbeatAdapter.membershipList) {
 				DateTime time = new DateTime();
 				Node member = HeartbeatAdapter.membershipList.getNode(index);
@@ -38,10 +41,9 @@ public class HeartbeatExaminer implements Runnable {
 				} else {
 					member.setStatus(NodeStatus.ACTIVE);
 				}
-				HeartbeatAdapter.membershipList.updateNeighborInfo(index,
-						member);
+				//HeartbeatAdapter.membershipList.updateNeighborInfo(index, member);
 			}
-
+			}
 		}
 	}
 

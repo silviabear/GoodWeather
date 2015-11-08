@@ -19,7 +19,7 @@ public class MembershipList implements Iterable<Integer>, Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	final Hashtable<Integer, Node> membershipList = new Hashtable<Integer, Node>();
+	final Map<Integer, Node> membershipList = Collections.synchronizedMap(new HashMap<Integer, Node>());
 	
 	private int selfIndex;
 	
@@ -31,15 +31,11 @@ public class MembershipList implements Iterable<Integer>, Serializable {
 	 * Update current node's timestamp to current time
 	 */
 	public void updateSelfTimeStamp() {
-		Node self = membershipList.get(selfIndex);
-		self.setTimeStamp(new DateTime());
-		membershipList.put(selfIndex, self);
+		membershipList.get(selfIndex).incrementCounter();
 	}
 	
 	public void updateSelfStatus(NodeStatus status) {
-		Node self = membershipList.get(selfIndex);
-		self.setStatus(status);
-		membershipList.put(selfIndex, self);
+		membershipList.get(selfIndex).setStatus(status);;
 	}
 	
 	/**
@@ -51,6 +47,7 @@ public class MembershipList implements Iterable<Integer>, Serializable {
 		if(nodeId == selfIndex) {
 			return;
 		}
+		membershipList.remove(nodeId);
 		membershipList.put(nodeId, node);
 	}
 	
@@ -82,6 +79,7 @@ public class MembershipList implements Iterable<Integer>, Serializable {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
+		synchronized(membershipList) {
 		for(Integer nodeId : membershipList.keySet()) {
 			Node node = membershipList.get(nodeId);
 			sb.append(nodeId);
@@ -92,6 +90,7 @@ public class MembershipList implements Iterable<Integer>, Serializable {
 			sb.append(" ");
 			sb.append(node.getStatus());
 			sb.append("\n");
+		}
 		}
 		return sb.toString();
 	}
