@@ -9,6 +9,8 @@ import edu.illinois.cs425_mp1.types.MembershipList;
 import edu.illinois.cs425_mp1.types.Node;
 import edu.illinois.cs425_mp1.types.NodeStatus;
 
+import org.joda.time.DateTime;
+
 public class HeartbeatAdapter implements Runnable {
 	
 	static MembershipList membershipList = new MembershipList();
@@ -78,11 +80,12 @@ public class HeartbeatAdapter implements Runnable {
 			}
 			Node oldStatus = HeartbeatAdapter.membershipList.getNode(nodeId);
 			Node newStatus = update.getNode(nodeId);
+			newStatus.setTimeStamp(new DateTime());
 			if(newStatus.getStatus() == NodeStatus.FAIL || newStatus.getTimeStamp() == null) {
 				continue;
 			}
 			if(oldStatus.getTimeStamp() == null 
-					|| oldStatus.getTimeStamp().compareTo(newStatus.getTimeStamp()) < 0) {
+					|| oldStatus.getCounter() < newStatus.getCounter()) {
 				HeartbeatAdapter.membershipList.updateNeighborInfo(nodeId, newStatus);
 			}
 		}

@@ -9,6 +9,7 @@ public class Node implements Serializable {
 	final String host;
 	//Latest update time
 	private DateTime timeStamp;
+	private long counter;
 	private NodeStatus status;
 	public Node(String host, NodeStatus status) {
 		this.host = host;
@@ -34,5 +35,13 @@ public class Node implements Serializable {
 	public NodeStatus getStatus() {
 		return status;
 	}
-	
+
+	public void incrementCounter() {
+		counter++;
+	}
+
+	public long getCounter() {
+		return counter;
+	}
+
 }

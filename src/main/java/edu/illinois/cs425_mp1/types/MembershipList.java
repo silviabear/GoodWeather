@@ -33,6 +33,7 @@ public class MembershipList implements Iterable<Integer>, Serializable {
 	public void updateSelfTimeStamp() {
 		Node self = membershipList.get(selfIndex);
 		self.setTimeStamp(new DateTime());
+		self.incrementCounter();
 		membershipList.put(selfIndex, self);
 	}
 	
