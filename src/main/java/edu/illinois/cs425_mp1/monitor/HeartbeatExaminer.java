@@ -26,7 +26,7 @@ public class HeartbeatExaminer implements Runnable {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-
+			synchronized(HeartbeatAdapter.membershipList) {
 			for (Integer index : HeartbeatAdapter.membershipList) {
 				DateTime time = new DateTime();
 				Node member = HeartbeatAdapter.membershipList.getNode(index);
@@ -43,7 +43,7 @@ public class HeartbeatExaminer implements Runnable {
 				}
 				//HeartbeatAdapter.membershipList.updateNeighborInfo(index, member);
 			}
-
+			}
 		}
 	}
 

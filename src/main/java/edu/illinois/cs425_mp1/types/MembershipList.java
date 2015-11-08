@@ -19,7 +19,7 @@ public class MembershipList implements Iterable<Integer>, Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	final Hashtable<Integer, Node> membershipList = new Hashtable<Integer, Node>();
+	final Map<Integer, Node> membershipList = Collections.synchronizedMap(new HashMap<Integer, Node>());
 	
 	private int selfIndex;
 	
