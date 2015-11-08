@@ -2,10 +2,7 @@ package edu.illinois.cs425_mp1.adapter;
 
 import java.lang.reflect.Array;
 import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 import edu.illinois.cs425_mp1.network.FileListener;
 import edu.illinois.cs425_mp1.network.FileSender;
@@ -245,6 +242,10 @@ final public class Adapter {
         return fileStoreLocation.get(dfsfile);
     }
 
+    public static Set<String> getAliveHosts(){
+        return fileStoreLocation.keySet();
+    }
+
     public static String getFileStoreString(){
         StringBuilder builder = new StringBuilder();
         Iterator it = fileStoreLocation.entrySet().iterator();
@@ -262,15 +263,17 @@ final public class Adapter {
         return builder.toString();
     }
 
-    public static boolean checkFileStoreCorrect(){
+    public static ArrayList<String> checkFileStoreCorrect(){
+        ArrayList<String> result = new ArrayList<String>();
         Iterator it = fileStoreLocation.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry)it.next();
             ArrayList<String> list = (ArrayList<String>)pair.getValue();
             if(list.size() != 3)
-                return false;
+                result.add((String)pair.getKey());
             it.remove(); // avoids a ConcurrentModificationException
         }
-        return true;
+        return result;
     }
+
 }

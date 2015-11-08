@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Set;
 
 import edu.illinois.cs425_mp1.types.FileRequest;
 import org.apache.logging.log4j.LogManager;
@@ -205,7 +206,21 @@ public class Console {
             Thread.currentThread().interrupt();
         }
         //check all files have exactly 3 replica
-        //Only 5%, don't care
+//        ArrayList<String> needsReplica = Adapter.checkFileStoreCorrect();
+//
+//        if(needsReplica.size() == 0)
+//            print(Adapter.getFileStoreString());
+//        else{
+//            Set<String> aliveNodes = Adapter.getAliveHosts();
+//            for( String fileToBeReplicated : needsReplica){
+//                ArrayList<String> currentCopyHosts = Adapter.getFileStoreAddress(fileToBeReplicated);
+//                int numberOfCopies = Adapter.getNumberOfReplica() - currentCopyHosts.size();
+//                for(int i = 0; i < numberOfCopies; i++){
+//
+//                }
+//            }
+//        }
+
         print(Adapter.getFileStoreString());
         return 0;
     }
