@@ -276,7 +276,6 @@ final public class Adapter {
             ArrayList<String> list = (ArrayList<String>) pair.getValue();
             if (list.size() != getNumberOfReplica())
                 result.add((String) pair.getKey());
-            it.remove(); // avoids a ConcurrentModificationException
         }
         return result;
     }

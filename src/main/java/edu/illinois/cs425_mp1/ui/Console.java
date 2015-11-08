@@ -206,6 +206,7 @@ public class Console {
         log.trace("Getting needs replica " + needsReplica.size());
 
         if (needsReplica.size() == 0) {
+            log.trace("print default");
             print(Adapter.getFileStoreString());
             return 0;
         } else {
