@@ -17,6 +17,9 @@ public class HeartbeatExaminer implements Runnable {
 	
 	public void run() {
 		log.trace("Examiner runs");
+		int selfId = HeartbeatAdapter.membershipList.getSelfId();
+		HeartbeatAdapter.membershipList.updateSelfStatus(NodeStatus.ACTIVE);
+		HeartbeatAdapter.membershipList.getNode(selfId).setTimeStamp(new DateTime());
 		while (true) {
 			try {
 				Thread.sleep(sleepInterval);

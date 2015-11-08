@@ -35,9 +35,7 @@ public class MembershipList implements Iterable<Integer>, Serializable {
 	}
 	
 	public void updateSelfStatus(NodeStatus status) {
-		Node self = membershipList.get(selfIndex);
-		self.setStatus(status);
-		membershipList.put(selfIndex, self);
+		membershipList.get(selfIndex).setStatus(status);;
 	}
 	
 	/**
