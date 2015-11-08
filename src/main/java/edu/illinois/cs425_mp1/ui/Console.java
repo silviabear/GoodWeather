@@ -211,6 +211,7 @@ public class Console {
             return 0;
         } else {
             ArrayList<String> aliveNodes = Adapter.getAliveHosts();
+            log.trace("number of aliveNodes : " + aliveNodes.size());
             for (String fileToBeReplicated : needsReplica) {
                 log.trace(fileToBeReplicated + " needs replicate");
                 ArrayList<String> currentCopyHosts = Adapter.getFileStoreAddress(fileToBeReplicated);
@@ -227,6 +228,7 @@ public class Console {
                     print("cannot replicate");
                 }
                 int numOfCopies = Adapter.getNumberOfReplica() - currentCopyHosts.size();
+                log.trace("needs to send " + numOfCopies);
                 for(int i = 0; i < numOfCopies; i++){
                     for(String candidate: aliveNodes){
                         if(!currentCopyHosts.contains(candidate)){
