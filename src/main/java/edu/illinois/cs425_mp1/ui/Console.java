@@ -127,7 +127,7 @@ public class Console {
             int nodeId = adapter.fileLocationHashing(sdfsfilename);
             int numOfReplica = adapter.getNumberOfReplica();
             for (int i = 0; i < numOfReplica; i++) {
-                adapter.sendP2PRequest(tosend, (nodeId + i)%7 + 1);
+                adapter.sendP2PRequest(tosend, (nodeId + i) % 7 + 1);
             }
         }
         return 0;
@@ -143,12 +143,29 @@ public class Console {
             String localfilename = filenames[1];
             String sdfsfilename = filenames[0];
             String reqBody = sdfsfilename + ":" + localfilename;
-            FileRequest tosend = new FileRequest(Command.GET, sdfsfilename);
-            int nodeId = adapter.fileLocationHashing(sdfsfilename);
-            int numOfReplica = adapter.getNumberOfReplica();
-            for (int i = 0; i < numOfReplica; i++) {
-                adapter.sendP2PRequest(tosend, nodeId + i);
+            FileRequest tosend = new FileRequest(Command.GET, reqBody);
+
+            //If the file requested stores in local
+            if (Adapter.existLocalFileList(sdfsfilename)) {
+                int selfId = Adapter.getNodeId(Adapter.getLocalAddress());
+                adapter.sendP2PRequest(tosend, selfId);
+                return 0;
             }
+            Adapter.updateFileStoreList();
+            //check its right
+            tosend = new FileRequest(Command.QUERY, "");
+            adapter.sendBroadcastRequest(tosend);
+            try {
+                Thread.sleep(2000);
+            } catch (Exception e) {
+                Thread.currentThread().interrupt();
+            }
+            ArrayList<String> hostsThatHaveFiles = Adapter.getFileStoreAddress(sdfsfilename);
+            if (hostsThatHaveFiles == null) {
+                print("File not exist in system");
+                return 0;
+            }
+            adapter.sendP2PRequest(tosend, Adapter.getNodeId(hostsThatHaveFiles.get(0)));
         }
         return 0;
     }
@@ -157,18 +174,14 @@ public class Console {
         System.out.println("Enter 'sdfsfilename'");
         String sdfsfilename = read().replace("\n", "");
         FileRequest tosend = new FileRequest(Command.DELETE, sdfsfilename);
-        int numOfReplica = adapter.getNumberOfReplica();
-        int nodeId = adapter.fileLocationHashing(sdfsfilename);
-        for( int i = 0; i < numOfReplica; i++){
-            adapter.sendP2PRequest(tosend, nodeId + i);
-        }
+        adapter.sendBroadcastRequest(tosend);
         return 0;
     }
 
     private int storeFile() {
         ArrayList<String> stores = adapter.getLocalDFSFileList();
         print("File stored at " + Adapter.getLocalAddress());
-        for(String item : stores)
+        for (String item : stores)
             print(item);
         return 0;
     }
@@ -180,11 +193,13 @@ public class Console {
         //check its right
         FileRequest tosend = new FileRequest(Command.QUERY, "");
         adapter.sendBroadcastRequest(tosend);
-        try{
+        try {
             Thread.sleep(2000);
-        } catch (Exception e){
+        } catch (Exception e) {
             Thread.currentThread().interrupt();
         }
+        //check all files have exactly 3 replica
+
         print(Adapter.getFileStoreString());
         return 0;
     }
@@ -228,10 +243,11 @@ public class Console {
 
     /**
      * High level wrapper (TBD)
+     *
      * @param f
      * @param sdfsfilename
      */
-    private void sendFile(FileRequest f, String sdfsfilename){
+    private void sendFile(FileRequest f, String sdfsfilename) {
 
     }
 

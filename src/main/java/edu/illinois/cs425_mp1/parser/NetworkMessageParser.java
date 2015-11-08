@@ -70,14 +70,14 @@ public class NetworkMessageParser {
             ctx.writeAndFlush(new FileRequest(Command.PUTBACK, ""));
         } else if (c == Command.PUTBACK) {
             log.trace("receive PUTBACK command");
-//            Adapter.getConsole().print(c.toString());
+            Adapter.getConsole().print(c.toString());
         } else if (c == Command.GET) {
             log.trace("receive GET command for " + frequest.getBody());
             //Body is the path
             //StringBuilder is empty
             String tgrpath = Adapter.getDFSLocation() + getCommandDFSPath(frequest.getBody());
             FileRequest reply = new FileRequest(Command.GETBACK, frequest.getBody());
-            if (!Adapter.haveFile(getCommandDFSPath(frequest.getBody()))) {
+            if (!Adapter.existLocalFileList(getCommandDFSPath(frequest.getBody()))) {
                 // not in ArrayList
                 log.error("try get " + tgrpath + " but not such file");
                 Command geterror = Command.GETBACK;
@@ -91,14 +91,14 @@ public class NetworkMessageParser {
                 // in list but not in disk
                 log.error("try get " + tgrpath + " but not such file");
                 Command geterror = Command.GETBACK;
-                geterror.setCmd("Get failed: " + Adapter.getLocalAddress());
+                geterror.setCmd("Get failed, file not on remote disk: " + Adapter.getLocalAddress());
                 ctx.writeAndFlush(new FileRequest(geterror, ""));
                 return;
             }
             ctx.writeAndFlush(reply);
         } else if (c == Command.GETBACK) {
             log.trace("receive GETBACK command");
-//            Adapter.getConsole().print(c.toString());
+            Adapter.getConsole().print(c.toString());
             if (c.toString().equals("done")) {
                 try {
                     String tgrpath = getCommandLocalPath(frequest.getBody());
@@ -112,7 +112,7 @@ public class NetworkMessageParser {
         } else if (c == Command.DELETE) {
             // delete
             // body is the dfsfile path
-            if (Adapter.haveFile(frequest.getBody())) {
+            if (Adapter.existLocalFileList(frequest.getBody())) {
                 Adapter.deleteLocalFileList(frequest.getBody());
             }
         } else if (c == Command.QUERY) {

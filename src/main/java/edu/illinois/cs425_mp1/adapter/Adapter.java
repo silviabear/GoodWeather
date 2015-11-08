@@ -190,9 +190,9 @@ final public class Adapter {
     }
 
     public static int getNodeId(String host) {
-        for (int i = 1; i <= addresses.length; i++) {
+        for (int i = 0; i < addresses.length; i++) {
             if (addresses[i].equals(host))
-                return i;
+                return i+1;
         }
         return -1;
     }
@@ -212,16 +212,16 @@ final public class Adapter {
     }
 
 
-    public static void updateLocalFileList(String file) {
-        dfsLocalFiles.add(file);
+    public static void updateLocalFileList(String dfsfile) {
+        dfsLocalFiles.add(dfsfile);
     }
 
-    public static void deleteLocalFileList(String file) {
-        dfsLocalFiles.remove(file);
+    public static void deleteLocalFileList(String dfsfile) {
+        dfsLocalFiles.remove(dfsfile);
     }
 
-    public static boolean haveFile(String file) {
-        return dfsLocalFiles.contains(file);
+    public static boolean existLocalFileList(String dfsfile) {
+        return dfsLocalFiles.contains(dfsfile);
     }
 
     public static synchronized void mergeFileStoreList(ArrayList<String> fileStore, String host) {
@@ -239,6 +239,10 @@ final public class Adapter {
 
     public static void updateFileStoreList(){
         fileStoreLocation.clear();
+    }
+
+    public static ArrayList<String> getFileStoreAddress(String dfsfile){
+        return fileStoreLocation.get(dfsfile);
     }
 
     public static String getFileStoreString(){
