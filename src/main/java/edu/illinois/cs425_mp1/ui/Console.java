@@ -146,25 +146,31 @@ public class Console {
             FileRequest tosend = new FileRequest(Command.GET, reqBody);
 
             //If the file requested stores in local
-            if (Adapter.existLocalFileList(sdfsfilename)) {
-                int selfId = Adapter.getNodeId(Adapter.getLocalAddress());
-                adapter.sendP2PRequest(tosend, selfId);
-                return 0;
+//            if (Adapter.existLocalFileList(sdfsfilename)) {
+//                int selfId = Adapter.getNodeId(Adapter.getLocalAddress());
+//                adapter.sendP2PRequest(tosend, selfId);
+//                return 0;
+//            }
+//            ArrayList<String> hostsThatHaveFiles = Adapter.getFileStoreAddress(sdfsfilename);
+//            if (hostsThatHaveFiles == null) {
+//                Adapter.updateFileStoreList();
+//                //check its right
+//                tosend = new FileRequest(Command.QUERY, "");
+//                adapter.sendBroadcastRequest(tosend);
+//                try {
+//                    Thread.sleep(2000);
+//                } catch (Exception e) {
+//                    Thread.currentThread().interrupt();
+//                }
+//                hostsThatHaveFiles = Adapter.getFileStoreAddress(sdfsfilename);
+//            }
+//            adapter.sendP2PRequest(tosend, Adapter.getNodeId(hostsThatHaveFiles.get(0)));
+//        }
+            int nodeId = adapter.fileLocationHashing(sdfsfilename);
+            int numOfReplica = adapter.getNumberOfReplica();
+            for (int i = 0; i < numOfReplica; i++) {
+                adapter.sendP2PRequest(tosend, (nodeId + i) % 7 + 1);
             }
-            ArrayList<String> hostsThatHaveFiles = Adapter.getFileStoreAddress(sdfsfilename);
-            if (hostsThatHaveFiles == null) {
-                Adapter.updateFileStoreList();
-                //check its right
-                tosend = new FileRequest(Command.QUERY, "");
-                adapter.sendBroadcastRequest(tosend);
-                try {
-                    Thread.sleep(2000);
-                } catch (Exception e) {
-                    Thread.currentThread().interrupt();
-                }
-                hostsThatHaveFiles = Adapter.getFileStoreAddress(sdfsfilename);
-            }
-            adapter.sendP2PRequest(tosend, Adapter.getNodeId(hostsThatHaveFiles.get(0)));
         }
         return 0;
     }
@@ -198,7 +204,7 @@ public class Console {
             Thread.currentThread().interrupt();
         }
         //check all files have exactly 3 replica
-
+        //Only 5%, don't care
         print(Adapter.getFileStoreString());
         return 0;
     }
