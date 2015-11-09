@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
+ * Wrapper of file request on top of request
  * Created by Wesley on 11/4/15.
  */
 public class FileRequest extends Request implements Serializable {
@@ -22,6 +23,11 @@ public class FileRequest extends Request implements Serializable {
         buffer = new StringBuilder();
     }
 
+    /**
+     * Fill in the buffer with local file path, throw IOException if no such file is found
+     * @param path
+     * @throws IOException
+     */
     public void fillBufferOnLocal(String path) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(path));
         try {
@@ -37,6 +43,9 @@ public class FileRequest extends Request implements Serializable {
         }
     }
 
+    /**
+     * Re-new the buffered stored
+     */
     public void emptyBuffer() {
         buffer = new StringBuilder();
     }
@@ -48,6 +57,10 @@ public class FileRequest extends Request implements Serializable {
         fileStore = new ArrayList<String>(Adapter.getLocalDFSFileList());
     }
 
+    /**
+     * Get the buffer of file stored
+     * @return
+     */
     public StringBuilder getBuffer() {
         return buffer;
     }

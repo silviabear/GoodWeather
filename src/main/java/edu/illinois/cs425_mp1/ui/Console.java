@@ -25,6 +25,10 @@ public class Console {
     //port for listener is consistent universally
     public static final int port = 6753;
 
+    /**
+     * Main entry
+     * @param args
+     */
     public static void main(String[] args) {
         log.info("Start Console init...");
         Console c = new Console();
@@ -34,6 +38,9 @@ public class Console {
         c.start();
     }
 
+    /**
+     * Start method
+     */
     private void start() {
         String line = null;
         while (true) {
@@ -85,6 +92,10 @@ public class Console {
         }
     }
 
+    /**
+     * Helper for read
+     * @return
+     */
     private String read() {
         try {
             BufferedReader br =
@@ -99,6 +110,11 @@ public class Console {
         return "Error";
     }
 
+    /**
+     * Integer parser
+     * @param line
+     * @return
+     */
     private static int parseNum(String line) {
         try {
             int num = Integer.valueOf(line);
@@ -108,6 +124,10 @@ public class Console {
         }
     }
 
+    /**
+     * Define the behavior of put
+     * @return
+     */
     private int putFile() {
         System.out.println("Enter 'localfilename' 'sdfsfilename'");
         String input = read();
@@ -134,6 +154,10 @@ public class Console {
         return 0;
     }
 
+    /**
+     * Define the behavior of get
+     * @return
+     */
     private int getFile() {
         System.out.println("Enter 'sdfsfilename' 'localfilename'");
         String input = read();
@@ -177,6 +201,10 @@ public class Console {
         return 0;
     }
 
+    /**
+     * Delete a file
+     * @return
+     */
     private int deleteFile() {
         System.out.println("Enter 'sdfsfilename'");
         String sdfsfilename = read().replace("\n", "");
@@ -185,6 +213,10 @@ public class Console {
         return 0;
     }
 
+    /**
+     * Return what is stored on local machine
+     * @return
+     */
     private int storeFile() {
         ArrayList<String> stores = adapter.getLocalDFSFileList();
         print("File stored at " + Adapter.getLocalAddress());
@@ -193,6 +225,10 @@ public class Console {
         return 0;
     }
 
+    /**
+     * List the entire dfs system
+     * @return
+     */
     private int listFile() {
         System.out.println("Enter 'sdfsfilename'");
         String sdfsfilename = read().replace("\n", "");
@@ -237,8 +273,8 @@ public class Console {
             }
 
         }
+        //update the new store
         Adapter.updateFileStoreList();
-        //check its right
         tosend = new FileRequest(Command.QUERY, "");
         adapter.sendBroadcastRequest(tosend);
         wait(2000);
@@ -247,6 +283,10 @@ public class Console {
         return 0;
     }
 
+    /**
+     * Grep command
+     * @return
+     */
     private int grep() {
         System.out.println("Please enter the argument after grep:");
         System.out.println("For example: \"grep -c blah trace.log\"");
@@ -284,16 +324,11 @@ public class Console {
         return 0;
     }
 
+
     /**
-     * High level wrapper (TBD)
-     *
-     * @param f
-     * @param sdfsfilename
+     * Wait
+     * @param milliseconds
      */
-    private void sendFile(FileRequest f, String sdfsfilename) {
-
-    }
-
     private void wait(int milliseconds) {
         try {
             Thread.sleep(milliseconds);

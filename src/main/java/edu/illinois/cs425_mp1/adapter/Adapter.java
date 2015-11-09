@@ -191,6 +191,11 @@ final public class Adapter {
         return HeartbeatAdapter.getMembershipList();
     }
 
+    /**
+     * Return nodeId of this host
+     * @param host
+     * @return
+     */
     public static int getNodeId(String host) {
         for (int i = 0; i < addresses.length; i++) {
             if (addresses[i].equals(host))
@@ -214,18 +219,36 @@ final public class Adapter {
     }
 
 
+    /**
+     * Update local file list
+     * @param dfsfile
+     */
     public static void updateLocalFileList(String dfsfile) {
         dfsLocalFiles.add(dfsfile);
     }
 
+    /**
+     * Delete local file list
+     * @param dfsfile
+     */
     public static void deleteLocalFileList(String dfsfile) {
         dfsLocalFiles.remove(dfsfile);
     }
 
+    /**
+     * Tell whether dfsfile is on local
+     * @param dfsfile
+     * @return
+     */
     public static boolean existLocalFileList(String dfsfile) {
         return dfsLocalFiles.contains(dfsfile);
     }
 
+    /**
+     * Merge the returned status into file store
+     * @param fileStore
+     * @param host
+     */
     public static synchronized void mergeFileStoreList(ArrayList<String> fileStore, String host) {
         for (String dfsfile : fileStore) {
             if (fileStoreLocation.containsKey(dfsfile)) {
@@ -239,14 +262,26 @@ final public class Adapter {
         }
     }
 
+    /**
+     * Update file store
+     */
     public static void updateFileStoreList() {
         fileStoreLocation.clear();
     }
 
+    /**
+     * Get the list of file store address
+     * @param dfsfile
+     * @return
+     */
     public static ArrayList<String> getFileStoreAddress(String dfsfile) {
         return fileStoreLocation.get(dfsfile);
     }
 
+    /**
+     * Return file store string
+     * @return
+     */
     public static String getFileStoreString() {
         StringBuilder builder = new StringBuilder();
         Iterator it = fileStoreLocation.entrySet().iterator();
@@ -264,6 +299,10 @@ final public class Adapter {
         return builder.toString();
     }
 
+    /**
+     * Check whether everything is replicated
+     * @return
+     */
     public static ArrayList<String> checkFileStoreCorrect() {
         ArrayList<String> result = new ArrayList<String>();
         Iterator it = fileStoreLocation.entrySet().iterator();

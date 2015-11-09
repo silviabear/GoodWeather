@@ -27,6 +27,11 @@ public class NetworkMessageParser {
      */
     private static Logger log = LogManager.getLogger("parserLogger");
 
+    /**
+     * This method handles normal request (GREP)
+     * @param request
+     * @return
+     */
     public static Reply acceptNetworkRequest(Request request) {
         Command c = request.getCommand();
         if (c == Command.GREP) {
@@ -62,8 +67,6 @@ public class NetworkMessageParser {
                 ctx.writeAndFlush(new FileRequest(Command.ERROR, ""));
                 return;
             }
-            //TODO: update local tracker
-//            Adapter.updateFileMeta(frequest.getBody(), Adapter.getLocalAddress());
             Adapter.updateLocalFileList(frequest.getBody());
             ctx.writeAndFlush(new FileRequest(Command.PUTBACK, ""));
         } else if (c == Command.PUTBACK) {
@@ -119,7 +122,7 @@ public class NetworkMessageParser {
             Adapter.getConsole().print("Operation failed");
         } else if (c == Command.REPLICATE){
             String tgr = frequest.getBody();
-
+            //Nothing is here!
         } else {
             log.error("Not valid request ");
         }
