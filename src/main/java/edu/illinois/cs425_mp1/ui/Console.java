@@ -27,6 +27,7 @@ public class Console {
 
     /**
      * Main entry
+     *
      * @param args
      */
     public static void main(String[] args) {
@@ -94,6 +95,7 @@ public class Console {
 
     /**
      * Helper for read
+     *
      * @return
      */
     private String read() {
@@ -112,6 +114,7 @@ public class Console {
 
     /**
      * Integer parser
+     *
      * @param line
      * @return
      */
@@ -126,6 +129,7 @@ public class Console {
 
     /**
      * Define the behavior of put
+     *
      * @return
      */
     private int putFile() {
@@ -156,6 +160,7 @@ public class Console {
 
     /**
      * Define the behavior of get
+     *
      * @return
      */
     private int getFile() {
@@ -203,6 +208,7 @@ public class Console {
 
     /**
      * Delete a file
+     *
      * @return
      */
     private int deleteFile() {
@@ -215,6 +221,7 @@ public class Console {
 
     /**
      * Return what is stored on local machine
+     *
      * @return
      */
     private int storeFile() {
@@ -227,6 +234,7 @@ public class Console {
 
     /**
      * List the entire dfs system
+     *
      * @return
      */
     private int listFile() {
@@ -243,7 +251,9 @@ public class Console {
 
         if (needsReplica.size() == 0) {
             log.trace("print default");
-            print(Adapter.getFileStoreString());
+//            print(Adapter.getFileStoreString());
+            for (String host : Adapter.getFileStoreAddress(sdfsfilename))
+                print(host);
             return 0;
         } else {
             for (String fileToBeReplicated : needsReplica) {
@@ -279,12 +289,15 @@ public class Console {
         adapter.sendBroadcastRequest(tosend);
         wait(2000);
 
-        print(Adapter.getFileStoreString());
+//        print(Adapter.getFileStoreString());
+        for (String host : Adapter.getFileStoreAddress(sdfsfilename))
+            print(host);
         return 0;
     }
 
     /**
      * Grep command
+     *
      * @return
      */
     private int grep() {
@@ -327,6 +340,7 @@ public class Console {
 
     /**
      * Wait
+     *
      * @param milliseconds
      */
     private void wait(int milliseconds) {
