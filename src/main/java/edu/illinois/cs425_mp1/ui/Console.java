@@ -289,9 +289,9 @@ public class Console {
         adapter.sendBroadcastRequest(tosend);
         wait(2000);
 
-//        print(Adapter.getFileStoreString());
-        for (String host : Adapter.getFileStoreAddress(sdfsfilename))
-            print(host);
+        print(Adapter.getFileStoreString());
+//        for (String host : Adapter.getFileStoreAddress(sdfsfilename))
+//            print(host);
         return 0;
     }
 

@@ -1,4 +1,3 @@
-git config --global credential.helper cache
 rm -rf dfs/*
 rm -rf output/*
 git pull origin master
