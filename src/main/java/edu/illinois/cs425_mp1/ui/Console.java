@@ -249,10 +249,17 @@ public class Console {
         ArrayList<String> needsReplica = Adapter.checkFileStoreCorrect();
         log.trace("Getting needs replica " + needsReplica.size());
 
+        ArrayList<String> lis = Adapter.getFileStoreAddress(sdfsfilename);
+        if(lis == null){
+            print("no such file in system");
+            return 0;
+        }
+
         if (needsReplica.size() == 0) {
             log.trace("print default");
 //            print(Adapter.getFileStoreString());
-            for (String host : Adapter.getFileStoreAddress(sdfsfilename))
+
+            for (String host : lis)
                 print(host);
             return 0;
         } else {
@@ -289,9 +296,9 @@ public class Console {
         adapter.sendBroadcastRequest(tosend);
         wait(2000);
 
-        print(Adapter.getFileStoreString());
-//        for (String host : Adapter.getFileStoreAddress(sdfsfilename))
-//            print(host);
+//        print(Adapter.getFileStoreString());
+        for (String host : lis)
+            print(host);
         return 0;
     }
 
