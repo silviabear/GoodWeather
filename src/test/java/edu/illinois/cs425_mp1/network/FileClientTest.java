@@ -12,14 +12,14 @@ public class FileClientTest {
 
         String target = "127.0.0.1";
         int port = 6753;
-        P2PSender client = new P2PSender(target, port);
+        FileSender client = new FileSender(target, port);
 
 
         try {
             client.run();
-            FileRequest req = new FileRequest(Command.PUT, "testdata/a/b/c/savefile.lol");
-            req.fillBufferOnLocal("pom.xml");
-            client.send(req);
+//            FileRequest req = new FileRequest(Command.PUT, "testdata/a/b/c/savefile.lol");
+//            req.fillBufferOnLocal("pom.xml");
+            client.sendFile("data/test500mb", "output");
 
         } catch(NullPointerException e){
 

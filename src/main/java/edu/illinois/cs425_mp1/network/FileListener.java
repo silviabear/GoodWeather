@@ -51,7 +51,7 @@ public class FileListener {
                                       ChannelPipeline p = ch.pipeline();
                                       p.addLast(
                                               new StringEncoder(CharsetUtil.UTF_8),
-                                              new LineBasedFrameDecoder(8192),
+                                              new LineBasedFrameDecoder(629703),
                                               new StringDecoder(CharsetUtil.UTF_8),
                                               new ChunkedWriteHandler(),
                                               new FileListenerHandler());

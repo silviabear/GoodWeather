@@ -47,23 +47,24 @@ public class FileListenerHandler extends SimpleChannelInboundHandler<String> {
      */
     @Override
     public void channelRead0(ChannelHandlerContext ctx, String msg) {
-        log.trace(msg);
         try {
             if (msg.startsWith("OK:")) {
                 //File Transmit starts
+                log.trace("transmission starts");
                 tgrPath = null;
                 writer = null;
             } else if (msg.startsWith("Path:")) {
                 tgrPath = Adapter.getDFSLocation() + msg.substring(5);
                 writer = new BufferedWriter(new FileWriter(tgrPath));
             } else if (msg.equals("Eof")) {
+                log.trace("tranmission ends");
                 writer.flush();
                 writer.close();
             } else {
                 writer.append(msg);
                 writer.newLine();
             }
-        } catch (IOException e){
+        } catch (IOException e) {
             log.error("error during write to " + tgrPath);
         }
     }
@@ -75,6 +76,7 @@ public class FileListenerHandler extends SimpleChannelInboundHandler<String> {
      */
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) {
+
         ctx.flush();
     }
 
