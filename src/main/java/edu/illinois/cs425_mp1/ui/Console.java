@@ -210,35 +210,29 @@ public class Console {
             print(Adapter.getFileStoreString());
             return 0;
         } else {
-            ArrayList<String> aliveNodes = Adapter.getAliveHosts();
-            log.trace("number of aliveNodes : " + aliveNodes.size());
             for (String fileToBeReplicated : needsReplica) {
                 log.trace(fileToBeReplicated + " needs replicate");
                 ArrayList<String> currentCopyHosts = Adapter.getFileStoreAddress(fileToBeReplicated);
                 log.trace(fileToBeReplicated + " has " + currentCopyHosts.size());
                 String firstHost = currentCopyHosts.get(0);
-                FileRequest getit = new FileRequest(Command.GET, fileToBeReplicated+":tmp/"+fileToBeReplicated);
+                FileRequest getit = new FileRequest(Command.GET, fileToBeReplicated + ":tmp/" + fileToBeReplicated);
                 adapter.sendP2PRequest(getit, Adapter.getNodeId(firstHost));
                 wait(1000);
                 log.trace("get done");
                 FileRequest sendit = new FileRequest(Command.PUT, fileToBeReplicated);
                 try {
                     sendit.fillBufferOnLocal(Adapter.getDFSOutputLocation() + "tmp/" + fileToBeReplicated);
-                } catch(Exception e){
+                } catch (Exception e) {
                     print("cannot replicate");
                 }
                 int numOfCopies = Adapter.getNumberOfReplica() - currentCopyHosts.size();
                 log.trace("needs to send " + numOfCopies);
-                for(int i = 0; i < numOfCopies; i++){
-                    for(String candidate: aliveNodes){
-                        if(!currentCopyHosts.contains(candidate)){
-                            log.trace("send to " + candidate);
-                            adapter.sendP2PRequest(sendit, Adapter.getNodeId(candidate));
-                            i++;
-                            if(i == numOfCopies)
-                                break;
-                        }
-                    }
+                int originNodeId = adapter.fileLocationHashing(fileToBeReplicated);
+                for (int i = 0; i < numOfCopies; i++) {
+                    int newId = originNodeId + Adapter.getNumberOfReplica();
+                    log.trace("send to " + newId);
+                    adapter.sendP2PRequest(sendit, (newId + i) % 7 + 1);
+
                 }
             }
 
@@ -300,7 +294,7 @@ public class Console {
 
     }
 
-    private void wait(int milliseconds){
+    private void wait(int milliseconds) {
         try {
             Thread.sleep(milliseconds);
         } catch (Exception e) {

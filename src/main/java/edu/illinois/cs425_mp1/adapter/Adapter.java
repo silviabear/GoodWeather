@@ -247,20 +247,6 @@ final public class Adapter {
         return fileStoreLocation.get(dfsfile);
     }
 
-    public static ArrayList<String> getAliveHosts() {
-        ArrayList<String> result = new ArrayList<String>();
-        Iterator it = fileStoreLocation.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry pair = (Map.Entry) it.next();
-            ArrayList<String> list = (ArrayList<String>) pair.getValue();
-            for(String host : list){
-                if(!result.contains(host))
-                    result.add(host);
-            }
-        }
-        return result;
-    }
-
     public static String getFileStoreString() {
         StringBuilder builder = new StringBuilder();
         Iterator it = fileStoreLocation.entrySet().iterator();
