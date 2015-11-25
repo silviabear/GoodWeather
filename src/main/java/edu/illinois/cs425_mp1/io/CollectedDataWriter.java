@@ -10,7 +10,12 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
 public class CollectedDataWriter {
-	
+
+    /**
+     * Write line to local log
+     * @param line
+     * @throws IOException
+     */
 	public static void writeToLog(String line) throws IOException {
 		Path filePath = Paths.get("all.log");
 		if (!Files.exists(filePath)) {
@@ -19,7 +24,13 @@ public class CollectedDataWriter {
 		Files.write(filePath, line.getBytes(), StandardOpenOption.APPEND);
 	}
 
-    public static void writeToFile(String path, StringBuilder content) throws IOException {
+    /**
+     * Write the string to path on local
+     * @param path
+     * @param content
+     * @throws IOException
+     */
+    public synchronized static void writeToFile(String path, StringBuilder content) throws IOException {
         File file = new File(path);
         file.getParentFile().mkdirs();
         BufferedWriter writer = new BufferedWriter(new FileWriter(file));

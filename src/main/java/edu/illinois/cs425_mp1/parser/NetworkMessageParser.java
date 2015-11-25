@@ -27,6 +27,11 @@ public class NetworkMessageParser {
      */
     private static Logger log = LogManager.getLogger("parserLogger");
 
+    /**
+     * This method handles normal request (GREP)
+     * @param request
+     * @return
+     */
     public static Reply acceptNetworkRequest(Request request) {
         Command c = request.getCommand();
         if (c == Command.GREP) {
@@ -59,13 +64,9 @@ public class NetworkMessageParser {
             } catch (Exception e) {
                 log.error("error on writing to " + tgrpath);
                 log.trace("cannot write to local file, send error msg back");
-                Command puterror = Command.PUTBACK;
-                puterror.setCmd("Put failed: " + Adapter.getLocalAddress());
-                ctx.writeAndFlush(new FileRequest(puterror, ""));
+                ctx.writeAndFlush(new FileRequest(Command.ERROR, ""));
                 return;
             }
-            //TODO: update local tracker
-//            Adapter.updateFileMeta(frequest.getBody(), Adapter.getLocalAddress());
             Adapter.updateLocalFileList(frequest.getBody());
             ctx.writeAndFlush(new FileRequest(Command.PUTBACK, ""));
         } else if (c == Command.PUTBACK) {
@@ -80,9 +81,7 @@ public class NetworkMessageParser {
             if (!Adapter.existLocalFileList(getCommandDFSPath(frequest.getBody()))) {
                 // not in ArrayList
                 log.error("try get " + tgrpath + " but not such file");
-                Command geterror = Command.GETBACK;
-                geterror.setCmd("Get failed: " + Adapter.getLocalAddress());
-                ctx.writeAndFlush(new FileRequest(geterror, ""));
+                ctx.writeAndFlush(new FileRequest(Command.ERROR, ""));
                 return;
             }
             try {
@@ -90,24 +89,21 @@ public class NetworkMessageParser {
             } catch (Exception e) {
                 // in list but not in disk
                 log.error("try get " + tgrpath + " but not such file");
-                Command geterror = Command.GETBACK;
-                geterror.setCmd("Get failed, file not on remote disk: " + Adapter.getLocalAddress());
-                ctx.writeAndFlush(new FileRequest(geterror, ""));
+                ctx.writeAndFlush(new FileRequest(Command.ERROR, ""));
                 return;
             }
             ctx.writeAndFlush(reply);
         } else if (c == Command.GETBACK) {
             log.trace("receive GETBACK command");
             Adapter.getConsole().print(c.toString());
-            if (c.toString().equals("done")) {
-                try {
-                    String tgrpath = getCommandLocalPath(frequest.getBody());
-                    CollectedDataWriter.writeToFile(tgrpath, frequest.getBuffer());
-                } catch (IOException e) {
-                    Adapter.getConsole().print("Cannot write to local disk");
-                    return;
-                }
+            try {
+                String tgrpath = getCommandLocalPath(frequest.getBody());
+                CollectedDataWriter.writeToFile(Adapter.getDFSOutputLocation() + tgrpath, frequest.getBuffer());
+            } catch (IOException e) {
+                Adapter.getConsole().print("Cannot write to local disk");
+                return;
             }
+
 
         } else if (c == Command.DELETE) {
             // delete
@@ -122,8 +118,13 @@ public class NetworkMessageParser {
             ctx.writeAndFlush(toSend);
         } else if (c == Command.QUERYBACK) {
             Adapter.mergeFileStoreList(frequest.getList(), frequest.getBody());
+        } else if (c == Command.ERROR) {
+            Adapter.getConsole().print("Operation failed");
+        } else if (c == Command.REPLICATE){
+            String tgr = frequest.getBody();
+            //Nothing is here!
         } else {
-            log.trace("Unknow file request " + frequest.getCommand());
+            log.error("Not valid request ");
         }
 
         return;

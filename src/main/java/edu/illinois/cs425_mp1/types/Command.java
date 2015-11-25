@@ -25,7 +25,4 @@ public enum Command {
         return this.cmd;
     }
 
-    public void setCmd(String newcmd) {
-        cmd = newcmd;
-    }
 }

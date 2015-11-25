@@ -2,10 +2,7 @@ package edu.illinois.cs425_mp1.adapter;
 
 import java.lang.reflect.Array;
 import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 import edu.illinois.cs425_mp1.network.FileListener;
 import edu.illinois.cs425_mp1.network.FileSender;
@@ -53,7 +50,6 @@ final public class Adapter {
 
     private static final P2PSender[] channels = new P2PSender[addresses.length];
 
-
     /**
      * Following are file related variables
      * fileStoreLocation is only a local count
@@ -62,6 +58,8 @@ final public class Adapter {
 
     //TODO: test on vm the path
     private static String DFSFileLocation = "dfs/";
+
+    private static String DFSOutputLocation = "output/";
 
     private static int numOfReplica = 3;
 
@@ -85,8 +83,8 @@ final public class Adapter {
      */
     public Adapter(int port) {
         requestListener = new Listener(port);
-        heartbeatAdapter = new HeartbeatAdapter();
-        heartbeatThread = new Thread(heartbeatAdapter);
+//        heartbeatAdapter = new HeartbeatAdapter();
+//        heartbeatThread = new Thread(heartbeatAdapter);
         mainLoop = new Thread() {
             public synchronized void run() {
                 log.trace("mainLoop runing");
@@ -98,7 +96,7 @@ final public class Adapter {
             }
         };
         mainLoop.start();
-        heartbeatThread.start();
+//        heartbeatThread.start();
     }
 
     /**
@@ -168,6 +166,10 @@ final public class Adapter {
         return DFSFileLocation;
     }
 
+    public static String getDFSOutputLocation() {
+        return DFSOutputLocation;
+    }
+
     public static ArrayList<String> getLocalDFSFileList() {
         return dfsLocalFiles;
     }
@@ -189,10 +191,15 @@ final public class Adapter {
         return HeartbeatAdapter.getMembershipList();
     }
 
+    /**
+     * Return nodeId of this host
+     * @param host
+     * @return
+     */
     public static int getNodeId(String host) {
         for (int i = 0; i < addresses.length; i++) {
             if (addresses[i].equals(host))
-                return i+1;
+                return i + 1;
         }
         return -1;
     }
@@ -212,18 +219,36 @@ final public class Adapter {
     }
 
 
+    /**
+     * Update local file list
+     * @param dfsfile
+     */
     public static void updateLocalFileList(String dfsfile) {
         dfsLocalFiles.add(dfsfile);
     }
 
+    /**
+     * Delete local file list
+     * @param dfsfile
+     */
     public static void deleteLocalFileList(String dfsfile) {
         dfsLocalFiles.remove(dfsfile);
     }
 
+    /**
+     * Tell whether dfsfile is on local
+     * @param dfsfile
+     * @return
+     */
     public static boolean existLocalFileList(String dfsfile) {
         return dfsLocalFiles.contains(dfsfile);
     }
 
+    /**
+     * Merge the returned status into file store
+     * @param fileStore
+     * @param host
+     */
     public static synchronized void mergeFileStoreList(ArrayList<String> fileStore, String host) {
         for (String dfsfile : fileStore) {
             if (fileStoreLocation.containsKey(dfsfile)) {
@@ -237,21 +262,33 @@ final public class Adapter {
         }
     }
 
-    public static void updateFileStoreList(){
+    /**
+     * Update file store
+     */
+    public static void updateFileStoreList() {
         fileStoreLocation.clear();
     }
 
-    public static ArrayList<String> getFileStoreAddress(String dfsfile){
+    /**
+     * Get the list of file store address
+     * @param dfsfile
+     * @return
+     */
+    public static ArrayList<String> getFileStoreAddress(String dfsfile) {
         return fileStoreLocation.get(dfsfile);
     }
 
-    public static String getFileStoreString(){
+    /**
+     * Return file store string
+     * @return
+     */
+    public static String getFileStoreString() {
         StringBuilder builder = new StringBuilder();
         Iterator it = fileStoreLocation.entrySet().iterator();
         while (it.hasNext()) {
-            Map.Entry pair = (Map.Entry)it.next();
+            Map.Entry pair = (Map.Entry) it.next();
             String key = pair.getKey().toString();
-            for( String item : (ArrayList<String>)pair.getValue()){
+            for (String item : (ArrayList<String>) pair.getValue()) {
                 builder.append(key);
                 builder.append(" : ");
                 builder.append(item);
@@ -262,15 +299,20 @@ final public class Adapter {
         return builder.toString();
     }
 
-    public static boolean checkFileStoreCorrect(){
+    /**
+     * Check whether everything is replicated
+     * @return
+     */
+    public static ArrayList<String> checkFileStoreCorrect() {
+        ArrayList<String> result = new ArrayList<String>();
         Iterator it = fileStoreLocation.entrySet().iterator();
         while (it.hasNext()) {
-            Map.Entry pair = (Map.Entry)it.next();
-            ArrayList<String> list = (ArrayList<String>)pair.getValue();
-            if(list.size() != 3)
-                return false;
-            it.remove(); // avoids a ConcurrentModificationException
+            Map.Entry pair = (Map.Entry) it.next();
+            ArrayList<String> list = (ArrayList<String>) pair.getValue();
+            if (list.size() != getNumberOfReplica())
+                result.add((String) pair.getKey());
         }
-        return true;
+        return result;
     }
+
 }

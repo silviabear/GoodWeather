@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Set;
 
 import edu.illinois.cs425_mp1.types.FileRequest;
 import org.apache.logging.log4j.LogManager;
@@ -19,11 +20,16 @@ import edu.illinois.cs425_mp1.types.Request;
  */
 public class Console {
 
-    static Logger log = LogManager.getLogger("mainLogger");
+    static Logger log = LogManager.getLogger("consoleLogger");
     private static Adapter adapter;
     //port for listener is consistent universally
     public static final int port = 6753;
 
+    /**
+     * Main entry
+     *
+     * @param args
+     */
     public static void main(String[] args) {
         log.info("Start Console init...");
         Console c = new Console();
@@ -33,6 +39,9 @@ public class Console {
         c.start();
     }
 
+    /**
+     * Start method
+     */
     private void start() {
         String line = null;
         while (true) {
@@ -84,6 +93,11 @@ public class Console {
         }
     }
 
+    /**
+     * Helper for read
+     *
+     * @return
+     */
     private String read() {
         try {
             BufferedReader br =
@@ -98,6 +112,12 @@ public class Console {
         return "Error";
     }
 
+    /**
+     * Integer parser
+     *
+     * @param line
+     * @return
+     */
     private static int parseNum(String line) {
         try {
             int num = Integer.valueOf(line);
@@ -107,6 +127,11 @@ public class Console {
         }
     }
 
+    /**
+     * Define the behavior of put
+     *
+     * @return
+     */
     private int putFile() {
         System.out.println("Enter 'localfilename' 'sdfsfilename'");
         String input = read();
@@ -133,6 +158,11 @@ public class Console {
         return 0;
     }
 
+    /**
+     * Define the behavior of get
+     *
+     * @return
+     */
     private int getFile() {
         System.out.println("Enter 'sdfsfilename' 'localfilename'");
         String input = read();
@@ -146,29 +176,41 @@ public class Console {
             FileRequest tosend = new FileRequest(Command.GET, reqBody);
 
             //If the file requested stores in local
-            if (Adapter.existLocalFileList(sdfsfilename)) {
-                int selfId = Adapter.getNodeId(Adapter.getLocalAddress());
-                adapter.sendP2PRequest(tosend, selfId);
-                return 0;
+//            if (Adapter.existLocalFileList(sdfsfilename)) {
+//                int selfId = Adapter.getNodeId(Adapter.getLocalAddress());
+//                adapter.sendP2PRequest(tosend, selfId);
+//                return 0;
+//            }
+//            ArrayList<String> hostsThatHaveFiles = Adapter.getFileStoreAddress(sdfsfilename);
+//            if (hostsThatHaveFiles == null) {
+//                Adapter.updateFileStoreList();
+//                //check its right
+//                tosend = new FileRequest(Command.QUERY, "");
+//                adapter.sendBroadcastRequest(tosend);
+//                try {
+//                    Thread.sleep(2000);
+//                } catch (Exception e) {
+//                    Thread.currentThread().interrupt();
+//                }
+//                hostsThatHaveFiles = Adapter.getFileStoreAddress(sdfsfilename);
+//            }
+//            adapter.sendP2PRequest(tosend, Adapter.getNodeId(hostsThatHaveFiles.get(0)));
+//        }
+            int nodeId = adapter.fileLocationHashing(sdfsfilename);
+            int numOfReplica = adapter.getNumberOfReplica();
+            for (int i = 0; i < numOfReplica; i++) {
+                adapter.sendP2PRequest(tosend, (nodeId + i) % 7 + 1);
             }
-            ArrayList<String> hostsThatHaveFiles = Adapter.getFileStoreAddress(sdfsfilename);
-            if (hostsThatHaveFiles == null) {
-                Adapter.updateFileStoreList();
-                //check its right
-                tosend = new FileRequest(Command.QUERY, "");
-                adapter.sendBroadcastRequest(tosend);
-                try {
-                    Thread.sleep(2000);
-                } catch (Exception e) {
-                    Thread.currentThread().interrupt();
-                }
-                hostsThatHaveFiles = Adapter.getFileStoreAddress(sdfsfilename);
-            }
-            adapter.sendP2PRequest(tosend, Adapter.getNodeId(hostsThatHaveFiles.get(0)));
+
         }
         return 0;
     }
 
+    /**
+     * Delete a file
+     *
+     * @return
+     */
     private int deleteFile() {
         System.out.println("Enter 'sdfsfilename'");
         String sdfsfilename = read().replace("\n", "");
@@ -177,6 +219,11 @@ public class Console {
         return 0;
     }
 
+    /**
+     * Return what is stored on local machine
+     *
+     * @return
+     */
     private int storeFile() {
         ArrayList<String> stores = adapter.getLocalDFSFileList();
         print("File stored at " + Adapter.getLocalAddress());
@@ -185,6 +232,11 @@ public class Console {
         return 0;
     }
 
+    /**
+     * List the entire dfs system
+     *
+     * @return
+     */
     private int listFile() {
         System.out.println("Enter 'sdfsfilename'");
         String sdfsfilename = read().replace("\n", "");
@@ -192,17 +244,69 @@ public class Console {
         //check its right
         FileRequest tosend = new FileRequest(Command.QUERY, "");
         adapter.sendBroadcastRequest(tosend);
-        try {
-            Thread.sleep(2000);
-        } catch (Exception e) {
-            Thread.currentThread().interrupt();
-        }
+        wait(2000);
         //check all files have exactly 3 replica
+        ArrayList<String> needsReplica = Adapter.checkFileStoreCorrect();
+        log.trace("Getting needs replica " + needsReplica.size());
 
-        print(Adapter.getFileStoreString());
+        ArrayList<String> lis = Adapter.getFileStoreAddress(sdfsfilename);
+        if(lis == null){
+            print("no such file in system");
+            return 0;
+        }
+
+        if (needsReplica.size() == 0) {
+            log.trace("print default");
+//            print(Adapter.getFileStoreString());
+
+            for (String host : lis)
+                print(host);
+            return 0;
+        } else {
+            for (String fileToBeReplicated : needsReplica) {
+                log.trace(fileToBeReplicated + " needs replicate");
+                ArrayList<String> currentCopyHosts = Adapter.getFileStoreAddress(fileToBeReplicated);
+                log.trace(fileToBeReplicated + " has " + currentCopyHosts.size());
+                String firstHost = currentCopyHosts.get(0);
+                FileRequest getit = new FileRequest(Command.GET, fileToBeReplicated + ":tmp/" + fileToBeReplicated);
+                adapter.sendP2PRequest(getit, Adapter.getNodeId(firstHost));
+                wait(1000);
+                log.trace("get done");
+                FileRequest sendit = new FileRequest(Command.PUT, fileToBeReplicated);
+                try {
+                    sendit.fillBufferOnLocal(Adapter.getDFSOutputLocation() + "tmp/" + fileToBeReplicated);
+                } catch (Exception e) {
+                    print("cannot replicate");
+                }
+                int numOfCopies = Adapter.getNumberOfReplica() - currentCopyHosts.size();
+                log.trace("needs to send " + numOfCopies);
+                int originNodeId = adapter.fileLocationHashing(fileToBeReplicated);
+                for (int i = 0; i < numOfCopies; i++) {
+                    int newId = originNodeId + Adapter.getNumberOfReplica();
+                    log.trace("send to " + newId);
+                    adapter.sendP2PRequest(sendit, (newId + i) % 7 + 1);
+
+                }
+            }
+
+        }
+        //update the new store
+        Adapter.updateFileStoreList();
+        tosend = new FileRequest(Command.QUERY, "");
+        adapter.sendBroadcastRequest(tosend);
+        wait(2000);
+
+//        print(Adapter.getFileStoreString());
+        for (String host : lis)
+            print(host);
         return 0;
     }
 
+    /**
+     * Grep command
+     *
+     * @return
+     */
     private int grep() {
         System.out.println("Please enter the argument after grep:");
         System.out.println("For example: \"grep -c blah trace.log\"");
@@ -240,16 +344,19 @@ public class Console {
         return 0;
     }
 
+
     /**
-     * High level wrapper (TBD)
+     * Wait
      *
-     * @param f
-     * @param sdfsfilename
+     * @param milliseconds
      */
-    private void sendFile(FileRequest f, String sdfsfilename) {
-
+    private void wait(int milliseconds) {
+        try {
+            Thread.sleep(milliseconds);
+        } catch (Exception e) {
+            Thread.currentThread().interrupt();
+        }
     }
-
 
     /**
      * Callback for adapter when new message received
