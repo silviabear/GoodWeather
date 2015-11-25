@@ -4,6 +4,7 @@ import java.util.Random;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.joda.time.DateTime;
 
 import edu.illinois.cs425_mp1.adapter.Adapter;
 import edu.illinois.cs425_mp1.network.UDPSender;
@@ -53,7 +54,6 @@ public class HeartbeatBroadcaster implements Runnable {
 	}
 	
 	private void broadcast() {
-		HeartbeatAdapter.membershipList.updateSelfTimeStamp();
 		for(int i = 0; i < totalNumNode / broadcastRate * 2 + 1; i++) {
 			int index = Math.abs(r.nextInt()) % totalNumNode;
 			if(index == selfId) {
