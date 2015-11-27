@@ -1,5 +1,5 @@
 package backtype.storm.topology;
 
-public class IRichBolt {
+public class IRichBolt implements IComponent {
 
 }

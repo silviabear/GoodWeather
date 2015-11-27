@@ -1,9 +1,8 @@
 package backtype.storm.topology;
 
-import backtype.storm.topology.base.ISpout;
-
-public abstract class IRichSpout implements ISpout{
-    public void close() {
+public abstract class IRichSpout implements IComponent {
+    
+	public void close() {
     }
 
     public void activate() {
