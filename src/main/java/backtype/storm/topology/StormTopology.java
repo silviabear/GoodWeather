@@ -13,19 +13,21 @@ import java.util.Set;
  */
 public class StormTopology {
 	
-	protected IRichSpout source;
+	Map<String, Edge> topo = new HashMap<String, Edge>();
 	
-	private Map<IComponent, IComponent> edges = new HashMap<IComponent, IComponent>();
-	
-	private Map<String, IComponent> idToComponent = new HashMap<String, IComponent>();
-	
-	protected void setSource(String id, IRichSpout spout) {
-		idToComponent.put(id, spout);
-		source = spout;
+	public void addComponent(String inputIP, String outputIP, IComponent comp) {
+		Edge e = new Edge(comp, outputIP);
+		topo.put(inputIP, e);
 	}
 	
-	protected void setOutput(String id, IComponent output) {
-		edges.put(idToComponent.get(id), output);
-	}
+}
+class Edge {
 	
+	private final String outputIP;
+	private final IComponent comp;
+	
+	Edge(IComponent comp, String outputIP) {
+		this.outputIP = outputIP;
+		this.comp = comp;
+	}
 }

@@ -34,20 +34,19 @@ public class PortReader extends IRichSpout {
 			//Read all lines
 			while((str = reader.readLine()) != null){
 				/**
-				 * By each line emmit a new value with the line as a their
+				 * By each line emit a new value with the line as a their
 				 */
 				this.collector.emit(new Values(str),str);
 			}
-		}catch(Exception e){
+		} catch(Exception e) {
 			throw new RuntimeException("Error reading tuple",e);
-		}finally{
+		} finally {
 			completed = true;
 		}
 	}
 	
-	public void open(Config conf, TopologyContext context, SpoutOutputCollector collector) {
+	public void open(Config conf, SpoutOutputCollector collector) {
 		try {
-			this.context = context;
 			this.fileReader = new FileReader(conf.get("wordsFile").toString());
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException("Error reading file ["+conf.get("wordFile")+"]");

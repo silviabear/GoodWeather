@@ -1,19 +1,15 @@
 package backtype.storm.topology;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 public class TopologyBuilder {
 	
 	final private StormTopology topology = new StormTopology();
 	
-	public void setSpout(String id, IRichSpout spout) {
-		topology.setSource(id, spout);
-	}
-	
-	public BoltDeclarer setBolt(String id, IRichBolt bolt) {
-		BoltDeclarer declarer = new BoltDeclarer(topology);
-		return declarer;
+	public void addNode(String inputIP, String outputIP, IComponent comp) {
+		topology.addComponent(inputIP, outputIP, comp);
 	}
 	
 	public StormTopology createTopology() {

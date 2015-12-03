@@ -1,5 +1,5 @@
 package backtype.storm.topology;
 
-public interface IComponent {
+public abstract class IComponent {
 
 }

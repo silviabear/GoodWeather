@@ -1,6 +1,6 @@
 package backtype.storm.topology;
 
-public abstract class IRichSpout implements IComponent {
+public abstract class IRichSpout extends IComponent {
     
 	public void close() {
 		

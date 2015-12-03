@@ -2,7 +2,7 @@ package backtype.storm.topology;
 
 import backtype.storm.tuple.Tuple;
 
-public abstract class IRichBolt implements IComponent {
+public abstract class IRichBolt extends IComponent {
 	
 	public void cleanup() {
 		
