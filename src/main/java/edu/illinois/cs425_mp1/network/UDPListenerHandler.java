@@ -7,6 +7,8 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import backtype.storm.topology.IRichBolt;
+import backtype.storm.tuple.Tuple;
 import edu.illinois.cs425_mp1.monitor.HeartbeatAdapter;
 import edu.illinois.cs425_mp1.types.MembershipList;
 
@@ -19,6 +21,17 @@ public class UDPListenerHandler extends ChannelInboundHandlerAdapter {
 
     static Logger log = LogManager.getLogger("networkLogger");
 
+    private IRichBolt bolt;
+    
+    public UDPListenerHandler() {
+    	super();
+    }
+    
+    public UDPListenerHandler(IRichBolt bolt) {
+    	super();
+    	this.bolt = bolt;
+    }
+    
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
 //        System.out.println("Channel active : " + ctx.channel().remoteAddress());
@@ -38,7 +51,14 @@ public class UDPListenerHandler extends ChannelInboundHandlerAdapter {
     	if(reply instanceof MembershipList) {
         	HeartbeatAdapter.acceptHeartbeat((MembershipList)reply);
         }
+    	if(bolt != null) {
+    		handleStream((Tuple)reply);
+    	}
         return;
+    }
+    
+    private void handleStream(Tuple reply) {
+    	//TODO: handle the tuple
     }
 
     @Override

@@ -11,8 +11,11 @@ import io.netty.handler.codec.serialization.ObjectEncoder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.util.concurrent.DefaultThreadFactory;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import backtype.storm.topology.IRichBolt;
 
 import java.util.concurrent.ThreadFactory;
 
@@ -28,6 +31,12 @@ public class UDPListener {
 
     public UDPListener(int port) {
         this.port = port;
+    }
+    
+    private IRichBolt bolt;
+    
+    public void registerBolt(IRichBolt bolt) {
+    	this.bolt = bolt;
     }
 
     /**
@@ -52,7 +61,7 @@ public class UDPListener {
                             ch.pipeline().addLast(
                                     new ObjectEncoder(),
                                     new ObjectDecoder(200000000, ClassResolvers.cacheDisabled(null)),
-                                    new UDPListenerHandler());
+                                    new UDPListenerHandler(bolt));
                         }
                     });
 
@@ -68,4 +77,5 @@ public class UDPListener {
             connectGroup.shutdownGracefully();
         }
     }
+    
 }

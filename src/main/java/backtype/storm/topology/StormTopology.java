@@ -20,6 +20,14 @@ public class StormTopology {
 		topo.put(inputIP, e);
 	}
 	
+	public IComponent getComponent(String inputIP) {
+		return topo.get(inputIP).getComp();
+	}
+	
+	public String getOutputIP(String inputIP) {
+		return topo.get(inputIP).getOutputIP();
+	}
+	
 }
 class Edge {
 	
@@ -29,5 +37,13 @@ class Edge {
 	Edge(IComponent comp, String outputIP) {
 		this.outputIP = outputIP;
 		this.comp = comp;
+	}
+	
+	IComponent getComp() {
+		return comp;
+	}
+	
+	String getOutputIP() {
+		return outputIP;
 	}
 }
