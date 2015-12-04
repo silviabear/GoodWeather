@@ -1,10 +1,13 @@
 package backtype.storm.tuple;
 
-public class Values {
+import java.io.Serializable;
+import java.util.List;
 
-	private final String value;
+public class Values implements Serializable {
+
+	private final List<String> values;
 	
-	public Values(String str) {
-		this.value = str;
+	public Values(List<String> values) {
+		this.values = values;
 	}
 }

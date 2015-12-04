@@ -33,8 +33,6 @@ public class UDPListener {
         this.port = port;
     }
     
-    private IRichBolt bolt;
-    
     public void registerBolt(IRichBolt bolt) {
     	this.bolt = bolt;
     }
@@ -61,7 +59,7 @@ public class UDPListener {
                             ch.pipeline().addLast(
                                     new ObjectEncoder(),
                                     new ObjectDecoder(200000000, ClassResolvers.cacheDisabled(null)),
-                                    new UDPListenerHandler(bolt));
+                                    new UDPListenerHandler());
                         }
                     });
 

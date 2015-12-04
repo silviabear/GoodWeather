@@ -28,10 +28,16 @@ public class Listener {
     private EventLoopGroup bossGroup;
     private EventLoopGroup workerGroup;
 
+    private IRichBolt bolt;
+    
     public Listener(int port) {
         this.port = port;
     }
 
+    public void registerBolt(IRichBolt bolt) {
+    	this.bolt = bolt;
+    }
+    
     /**
      * Tell the listener to run
      */
@@ -51,7 +57,7 @@ public class Listener {
                                                   new ObjectEncoder(),
                                                   new ObjectDecoder(600000000,ClassResolvers.cacheDisabled(null)),
 //                                                  new LoggingHandler(LogLevel.INFO),
-                                                  new ListenerHandler());
+                                                  new ListenerHandler(bolt));
                                       }
                                   }
                     );

@@ -12,7 +12,6 @@ import backtype.storm.spout.SpoutOutputCollector;
 
 public class PortReader extends IRichSpout {
 
-	private SpoutOutputCollector collector;
 	private FileReader fileReader;
 	private boolean completed = false;
 	
@@ -36,16 +35,19 @@ public class PortReader extends IRichSpout {
 				/**
 				 * By each line emit a new value with the line as a their
 				 */
-				this.collector.emit(new Values(str),str);
+				this.collector.emit(str);
 			}
+			collector.finish();
 		} catch(Exception e) {
 			throw new RuntimeException("Error reading tuple",e);
 		} finally {
 			completed = true;
 		}
+		
 	}
 	
 	public void open(Config conf, SpoutOutputCollector collector) {
+		
 		try {
 			this.fileReader = new FileReader(conf.get("wordsFile").toString());
 		} catch (FileNotFoundException e) {
@@ -53,9 +55,5 @@ public class PortReader extends IRichSpout {
 		}
 		this.collector = collector;
 	}
-	
-	public void declareOutputFields(OutputFieldsDeclarer declarer) {
-		declarer.declare(new Fields("line"));
-		}
 
 }

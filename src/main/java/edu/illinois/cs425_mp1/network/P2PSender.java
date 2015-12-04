@@ -7,12 +7,14 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-
 import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import backtype.storm.topology.IRichBolt;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -32,12 +34,12 @@ public class P2PSender implements Sender {
     private ChannelFuture cf;
     private Channel channel;
     private EventLoopGroup group;
-
+    
     public P2PSender(String host, int port) {
         this.HOST = host;
         this.PORT = port;
     }
-
+    
     /**
      * Connecting the server(listener)
      */
@@ -77,7 +79,7 @@ public class P2PSender implements Sender {
      *
      * @param msg
      */
-    public void send(Message msg) {
+    public void send(Object msg) {
         log.trace("sender sends msg: " + msg.toString());
         try {
             cf = channel.writeAndFlush(msg);

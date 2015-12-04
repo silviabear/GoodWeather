@@ -31,6 +31,7 @@ public class Main {
 		conf.put("wordsFile", args[0]);
 		LocalCluster cluster = new LocalCluster();
 		cluster.submitTopology("Getting-Started-Toplogie", conf, builder.createTopology());
+		
 		try {
 			Thread.sleep(runningTime);
 		} catch (InterruptedException e) {
