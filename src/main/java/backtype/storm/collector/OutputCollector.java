@@ -1,22 +1,23 @@
-package backtype.storm.spout;
+package backtype.storm.collector;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import backtype.storm.LocalCluster;
+import backtype.storm.tuple.ITuple;
 import backtype.storm.tuple.Tuple;
 import backtype.storm.tuple.Values;
 
-public class SpoutOutputCollector {
+public class OutputCollector {
 
-	private static final ArrayBlockingQueue<Tuple> queue = new ArrayBlockingQueue<Tuple>(Integer.MAX_VALUE, true);
+protected static final ArrayBlockingQueue<ITuple> queue = new ArrayBlockingQueue<ITuple>(Integer.MAX_VALUE, true);
 	
-	private static final int maxPacketSize = 50;
+	protected static final int maxPacketSize = 50;
 	
-	private String[] cache = new String[maxPacketSize];
+	protected String[] cache = new String[maxPacketSize];
 	
-	private int cacheSize = 0;
+	protected int cacheSize = 0;
 	
 	public void emit(String str) {
 		if(cacheSize < maxPacketSize) {
@@ -28,13 +29,7 @@ public class SpoutOutputCollector {
 		}
 	}
 	
-	public void finish() {
-		if(cacheSize > 0) {
-			dumpTuple();
-		}
-	}
-	
-	private void dumpTuple() {
+	protected void dumpTuple() {
 		List<String> val = new ArrayList<String>(cacheSize);
 		for(int i = 0; i < cacheSize; i++) {
 			val.add(cache[i]);
@@ -44,8 +39,12 @@ public class SpoutOutputCollector {
 		queue.add(tuple);
 	}
 	
-	public Tuple nextTuple() throws InterruptedException {
+	public ITuple nextTuple() throws InterruptedException {
 		return queue.take();
 	}
-
+	
+	public void finish() {
+		
+	}
+	
 }

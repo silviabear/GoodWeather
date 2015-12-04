@@ -1,6 +1,6 @@
 package backtype.storm.topology;
 
-import backtype.storm.spout.SpoutOutputCollector;
+import backtype.storm.collector.SpoutOutputCollector;
 
 public abstract class IRichSpout extends IComponent {
     

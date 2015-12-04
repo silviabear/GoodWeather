@@ -32,10 +32,6 @@ public class Listener {
         this.port = port;
     }
 
-    public void registerBolt(IRichBolt bolt) {
-    	this.bolt = bolt;
-    }
-    
     /**
      * Tell the listener to run
      */

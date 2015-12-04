@@ -36,8 +36,5 @@ public class Main {
 			Thread.sleep(runningTime);
 		} catch (InterruptedException e) {
 		}
-		finally {
-			cluster.shutdown();
-		}
 	}
 }

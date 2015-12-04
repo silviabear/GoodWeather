@@ -6,9 +6,7 @@ import java.io.FileReader;
 
 import backtype.storm.Config;
 import backtype.storm.topology.IRichSpout;
-import backtype.storm.tuple.Fields;
-import backtype.storm.tuple.Values;
-import backtype.storm.spout.SpoutOutputCollector;
+import backtype.storm.collector.SpoutOutputCollector;
 
 public class PortReader extends IRichSpout {
 
@@ -17,7 +15,6 @@ public class PortReader extends IRichSpout {
 	
 	@Override
 	public void nextTuple() {
-		// TODO Auto-generated method stub
 		if(completed){
 			try {
 				Thread.sleep(1000);

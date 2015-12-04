@@ -1,12 +1,19 @@
 package backtype.storm.topology;
 
-import backtype.storm.tuple.Tuple;
+import backtype.storm.collector.BoltOutputCollector;
+import backtype.storm.collector.OutputCollector;
 
 public abstract class IRichBolt extends IComponent {
+	
+	protected BoltOutputCollector collector;
 	
 	public void cleanup() {
 		
 	}
 	
-	abstract public void execute(Tuple tuple);
+	public OutputCollector getOutputCollector() {
+		return collector;
+	}
+	
+	abstract public void execute(String tuple);
 }

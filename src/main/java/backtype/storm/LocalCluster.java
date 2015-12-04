@@ -8,7 +8,8 @@ import java.util.concurrent.ArrayBlockingQueue;
 
 import edu.illinois.cs425_mp1.network.Listener;
 import edu.illinois.cs425_mp1.network.P2PSender;
-import backtype.storm.spout.SpoutOutputCollector;
+import backtype.storm.collector.OutputCollector;
+import backtype.storm.collector.SpoutOutputCollector;
 import backtype.storm.topology.IComponent;
 import backtype.storm.topology.IRichBolt;
 import backtype.storm.topology.IRichSpout;
@@ -40,7 +41,7 @@ public class LocalCluster {
 	
 	private static IComponent comp;
 	
-	private static final Map<Long, Tuple> toBeAckedQueue = Collections.synchronizedMap(new HashMap<Long, Tuple>());
+	private static final Map<Long, ITuple> toBeAckedQueue = Collections.synchronizedMap(new HashMap<Long, ITuple>());
 	
 	private static final Map<Long, String> idToInputIP = Collections.synchronizedMap(new HashMap<Long, String>());
 	
@@ -96,7 +97,7 @@ public class LocalCluster {
 				SpoutOutputCollector collector = input.getOutputCollector();
 				while(true) {
 					try {
-						Tuple tuple = collector.nextTuple();
+						ITuple tuple = collector.nextTuple();
 						outputSender.send(tuple);
 						toBeAckedQueue.put(tuple.id, tuple);
 					} catch (InterruptedException e) {
@@ -108,14 +109,28 @@ public class LocalCluster {
 		outputThread.start();
 	}
 	
-	private void runBolt(IRichBolt bolt) {
+	private void runBolt(IRichBolt input) {
 		
 		inputListener = new Listener(incomingPort);
-		inputListener.registerBolt(bolt);
 		
+		final IRichBolt bolt = input;
 		if(!isSink) {
-			
-		}
+			Thread outputThread = new Thread() {
+				@Override
+				public void run() {
+					OutputCollector collector = bolt.getOutputCollector();
+					while(true) {
+						try {
+							ITuple tuple = collector.nextTuple();
+							outputSender.send(tuple);
+						} catch (InterruptedException e) {
+							break;
+						}
+					}
+				}
+			};
+			outputThread.start();
+		} 
 	}
 	
 	public static void handleInput(ITuple tuple) {
@@ -128,14 +143,15 @@ public class LocalCluster {
 			}
 		} else if(tuple instanceof Fin) {
 			if(isSink) {
-				//TODO: print final outcome
+				((IRichBolt)comp).cleanup();
 			} else {
 				forwardFin((Fin)tuple);
 			}
 		} else if(tuple instanceof Tuple) {
 			IRichBolt bolt = (IRichBolt)comp;
-			bolt.execute((Tuple)tuple);
-			
+			for(String str : ((Tuple) tuple).getValues().values()) {
+				bolt.execute(str);
+			}
 		}
 	}
 	

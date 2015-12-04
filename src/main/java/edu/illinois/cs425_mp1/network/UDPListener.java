@@ -33,10 +33,6 @@ public class UDPListener {
         this.port = port;
     }
     
-    public void registerBolt(IRichBolt bolt) {
-    	this.bolt = bolt;
-    }
-
     /**
      * Ask the listener to run
      */

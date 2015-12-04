@@ -10,4 +10,9 @@ public class Values implements Serializable {
 	public Values(List<String> values) {
 		this.values = values;
 	}
+	
+	public List<String> values() {
+		return values;
+	}
+	
 }
