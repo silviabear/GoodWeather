@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 
+import backtype.storm.LocalCluster;
 import backtype.storm.tuple.Tuple;
 import backtype.storm.tuple.Values;
 
@@ -39,7 +40,7 @@ public class SpoutOutputCollector {
 			val.add(cache[i]);
 		}
 		Values value = new Values(val);
-		Tuple tuple = new Tuple(value);
+		Tuple tuple = new Tuple(value, LocalCluster.localhost);
 		queue.add(tuple);
 	}
 	

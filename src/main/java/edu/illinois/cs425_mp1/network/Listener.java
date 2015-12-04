@@ -27,8 +27,6 @@ public class Listener {
     private ChannelFuture cf;
     private EventLoopGroup bossGroup;
     private EventLoopGroup workerGroup;
-
-    private IRichBolt bolt;
     
     public Listener(int port) {
         this.port = port;
@@ -57,7 +55,7 @@ public class Listener {
                                                   new ObjectEncoder(),
                                                   new ObjectDecoder(600000000,ClassResolvers.cacheDisabled(null)),
 //                                                  new LoggingHandler(LogLevel.INFO),
-                                                  new ListenerHandler(bolt));
+                                                  new ListenerHandler());
                                       }
                                   }
                     );

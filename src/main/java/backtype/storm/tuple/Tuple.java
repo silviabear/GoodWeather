@@ -4,22 +4,19 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Tuple implements Serializable {
-
-	private final long id;
+public class Tuple extends ITuple implements Serializable {
 	
 	private static long idCounter = 0;
 	
 	private final Values values;
 	
-	public Tuple(Values values) {
-		idCounter++;
-		id = idCounter;
-		this.values = values;
-	}
+	public final String inputIP;
 	
-	public long getId() {
-		return id;
+	public Tuple(Values values, String inputIP) {
+		super(idCounter);
+		idCounter++;
+		this.values = values;
+		this.inputIP = inputIP;
 	}
 	
 	public Values getValues() {

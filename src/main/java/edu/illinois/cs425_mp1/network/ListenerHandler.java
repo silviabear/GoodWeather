@@ -11,6 +11,9 @@ import org.apache.logging.log4j.Logger;
 
 import backtype.storm.LocalCluster;
 import backtype.storm.topology.IRichBolt;
+import backtype.storm.tuple.Ack;
+import backtype.storm.tuple.Fin;
+import backtype.storm.tuple.ITuple;
 import backtype.storm.tuple.Tuple;
 
 import java.net.InetSocketAddress;
@@ -24,16 +27,6 @@ import java.net.InetSocketAddress;
 public class ListenerHandler extends ChannelInboundHandlerAdapter {
 
     static Logger log = LogManager.getLogger("networkLogger");
-
-    private IRichBolt bolt;
-    
-    public ListenerHandler() {
-    	super();
-    }
-    
-    public ListenerHandler(IRichBolt bolt) {
-    	this.bolt = bolt;
-    }
     
     /**
      * Will be called when channel is active
@@ -82,17 +75,16 @@ public class ListenerHandler extends ChannelInboundHandlerAdapter {
                 }
             }
             return;
-        } else if(msg instanceof Tuple) {
-        	handleTuple(((Tuple)msg));
+        } else if(msg instanceof ITuple) {
+        	handleTuple((ITuple)msg);
         }
 
     }
-    
-    private void handleTuple(Tuple tuple) {
-    	bolt.execute(tuple);
-    	LocalCluster.requestAck(tuple.getId());
-    }
 
+    private void handleTuple(ITuple tuple) {
+    	LocalCluster.handleInput(tuple);
+    }
+    
     /**
      * This method will be called once the read completes
      *
