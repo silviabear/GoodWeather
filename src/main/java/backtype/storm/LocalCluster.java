@@ -166,6 +166,7 @@ public class LocalCluster {
 			Thread outputThread = new Thread() {
 				@Override
 				public void run() {
+					log.debug("Tuple output collector run");
 					OutputCollector collector = bolt.getOutputCollector();
 					while(true) {
 						try {
@@ -196,6 +197,7 @@ public class LocalCluster {
 			if(isSink) {
 				((IRichBolt)comp).cleanup();
 			} else {
+				((IRichBolt)comp).getOutputCollector().finish();
 				forwardFin((Fin)tuple);
 			}
 		} else if(tuple instanceof Tuple) {
