@@ -24,11 +24,24 @@ public class Main {
 	
 	public static void main(String[] args) {
 		
+		boolean parallelMode = args.length > 0;
+		
 		TopologyBuilder builder = new TopologyBuilder();
 		Config conf = new Config();
-		builder.addNode("172.22.151.52", "172.22.151.53", new PortReader());
-		builder.addNode("172.22.151.53", "172.22.151.54", new PortNormalizer());
-		builder.addNode("172.22.151.54", null, new PortCounter());
+		if(!parallelMode) {
+			builder.addNode("172.22.151.52", "172.22.151.53", new PortReader());
+			builder.addNode("172.22.151.53", "172.22.151.54", new PortNormalizer());
+			builder.addNode("172.22.151.54", null, new PortCounterFinalizer());
+		} else {
+			IRichSpout portReader = new PortReader();
+			builder.addNode("172.22.151.52", "172.22.151.53", portReader);
+			builder.addNode("172.22.151.52", "172.22.151.54", portReader);
+			builder.addNode("172.22.151.53", "172.22.151.55", new PortNormalizer());
+			builder.addNode("172.22.151.54", "172.22.151.56", new PortNormalizer());
+			builder.addNode("172.22.151.55", "172.22.151.57", new PortCounter());
+			builder.addNode("172.22.151.56", "172.22.151.57", new PortCounter());
+			builder.addNode("172.22.151.57", null, new CountFinalizer());
+		}
 		conf.put("filename", "data/app1-data");
 		LocalCluster cluster = new LocalCluster();
 		cluster.submitTopology("Getting-Started-Toplogie", conf, builder.createTopology());

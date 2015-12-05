@@ -15,47 +15,36 @@ import java.util.Set;
  */
 public class StormTopology {
 	
-	Map<String, Edge> topo = new HashMap<String, Edge>();
+	Map<String, IComponent> topo = new HashMap<String, IComponent>();
 	
-	Map<String, Set<String>> inputs = new HashMap<String, Set<String>>();
+	private final Map<String, Set<String>> inputs = new HashMap<String, Set<String>>();
+	private final Map<String, Set<String>> outputs = new HashMap<String, Set<String>>();
 	
 	public void addComponent(String inputIP, String outputIP, IComponent comp) {
-		Edge e = new Edge(comp, outputIP);
-		topo.put(inputIP, e);
+		topo.put(inputIP, comp);
+		
 		if(!inputs.containsKey(outputIP)) {
 			inputs.put(outputIP, new HashSet<String>());
 		}
 		inputs.get(outputIP).add(inputIP);
+		
+		if(!outputs.containsKey(inputIP)) {
+			outputs.put(inputIP, new HashSet<String>());
+		}
+		outputs.get(inputIP).add(outputIP);
+	
 	}
 	
 	public IComponent getComponent(String inputIP) {
-		return topo.get(inputIP).getComp();
+		return topo.get(inputIP);
 	}
 	
-	public String getOutputIP(String inputIP) {
-		return topo.get(inputIP).getOutputIP();
+	public Set<String> getOutputIP(String inputIP) {
+		return outputs.get(inputIP);
 	}
 	
 	public Set<String> getInputIPs(String localhost) {
 		return inputs.get(localhost);
 	}
 	
-}
-class Edge {
-	
-	private final String outputIP;
-	private final IComponent comp;
-	
-	Edge(IComponent comp, String outputIP) {
-		this.outputIP = outputIP;
-		this.comp = comp;
-	}
-	
-	IComponent getComp() {
-		return comp;
-	}
-	
-	String getOutputIP() {
-		return outputIP;
-	}
 }

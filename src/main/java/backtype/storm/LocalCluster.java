@@ -4,6 +4,7 @@ import java.net.InetAddress;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,7 +30,7 @@ public class LocalCluster {
 	final public static int ackPort = 43245;
 	
 	private static final Listener inputListener = new Listener(incomingPort);
-	private static P2PSender outputSender;
+	private static Map<String, P2PSender> outputSenders;
 	
 	private final Listener ackListener = new Listener(ackPort);
 	private static Map<String, P2PSender> ackSenders;
@@ -80,7 +81,7 @@ public class LocalCluster {
 	public void submitTopology(String topologyName, Config config, StormTopology topology) {
 		
 		comp = topology.getComponent(localhost);
-		String outputIP = topology.getOutputIP(localhost);
+		Set<String> outputIP = topology.getOutputIP(localhost);
 		this.config = config;
 		this.topology = topology;
 		if(outputIP == null) {
@@ -124,13 +125,17 @@ public class LocalCluster {
 			@Override
 			public void run() {
 				SpoutOutputCollector collector = input.getOutputCollector();
-				outputSender.run();
+				for(P2PSender outputSender : outputSenders.values()) {
+					outputSender.run();
+				}
+				long currentSender = 0;
 				while(true) {
 					try {
 						ITuple tuple = collector.nextTuple();
-						outputSender.send(tuple);
+						outputSenders.get(currentSender % outputSenders.size()).send(tuple);
 						log.debug("Send tuple " + tuple.id);
 						toBeAckedQueue.put(tuple.id, tuple);
+						currentSender++;
 					} catch (InterruptedException e) {
 						break;
 					}
@@ -143,8 +148,11 @@ public class LocalCluster {
 	
 	public void startSenders() {
 		if(!isSink) {
-			outputSender = new P2PSender(topology.getOutputIP(localhost), incomingPort);
-			outputSender.run();
+			for(String outputIP : topology.getInputIPs(localhost)) {
+				P2PSender outputSender = new P2PSender(outputIP, incomingPort);
+				outputSenders.put(outputIP, outputSender);
+				outputSender.run();
+			}
 		}
 		
 		if(comp instanceof IRichBolt) {
@@ -162,7 +170,7 @@ public class LocalCluster {
 		final IRichBolt bolt = input;
 		
 		if(!isSink) {
-			outputSender.run();
+			outputSenders.get(0).run();
 			Thread outputThread = new Thread() {
 				@Override
 				public void run() {
@@ -171,7 +179,7 @@ public class LocalCluster {
 					while(true) {
 						try {
 							ITuple tuple = collector.nextTuple();
-							outputSender.send(tuple);
+							outputSenders.get(0).send(tuple);
 						} catch (InterruptedException e) {
 							break;
 						}
@@ -197,6 +205,9 @@ public class LocalCluster {
 			if(isSink) {
 				((IRichBolt)comp).cleanup();
 			} else {
+				if(comp instanceof IRichBolt) {
+					((IRichBolt)comp).onFinish();
+				}
 				OutputCollector collector = ((IRichBolt)comp).getOutputCollector();
 				collector.finish();
 				collector.emit(tuple);

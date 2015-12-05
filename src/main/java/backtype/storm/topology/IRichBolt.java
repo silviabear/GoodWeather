@@ -11,6 +11,10 @@ public abstract class IRichBolt extends IComponent {
 		
 	}
 	
+	public void onFinish() {
+		
+	}
+	
 	public OutputCollector getOutputCollector() {
 		return collector;
 	}
