@@ -13,6 +13,10 @@ public class PortNormalizer extends IRichBolt {
 	
 	@Override
 	public void execute(String input) {
+		String[] strs = input.split(" ");
+		for(String str : strs) {
+			System.out.println(str);
+		}
 		String port = input.split(" ")[2];
 		collector.emit(port);	
 	}
