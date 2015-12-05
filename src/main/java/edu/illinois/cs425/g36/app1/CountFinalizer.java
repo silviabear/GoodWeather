@@ -11,7 +11,9 @@ public class CountFinalizer extends IRichBolt {
 	
 	@Override
 	public void cleanup() {
+		System.out.println("-- Port Counter Results --");
 		for(String port : counter.keySet()) {
+			
 			System.out.println(port + ": " + counter.get(port));
 		}
 	}
