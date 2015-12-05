@@ -109,11 +109,14 @@ public class LocalCluster {
 			outputSender = new P2PSender(topology.getOutputIP(localhost), incomingPort);
 			outputSender.run();
 		}
-		ackSenders = new HashMap<String, P2PSender>();
-		for(String inputIP : topology.getInputIPs(localhost)) {
-			P2PSender sender = new P2PSender(inputIP, ackPort);
-			sender.run();
-			ackSenders.put(inputIP, sender);
+		
+		if(!isSource) {
+			ackSenders = new HashMap<String, P2PSender>();
+			for(String inputIP : topology.getInputIPs(localhost)) {
+				P2PSender sender = new P2PSender(inputIP, ackPort);
+				sender.run();
+				ackSenders.put(inputIP, sender);
+			}
 		}
 	}
 	
