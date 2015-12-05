@@ -8,7 +8,7 @@
     <packaging>jar</packaging>
 
 
-    <name>cs425-mp1</name>
+    <name>cs425.g36</name>
     <url>http://maven.apache.org</url>
 
     <properties>

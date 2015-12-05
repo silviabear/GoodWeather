@@ -46,7 +46,7 @@ public class PortReader extends IRichSpout {
 	public void open(Config conf, SpoutOutputCollector collector) {
 		
 		try {
-			this.fileReader = new FileReader(conf.get("wordsFile").toString());
+			this.fileReader = new FileReader(conf.get("filename").toString());
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException("Error reading file ["+conf.get("wordFile")+"]");
 		}
