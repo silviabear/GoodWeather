@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 
 import backtype.storm.Config;
+import backtype.storm.LocalCluster;
 import backtype.storm.topology.IRichSpout;
 import backtype.storm.collector.SpoutOutputCollector;
 
@@ -25,6 +26,7 @@ public class PortReader extends IRichSpout {
 		}
 		String str;
 		//Open the reader
+		open(LocalCluster.config, new SpoutOutputCollector());
 		BufferedReader reader = new BufferedReader(fileReader);
 		try{
 			//Read all lines

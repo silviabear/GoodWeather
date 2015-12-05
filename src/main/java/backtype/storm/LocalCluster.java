@@ -39,6 +39,8 @@ public class LocalCluster {
 	private static boolean isSink;
 	private static boolean isSource;
 	
+	public static Config config;
+	
 	private static IComponent comp;
 	
 	private static final Map<Long, ITuple> toBeAckedQueue = Collections.synchronizedMap(new HashMap<Long, ITuple>());
@@ -59,6 +61,7 @@ public class LocalCluster {
 		
 		comp = topology.getComponent(localhost);
 		String outputIP = topology.getOutputIP(localhost);
+		this.config = config;
 		
 		if(outputIP != null) { 
 			outputSender = new P2PSender(outputIP, incomingPort);
