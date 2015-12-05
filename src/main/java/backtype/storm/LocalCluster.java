@@ -28,7 +28,7 @@ public class LocalCluster {
 	final public static int incomingPort = 43244;
 	final public static int ackPort = 43245;
 	
-	final private long stablizingTime = 30000;
+	final private long stablizingTime = 15000;
 	
 	private static final Listener inputListener = new Listener(incomingPort);
 	private static P2PSender outputSender;
@@ -156,6 +156,7 @@ public class LocalCluster {
 		
 		final IRichBolt bolt = input;
 		
+		outputSender.run();
 		if(!isSink) {
 			Thread outputThread = new Thread() {
 				@Override
