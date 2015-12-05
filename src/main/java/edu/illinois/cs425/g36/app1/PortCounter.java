@@ -10,7 +10,7 @@ import backtype.storm.tuple.Tuple;
 
 public class PortCounter extends IRichBolt {
 	
-	Map<String, Integer> counters;
+	Map<String, Integer> counters = new HashMap<String, Integer>();
 	
 	/**
 	* At the end of the spout (when the cluster is shutdown
