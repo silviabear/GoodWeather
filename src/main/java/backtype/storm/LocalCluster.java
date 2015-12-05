@@ -73,6 +73,7 @@ public class LocalCluster {
 			isSource = true;
 			runSpout((IRichSpout)comp);
 		} else if(comp instanceof IRichBolt) {
+			ackSenders = new HashMap<String, P2PSender>();
 			for(String inputIP : topology.getInputIPs(localhost)) {
 				ackSenders.put(inputIP, new P2PSender(inputIP, ackPort));
 			}
