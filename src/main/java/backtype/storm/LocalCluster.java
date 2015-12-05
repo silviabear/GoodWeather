@@ -114,7 +114,7 @@ public class LocalCluster {
 					try {
 						ITuple tuple = collector.nextTuple();
 						outputSender.send(tuple);
-						log.debug("Send tuple " + id);
+						log.debug("Send tuple " + tuple.id);
 						toBeAckedQueue.put(tuple.id, tuple);
 					} catch (InterruptedException e) {
 						break;
