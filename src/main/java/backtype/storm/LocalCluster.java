@@ -146,7 +146,7 @@ public class LocalCluster {
 		Thread inputListenerThread = new Thread() {
 			@Override
 			public void run() {
-				log.debug("Tuple listener run on " + inputListener.getPort())
+				log.debug("Tuple listener run on " + inputListener.getPort());
 				inputListener.run();
 			}
 			
