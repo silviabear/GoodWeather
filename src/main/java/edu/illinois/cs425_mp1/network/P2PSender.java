@@ -40,7 +40,14 @@ public class P2PSender implements Sender {
         this.PORT = port;
     }
     
-    /**
+    public String getHost() {
+    	return this.HOST;
+    }
+    
+    public int getPort() {
+    	return this.PORT;
+    }
+     /**
      * Connecting the server(listener)
      */
     public void run() {

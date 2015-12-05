@@ -31,6 +31,10 @@ public class Listener {
     public Listener(int port) {
         this.port = port;
     }
+    
+    public int getPort() {
+    	return this.port;
+    }
 
     /**
      * Tell the listener to run

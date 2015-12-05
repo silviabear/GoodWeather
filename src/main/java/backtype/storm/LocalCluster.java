@@ -146,6 +146,7 @@ public class LocalCluster {
 		Thread inputListenerThread = new Thread() {
 			@Override
 			public void run() {
+				log.debug("Tuple listener run on " + inputListener.getPort())
 				inputListener.run();
 			}
 			
@@ -199,6 +200,7 @@ public class LocalCluster {
 	}
 	
 	private static void forwardFin(Fin fin) {
+		log.debug("forward FIN to " + outputSender.getHost() + ": " + outputSender.getPort());
 		outputSender.send(fin);
 	}
 	
