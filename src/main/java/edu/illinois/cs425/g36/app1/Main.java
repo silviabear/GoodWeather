@@ -29,7 +29,7 @@ public class Main {
 		builder.addNode("172.22.151.52", "172.22.151.53", new PortReader());
 		builder.addNode("172.22.151.53", "172.22.151.54", new PortNormalizer());
 		builder.addNode("172.22.151.54", null, new PortCounter());
-		conf.put("filename", "data/app1-data");
+		conf.put("filename", "data/testdata1");
 		LocalCluster cluster = new LocalCluster();
 		cluster.submitTopology("Getting-Started-Toplogie", conf, builder.createTopology());
 		System.out.println("Enter anything to initiate the topology");
