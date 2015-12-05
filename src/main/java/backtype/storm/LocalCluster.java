@@ -148,6 +148,7 @@ public class LocalCluster {
 	
 	public void startSenders() {
 		if(!isSink) {
+			outputSenders = new HashMap<String, P2PSender>();
 			for(String outputIP : topology.getOutputIP(localhost)) {
 				P2PSender outputSender = new P2PSender(outputIP, incomingPort);
 				outputSenders.put(outputIP, outputSender);
