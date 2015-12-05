@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>edu.illinois</groupId>
-    <artifactId>cs425-mp1</artifactId>
+    <artifactId>cs425.g36</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
