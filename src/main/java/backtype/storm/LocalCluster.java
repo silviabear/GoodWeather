@@ -30,11 +30,13 @@ public class LocalCluster {
 	
 	final private long stablizingTime = 30000;
 	
-	private static Listener inputListener;
+	private static final Listener inputListener = new Listener(incomingPort);
 	private static P2PSender outputSender;
 	
 	private Listener ackListener;
 	private static Map<String, P2PSender> ackSenders;
+	
+	private Thread ackListenerThread;
 	
 	private Thread outputThread;
 	
@@ -69,7 +71,18 @@ public class LocalCluster {
 		this.config = config;
 		
 		if(outputIP != null) { 
+			log.debug("Tuple sender send to " + outputIP + ":" + incomingPort);
 			outputSender = new P2PSender(outputIP, incomingPort);
+			
+			ackListener = new Listener(ackPort);
+			ackListenerThread = new Thread() {
+				@Override
+				public void run() {
+					log.debug("Start ack listener");
+					ackListener.run();
+				}
+			};
+			ackListenerThread.start();
 		} else {
 			isSink = true;
 		}
@@ -110,6 +123,7 @@ public class LocalCluster {
 			@Override
 			public void run() {
 				SpoutOutputCollector collector = input.getOutputCollector();
+				outputSender.run();
 				while(true) {
 					try {
 						ITuple tuple = collector.nextTuple();
@@ -123,13 +137,24 @@ public class LocalCluster {
 			}
 		};
 		outputThread.start();
+		
+		
 	}
 	
 	private void runBolt(IRichBolt input) {
 		
-		inputListener = new Listener(incomingPort);
+		Thread inputListenerThread = new Thread() {
+			@Override
+			public void run() {
+				inputListener.run();
+			}
+			
+		};
+		
+		inputListenerThread.start();
 		
 		final IRichBolt bolt = input;
+		
 		if(!isSink) {
 			Thread outputThread = new Thread() {
 				@Override
