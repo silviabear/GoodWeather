@@ -28,7 +28,7 @@ public class LocalCluster {
 	final public static int incomingPort = 43244;
 	final public static int ackPort = 43245;
 	
-	final private long stablizingTime = 300000;
+	final private long stablizingTime = 30000;
 	
 	private static Listener inputListener;
 	private static P2PSender outputSender;
@@ -151,6 +151,7 @@ public class LocalCluster {
 	
 	public static void handleInput(ITuple tuple) {
 		long id = tuple.id;
+		log.debug("Receive tuple " + id);
 		if(tuple instanceof Ack) {
 			if(isSource) {
 				toBeAckedQueue.remove(id);
@@ -158,6 +159,7 @@ public class LocalCluster {
 				backwardAck((Ack)tuple);
 			}
 		} else if(tuple instanceof Fin) {
+			log.debug("Receive fin");
 			if(isSink) {
 				((IRichBolt)comp).cleanup();
 			} else {
