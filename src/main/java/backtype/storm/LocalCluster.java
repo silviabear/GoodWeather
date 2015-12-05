@@ -28,7 +28,7 @@ public class LocalCluster {
 	final public static int incomingPort = 43244;
 	final public static int ackPort = 43245;
 	
-	final private long stablizingTime = 5000;
+	final private long stablizingTime = 10000;
 	
 	private static final Listener inputListener = new Listener(incomingPort);
 	private static P2PSender outputSender;
