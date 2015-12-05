@@ -39,5 +39,6 @@ public class Main {
 		} catch (IOException e) {
 		}
 		
+		cluster.start();
 	}
 }
