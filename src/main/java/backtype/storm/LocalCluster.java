@@ -28,7 +28,7 @@ public class LocalCluster {
 	final public static int incomingPort = 43244;
 	final public static int ackPort = 43245;
 	
-	final private long stablizingTime = 15000;
+	final private long stablizingTime = 5000;
 	
 	private static final Listener inputListener = new Listener(incomingPort);
 	private static P2PSender outputSender;
@@ -143,6 +143,22 @@ public class LocalCluster {
 	
 	private void runBolt(IRichBolt input) {
 		
+		Thread inputListenerThread = new Thread() {
+			@Override
+			public void run() {
+				log.debug("Tuple listener run on " + inputListener.getPort());
+				inputListener.run();
+			}
+			
+		};
+		
+		inputListenerThread.start();
+		
+		try {
+			Thread.sleep(stablizingTime);
+		} catch (InterruptedException e1) {
+		}
+		
 		final IRichBolt bolt = input;
 		
 		if(!isSink) {
@@ -164,16 +180,6 @@ public class LocalCluster {
 			outputThread.start();
 		} 
 		
-		Thread inputListenerThread = new Thread() {
-			@Override
-			public void run() {
-				log.debug("Tuple listener run on " + inputListener.getPort());
-				inputListener.run();
-			}
-			
-		};
-		
-		inputListenerThread.start();
 	}
 	
 	public static void handleInput(ITuple tuple) {
