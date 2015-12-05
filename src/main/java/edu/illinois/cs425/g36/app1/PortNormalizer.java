@@ -13,7 +13,7 @@ public class PortNormalizer extends IRichBolt {
 	
 	@Override
 	public void execute(String input) {
-		String port = input.split(" ")[1];
+		String port = input.split(" ")[2];
 		collector.emit(port);	
 	}
 	
