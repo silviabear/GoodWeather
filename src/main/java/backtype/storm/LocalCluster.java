@@ -105,19 +105,6 @@ public class LocalCluster {
 	private void bootstrap() {
 		inputListenerThread.start();
 		ackListenerThread.start();
-		if(!isSink) {
-			outputSender = new P2PSender(topology.getOutputIP(localhost), incomingPort);
-			outputSender.run();
-		}
-		
-		if(comp instanceof IRichBolt) {
-			ackSenders = new HashMap<String, P2PSender>();
-			for(String inputIP : topology.getInputIPs(localhost)) {
-				P2PSender sender = new P2PSender(inputIP, ackPort);
-				sender.run();
-				ackSenders.put(inputIP, sender);
-			}
-		}
 	}
 	
 	private void runSpout(IRichSpout spout) {
@@ -152,6 +139,22 @@ public class LocalCluster {
 		};
 		outputThread.start();
 		
+	}
+	
+	public void startSenders() {
+		if(!isSink) {
+			outputSender = new P2PSender(topology.getOutputIP(localhost), incomingPort);
+			outputSender.run();
+		}
+		
+		if(comp instanceof IRichBolt) {
+			ackSenders = new HashMap<String, P2PSender>();
+			for(String inputIP : topology.getInputIPs(localhost)) {
+				P2PSender sender = new P2PSender(inputIP, ackPort);
+				sender.run();
+				ackSenders.put(inputIP, sender);
+			}
+		}
 	}
 	
 	private void runBolt(IRichBolt input) {

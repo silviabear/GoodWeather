@@ -32,8 +32,15 @@ public class Main {
 		conf.put("filename", "data/testdata1");
 		LocalCluster cluster = new LocalCluster();
 		cluster.submitTopology("Getting-Started-Toplogie", conf, builder.createTopology());
-		System.out.println("Enter anything to start the topology");
+		System.out.println("Enter anything to initiate the topology");
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		try {
+			br.readLine();
+		} catch (IOException e) {
+		}
+		cluster.startSenders();
+		System.out.println("Enter anything to start the topology");
+		
 		try {
 			br.readLine();
 		} catch (IOException e) {
