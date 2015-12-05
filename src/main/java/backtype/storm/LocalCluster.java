@@ -171,7 +171,6 @@ public class LocalCluster {
 		final IRichBolt bolt = input;
 		
 		if(!isSink) {
-			outputSenders.get(0).run();
 			Thread outputThread = new Thread() {
 				@Override
 				public void run() {
@@ -180,7 +179,9 @@ public class LocalCluster {
 					while(true) {
 						try {
 							ITuple tuple = collector.nextTuple();
-							outputSenders.get(0).send(tuple);
+							for(P2PSender sender : outputSenders.values()) {
+								sender.send(tuple);
+							}
 						} catch (InterruptedException e) {
 							break;
 						}
