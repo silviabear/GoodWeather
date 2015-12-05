@@ -1,5 +1,8 @@
 package edu.illinois.cs425.g36.app1;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,8 +21,6 @@ import backtype.storm.topology.TopologyBuilder;
  */
 
 public class Main {
-
-	private final static long runningTime = 50000000;
 	
 	public static void main(String[] args) {
 		
@@ -31,10 +32,12 @@ public class Main {
 		conf.put("filename", "data/testdata1");
 		LocalCluster cluster = new LocalCluster();
 		cluster.submitTopology("Getting-Started-Toplogie", conf, builder.createTopology());
-		
+		System.out.println("Enter anything to start the topology");
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		try {
-			Thread.sleep(runningTime);
-		} catch (InterruptedException e) {
+			br.readLine();
+		} catch (IOException e) {
 		}
+		
 	}
 }

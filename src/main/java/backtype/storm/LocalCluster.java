@@ -28,16 +28,27 @@ public class LocalCluster {
 	final public static int incomingPort = 43244;
 	final public static int ackPort = 43245;
 	
-	final private long stablizingTime = 10000;
-	
 	private static final Listener inputListener = new Listener(incomingPort);
 	private static P2PSender outputSender;
 	
-	private Listener ackListener;
+	private final Listener ackListener = new Listener(ackPort);
 	private static Map<String, P2PSender> ackSenders;
 	
-	private Thread ackListenerThread;
-	
+	private final Thread ackListenerThread = new Thread() {
+		@Override
+		public void run() {
+			log.debug("Start ack listener");
+			ackListener.run();
+		}
+	};
+	private final Thread inputListenerThread = new Thread() {
+		@Override
+		public void run() {
+			log.debug("Tuple listener run on " + inputListener.getPort());
+			inputListener.run();
+		}
+		
+	};
 	private Thread outputThread;
 	
 	private static boolean isSink;
@@ -46,6 +57,8 @@ public class LocalCluster {
 	public static Config config;
 	
 	private static IComponent comp;
+	
+	private StormTopology topology;
 	
 	private static final Map<Long, ITuple> toBeAckedQueue = Collections.synchronizedMap(new HashMap<Long, ITuple>());
 	
@@ -69,24 +82,16 @@ public class LocalCluster {
 		comp = topology.getComponent(localhost);
 		String outputIP = topology.getOutputIP(localhost);
 		this.config = config;
-		
-		if(outputIP != null) { 
-			log.debug("Tuple sender send to " + outputIP + ":" + incomingPort);
-			outputSender = new P2PSender(outputIP, incomingPort);
-			
-			ackListener = new Listener(ackPort);
-			ackListenerThread = new Thread() {
-				@Override
-				public void run() {
-					log.debug("Start ack listener");
-					ackListener.run();
-				}
-			};
-			ackListenerThread.start();
-		} else {
+		this.topology = topology;
+		if(outputIP == null) {
 			isSink = true;
 		}
 	
+		bootstrap();
+	}
+	
+	public void start() {
+		
 		if(comp instanceof IRichSpout) {
 			log.debug("Runing spout");
 			isSource = true;
@@ -102,6 +107,11 @@ public class LocalCluster {
 
 	}
 	
+	private void bootstrap() {
+		inputListenerThread.start();
+		ackListenerThread.start();
+	}
+	
 	private void runSpout(IRichSpout spout) {
 		
 		final IRichSpout input = spout;
@@ -115,10 +125,6 @@ public class LocalCluster {
 		};
 		
 		collectorThread.start();
-		try {
-			Thread.sleep(stablizingTime);
-		} catch (InterruptedException e1) {
-		}
 		outputThread = new Thread() {
 			@Override
 			public void run() {
@@ -138,26 +144,9 @@ public class LocalCluster {
 		};
 		outputThread.start();
 		
-		
 	}
 	
 	private void runBolt(IRichBolt input) {
-		
-		Thread inputListenerThread = new Thread() {
-			@Override
-			public void run() {
-				log.debug("Tuple listener run on " + inputListener.getPort());
-				inputListener.run();
-			}
-			
-		};
-		
-		inputListenerThread.start();
-		
-		try {
-			Thread.sleep(stablizingTime);
-		} catch (InterruptedException e1) {
-		}
 		
 		final IRichBolt bolt = input;
 		
