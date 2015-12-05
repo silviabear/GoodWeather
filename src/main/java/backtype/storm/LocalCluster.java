@@ -37,6 +37,8 @@ public class LocalCluster {
 	private final Listener ackListener = new Listener(ackPort);
 	private static Map<String, P2PSender> ackSenders;
 	
+	private static int sinkFinCounter = 0;
+	
 	private final Thread ackListenerThread = new Thread() {
 		@Override
 		public void run() {
@@ -134,7 +136,13 @@ public class LocalCluster {
 				while(true) {
 					try {
 						ITuple tuple = collector.nextTuple();
-						outputSenders.get(currentSender % outputSenders.size()).send(tuple);
+						if(tuple instanceof Fin) {
+							for(P2PSender sender : outputSenders) {
+								sender.send(tuple);
+							}
+						} else {
+							outputSenders.get(currentSender % outputSenders.size()).send(tuple);
+						}
 						log.debug("Send tuple " + tuple.id);
 						toBeAckedQueue.put(tuple.id, tuple);
 						currentSender++;
@@ -205,7 +213,10 @@ public class LocalCluster {
 		} else if(tuple instanceof Fin) {
 			log.debug("Receive fin");
 			if(isSink) {
-				((IRichBolt)comp).cleanup();
+				sinkFinCounter++;
+				if(sinkFinCounter == ackSenders.size()) { 
+					((IRichBolt)comp).cleanup();
+				}
 			} else {
 				if(comp instanceof IRichBolt) {
 					((IRichBolt)comp).onFinish();
