@@ -142,7 +142,17 @@ public class LocalCluster {
 	}
 	
 	private void runBolt(IRichBolt input) {
+
+		Thread inputListenerThread = new Thread() {
+			@Override
+			public void run() {
+				log.debug("Tuple listener run on " + inputListener.getPort());
+				inputListener.run();
+			}
+			
+		};
 		
+		inputListenerThread.start();
 		final IRichBolt bolt = input;
 		
 		if(!isSink) {
@@ -164,16 +174,6 @@ public class LocalCluster {
 			outputThread.start();
 		} 
 		
-		Thread inputListenerThread = new Thread() {
-			@Override
-			public void run() {
-				log.debug("Tuple listener run on " + inputListener.getPort());
-				inputListener.run();
-			}
-			
-		};
-		
-		inputListenerThread.start();
 	}
 	
 	public static void handleInput(ITuple tuple) {
