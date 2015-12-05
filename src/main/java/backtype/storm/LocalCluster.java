@@ -88,6 +88,9 @@ public class LocalCluster {
 		Set<String> outputIP = topology.getOutputIP(localhost);
 		this.config = config;
 		this.topology = topology;
+		for(String output : outputIP) {
+			System.out.println(output);
+		}
 		if(outputIP == null || outputIP.size() == 0) {
 			isSink = true;
 		}
