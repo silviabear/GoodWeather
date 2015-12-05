@@ -1,5 +1,8 @@
 package edu.illinois.cs425.g36.app1;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,11 +14,19 @@ public class CountFinalizer extends IRichBolt {
 	
 	@Override
 	public void cleanup() {
-		System.out.println("-- Port Counter Results --");
-		for(String port : counter.keySet()) {
-			
-			System.out.println(port + ": " + counter.get(port));
-		}
+		PrintWriter writer;
+		try {
+			writer = new PrintWriter("result", "UTF-8");
+			writer.println("-- Port Counter Results --");
+			for(Map.Entry<String, Integer> entry : counter.entrySet()){
+				writer.println(entry.getKey()+": "+entry.getValue());
+			}
+			writer.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} 
 	}
 	
 	@Override

@@ -212,7 +212,6 @@ public class LocalCluster {
 			}
 		} else if(tuple instanceof Fin) {
 			log.debug("Receive fin");
-			System.out.println(isSink);
 			if(isSink) {
 				sinkFinCounter++;
 				if(sinkFinCounter == ackSenders.size()) { 
