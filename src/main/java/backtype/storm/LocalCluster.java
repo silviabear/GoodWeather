@@ -1,8 +1,10 @@
 package backtype.storm;
 
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -30,7 +32,7 @@ public class LocalCluster {
 	final public static int ackPort = 43245;
 	
 	private static final Listener inputListener = new Listener(incomingPort);
-	private static Map<String, P2PSender> outputSenders;
+	private static List<P2PSender> outputSenders;
 	
 	private final Listener ackListener = new Listener(ackPort);
 	private static Map<String, P2PSender> ackSenders;
@@ -125,10 +127,10 @@ public class LocalCluster {
 			@Override
 			public void run() {
 				SpoutOutputCollector collector = input.getOutputCollector();
-				for(P2PSender outputSender : outputSenders.values()) {
+				for(P2PSender outputSender : outputSenders) {
 					outputSender.run();
 				}
-				long currentSender = 0;
+				int currentSender = 0;
 				while(true) {
 					try {
 						ITuple tuple = collector.nextTuple();
@@ -148,10 +150,10 @@ public class LocalCluster {
 	
 	public void startSenders() {
 		if(!isSink) {
-			outputSenders = new HashMap<String, P2PSender>();
+			outputSenders = new ArrayList<P2PSender>();
 			for(String outputIP : topology.getOutputIP(localhost)) {
 				P2PSender outputSender = new P2PSender(outputIP, incomingPort);
-				outputSenders.put(outputIP, outputSender);
+				outputSenders.add(outputSender);
 				outputSender.run();
 			}
 		}
@@ -179,9 +181,7 @@ public class LocalCluster {
 					while(true) {
 						try {
 							ITuple tuple = collector.nextTuple();
-							for(P2PSender sender : outputSenders.values()) {
-								sender.send(tuple);
-							}
+							outputSenders.get(0).send(tuple);
 						} catch (InterruptedException e) {
 							break;
 						}
