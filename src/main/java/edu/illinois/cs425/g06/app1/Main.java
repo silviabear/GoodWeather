@@ -28,7 +28,7 @@ public class Main {
 		builder.addNode("172.22.151.52", "172.22.151.53", new PortCounter());
 		builder.addNode("172.22.151.53", "172.22.151.54", new PortNormalizer());
 		builder.addNode("172.22.151.54", null, new PortReader());
-		conf.put("wordsFile", args[0]);
+		conf.put("data/testdata1", args[0]);
 		LocalCluster cluster = new LocalCluster();
 		cluster.submitTopology("Getting-Started-Toplogie", conf, builder.createTopology());
 		
