@@ -3,6 +3,7 @@ package edu.illinois.cs425.g36.app1;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.Collections;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -11,7 +12,7 @@ import backtype.storm.topology.IRichBolt;
 
 public class CountFinalizer extends IRichBolt {
 
-	SortedMap<String, Integer> counter = new TreeMap<String, Integer>();
+	Map<String, Integer> counter = Collections.synchronizedMap(new TreeMap<String, Integer>());
 	
 	@Override
 	public void cleanup() {
