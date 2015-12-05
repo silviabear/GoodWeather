@@ -54,7 +54,7 @@
         </Logger>
         <Logger name="collectorLogger" level="trace" additivity="false">
         	<AppenderRef ref="RollingFile"/>
-        	<!--<AppenderRef ref="Console"/>>
+        	<!--<AppenderRef ref="Console"/>-->
         </Logger>
         <Root level="error">
             <AppenderRef ref="Console"/>
