@@ -1,4 +1,4 @@
-package edu.illinois.cs425.g06.app1;
+package edu.illinois.cs425.g36.app1;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;

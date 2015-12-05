@@ -26,7 +26,7 @@ public class LocalCluster {
 	final public static int incomingPort = 43244;
 	final public static int ackPort = 43245;
 	
-	final private long timeout = 3000;
+	final private long stablizingTime = 300000;
 	
 	private static Listener inputListener;
 	private static P2PSender outputSender;
@@ -90,7 +90,10 @@ public class LocalCluster {
 		};
 		
 		collectorThread.start();
-		
+		try {
+			Thread.sleep(stablizingTime);
+		} catch (InterruptedException e1) {
+		}
 		outputThread = new Thread() {
 			@Override
 			public void run() {
