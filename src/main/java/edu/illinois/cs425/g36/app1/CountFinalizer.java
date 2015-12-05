@@ -3,14 +3,15 @@ package edu.illinois.cs425.g36.app1;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import backtype.storm.topology.IRichBolt;
 
 public class CountFinalizer extends IRichBolt {
 
-	Map<String, Integer> counter = new HashMap<String, Integer>();
+	SortedMap<String, Integer> counter = new TreeMap<String, Integer>();
 	
 	@Override
 	public void cleanup() {
@@ -37,7 +38,7 @@ public class CountFinalizer extends IRichBolt {
 		if(!counter.containsKey(port)) {
 			counter.put(port, 0);
 		}
-		counter.put(port, counter.get(port) + 1);
+		counter.put(port, counter.get(port) + count);
 	}
 
 }

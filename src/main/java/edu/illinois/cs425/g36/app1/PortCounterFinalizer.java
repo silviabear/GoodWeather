@@ -5,12 +5,14 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import backtype.storm.topology.IRichBolt;
 
 public class PortCounterFinalizer extends IRichBolt {
 	
-	Map<String, Integer> counters = new HashMap<String, Integer>();
+	SortedMap<String, Integer> counters = new TreeMap<String, Integer>();
 	
 	/**
 	* At the end of the spout (when the cluster is shutdown
