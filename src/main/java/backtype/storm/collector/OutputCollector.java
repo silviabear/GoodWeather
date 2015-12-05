@@ -14,7 +14,7 @@ import backtype.storm.tuple.Values;
 
 public class OutputCollector {
 
-protected static final ArrayBlockingQueue<ITuple> queue = new ArrayBlockingQueue<ITuple>(1000, true);
+	protected static final ArrayBlockingQueue<ITuple> queue = new ArrayBlockingQueue<ITuple>(1000, true);
 	
 	protected static final int maxPacketSize = 50;
 	
@@ -33,6 +33,10 @@ protected static final ArrayBlockingQueue<ITuple> queue = new ArrayBlockingQueue
 			dumpTuple();
 			cacheSize = 0;
 		}
+	}
+	
+	public void emit(ITuple tuple) {
+		queue.add(tuple);
 	}
 	
 	protected void dumpTuple() {

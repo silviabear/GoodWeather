@@ -197,8 +197,9 @@ public class LocalCluster {
 			if(isSink) {
 				((IRichBolt)comp).cleanup();
 			} else {
-				((IRichBolt)comp).getOutputCollector().finish();
-				forwardFin((Fin)tuple);
+				OutputCollector collector = ((IRichBolt)comp).getOutputCollector();
+				collector.finish();
+				collector.emit(tuple);
 			}
 		} else if(tuple instanceof Tuple) {
 			IRichBolt bolt = (IRichBolt)comp;
@@ -206,11 +207,6 @@ public class LocalCluster {
 				bolt.execute(str);
 			}
 		}
-	}
-	
-	private static void forwardFin(Fin fin) {
-		log.debug("forward FIN to " + outputSender.getHost() + ": " + outputSender.getPort());
-		outputSender.send(fin);
 	}
 	
 	private static void backwardAck(Ack ack) {
