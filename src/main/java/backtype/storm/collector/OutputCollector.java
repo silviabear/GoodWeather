@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import backtype.storm.LocalCluster;
 import backtype.storm.tuple.ITuple;
 import backtype.storm.tuple.Tuple;
@@ -18,8 +21,11 @@ protected static final ArrayBlockingQueue<ITuple> queue = new ArrayBlockingQueue
 	protected String[] cache = new String[maxPacketSize];
 	
 	protected int cacheSize = 0;
+
+	protected Logger log = LogManager.getLogger("collectorLogger");
 	
 	public void emit(String str) {
+		log.debug("emit " + str);
 		if(cacheSize < maxPacketSize) {
 			cache[cacheSize] = str;
 			cacheSize++;

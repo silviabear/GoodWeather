@@ -96,6 +96,7 @@ public class LocalCluster {
 		Thread collectorThread = new Thread() {
 			@Override
 			public void run() {
+				log.debug("Start collecting data");
 				input.nextTuple();
 			}
 		};

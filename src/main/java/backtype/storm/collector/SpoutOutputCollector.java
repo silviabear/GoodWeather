@@ -15,6 +15,7 @@ public class SpoutOutputCollector extends OutputCollector {
 	
 	@Override 
 	public void finish() {
+		log.debug("finish");
 		if(cacheSize > 0) {
 			dumpTuple();
 		}
