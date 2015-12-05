@@ -88,7 +88,7 @@ public class LocalCluster {
 		Set<String> outputIP = topology.getOutputIP(localhost);
 		this.config = config;
 		this.topology = topology;
-		if(outputIP == null) {
+		if(outputIP == null || outputIP.size() == 0) {
 			isSink = true;
 		}
 	
@@ -213,7 +213,6 @@ public class LocalCluster {
 		} else if(tuple instanceof Fin) {
 			log.debug("Receive fin");
 			System.out.println(isSink);
-			System.out.println(ackSenders.size());
 			if(isSink) {
 				sinkFinCounter++;
 				if(sinkFinCounter == ackSenders.size()) { 
