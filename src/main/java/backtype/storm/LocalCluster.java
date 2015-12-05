@@ -4,7 +4,9 @@ import java.net.InetAddress;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ArrayBlockingQueue;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import edu.illinois.cs425_mp1.network.Listener;
 import edu.illinois.cs425_mp1.network.P2PSender;
@@ -47,10 +49,13 @@ public class LocalCluster {
 	
 	private static final Map<Long, String> idToInputIP = Collections.synchronizedMap(new HashMap<Long, String>());
 	
+	private static Logger log = LogManager.getLogger("clusterLogger");
+	
 	static {
         //Get localhost value
         try {
             localhost = InetAddress.getLocalHost().getHostAddress();
+            log.debug("Current localhost" + localhost);
         } catch (Exception e) {
             System.out.println("fail to inititate local node");
             localhost = "127.0.0.1";
@@ -70,9 +75,11 @@ public class LocalCluster {
 		}
 	
 		if(comp instanceof IRichSpout) {
+			log.debug("Runing spout");
 			isSource = true;
 			runSpout((IRichSpout)comp);
 		} else if(comp instanceof IRichBolt) {
+			log.debug("Running bolt");
 			ackSenders = new HashMap<String, P2PSender>();
 			for(String inputIP : topology.getInputIPs(localhost)) {
 				ackSenders.put(inputIP, new P2PSender(inputIP, ackPort));

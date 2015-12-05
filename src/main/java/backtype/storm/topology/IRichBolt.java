@@ -5,7 +5,7 @@ import backtype.storm.collector.OutputCollector;
 
 public abstract class IRichBolt extends IComponent {
 	
-	protected BoltOutputCollector collector;
+	protected BoltOutputCollector collector = new BoltOutputCollector();
 	
 	public void cleanup() {
 		

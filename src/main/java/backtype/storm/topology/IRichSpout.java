@@ -4,7 +4,7 @@ import backtype.storm.collector.SpoutOutputCollector;
 
 public abstract class IRichSpout extends IComponent {
     
-	protected SpoutOutputCollector collector;
+	protected SpoutOutputCollector collector = new SpoutOutputCollector();
 	
 	public void close() {
 		
