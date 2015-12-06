@@ -89,7 +89,7 @@ public class P2PSender implements Sender {
         log.trace("sender sends msg: " + msg.toString());
         try {
             cf = channel.writeAndFlush(msg);
-            log.trace("request sent");
+            log.trace("request sent to " + this.HOST);
         } catch (Exception e) {
             log.trace("node " + HOST + "failed, skip");
             P2PSender[] channels = Adapter.getChannels();
