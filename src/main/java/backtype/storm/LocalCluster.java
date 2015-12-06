@@ -137,6 +137,7 @@ public class LocalCluster {
 		outputThread = new Thread() {
 			@Override
 			public void run() {
+				log.debug("Sender thread runs");
 				SpoutOutputCollector collector = input.getOutputCollector();
 				for(P2PSender outputSender : outputSenders) {
 					outputSender.run();
@@ -150,9 +151,9 @@ public class LocalCluster {
 								sender.send(tuple);
 							}
 						} else {
+							log.debug("Request send tuple " + tuple.id);
 							synchronized(outputSenders) {
 								outputSenders.get(currentSender % outputSenders.size()).send(tuple);
-								
 							}
 						}
 						log.debug("Send tuple " + tuple.id);
@@ -169,6 +170,7 @@ public class LocalCluster {
 		examineTimeoutThread = new Thread() {
 			@Override
 			public void run() {
+				log.debug("examineTimeoutThread run");
 				while(true) {
 					try {
 						Thread.sleep(1000);
@@ -195,6 +197,7 @@ public class LocalCluster {
 				}
 			}
 		};
+		examineTimeoutThread.start();
 	}
 	
 	public void startSenders() {
