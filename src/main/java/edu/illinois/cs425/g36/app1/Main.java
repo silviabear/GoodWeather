@@ -41,7 +41,7 @@ public class Main {
 			builder.addNode("172.22.151.53", "172.22.151.57", new PortNormalizer());
 			builder.addNode("172.22.151.54", "172.22.151.57", new PortNormalizer());
 			builder.addNode("172.22.151.55", "172.22.151.57", new PortNormalizer());
-			builder.addNode("172.22.151.55", "172.22.151.57", new PortNormalizer());
+			builder.addNode("172.22.151.56", "172.22.151.57", new PortNormalizer());
 			builder.addNode("172.22.151.57", null, new PortCounterFinalizer());
 		}
 		conf.put("filename", "data/app1-data");
