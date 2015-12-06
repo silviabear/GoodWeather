@@ -203,7 +203,6 @@ public class LocalCluster {
 	public void startSenders() {
 		if(!isSink) {
 			outputSenders = new ArrayList<P2PSender>();
-			lastAck = new HashMap<String, DateTime>();
 			for(String outputIP : topology.getOutputIP(localhost)) {
 				P2PSender outputSender = new P2PSender(outputIP, incomingPort);
 				lastAck.put(outputIP, null);
@@ -219,6 +218,8 @@ public class LocalCluster {
 				sender.run();
 				ackSenders.put(inputIP, sender);
 			}
+		} else {
+			lastAck = new HashMap<String, DateTime>();
 		}
 	}
 	
