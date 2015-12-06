@@ -182,13 +182,17 @@ public class LocalCluster {
 					try {
 						Thread.sleep(100);
 						DateTime time = new DateTime();
+						System.out.println(time);
+						String toRemove = null;
 						for(String outputIP : lastAck.keySet()) {
 							if(lastAck.get(outputIP) == null) {
 								System.out.println("null");
 								continue;
 							}
+							int index = -1;
+							System.out.println(lastAck.get(outputIP));
 							if(time.getMillis() - lastAck.get(outputIP).getMillis() > timeout) {
-								int index = -1;
+								System.out.println("gonna fail");
 								for(int i = 0; i < outputSenders.size(); i++) {
 									if(outputSenders.get(i).getHost().equals(outputIP)) {
 										index = i;
@@ -200,8 +204,11 @@ public class LocalCluster {
 								for(ITuple tuple : toBeAckedQueue.values()) {
 									((IRichSpout)comp).getOutputCollector().emit(tuple);
 								}
+								toRemove = outputIP;
+								break;
 							}
 						}
+						lastAck.remove(toRemove);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
