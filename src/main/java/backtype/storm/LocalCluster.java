@@ -274,13 +274,13 @@ public class LocalCluster {
 				if(comp instanceof IRichBolt) {
 					((IRichBolt)comp).onFinish();
 				}
-				outputIdToUse.add(id);
 				OutputCollector collector = ((IRichBolt)comp).getOutputCollector();
 				collector.finish();
 				collector.emit(tuple);
 			}
 		} else if(tuple instanceof Tuple) {
 			IRichBolt bolt = (IRichBolt)comp;
+			outputIdToUse.add(id);
 			for(String str : ((Tuple) tuple).getValues().values()) {
 				bolt.execute(str);
 			}
