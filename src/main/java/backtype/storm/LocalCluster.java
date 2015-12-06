@@ -270,6 +270,7 @@ public class LocalCluster {
 			log.debug("Receive fin");
 			if(isSink) {
 				sinkFinCounter++;
+				System.out.println(sinkFinCounter + "  " + sinkFinCriteria);
 				if(sinkFinCounter == ackSenders.size()) {
 					log.debug("Finish and cleanup");
 					((IRichBolt)comp).cleanup();
