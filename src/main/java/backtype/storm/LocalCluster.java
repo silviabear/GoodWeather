@@ -74,7 +74,7 @@ public class LocalCluster {
 	private static Logger log = LogManager.getLogger("clusterLogger");
 	
 	private final static long timeout = 10000;
-	private static Map<String, DateTime> lastAck;
+	private static Map<String, DateTime> lastAck = Collections.synchronizedMap(new HashMap<String, DateTime>());
 	
 	private Thread examineTimeoutThread;
 	
@@ -209,9 +209,7 @@ public class LocalCluster {
 				sender.run();
 				ackSenders.put(inputIP, sender);
 			}
-		} else {
-			lastAck = new HashMap<String, DateTime>();
-		}
+		} 
 		
 		if(!isSink) {
 			outputSenders = new ArrayList<P2PSender>();
