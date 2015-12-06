@@ -184,6 +184,7 @@ public class LocalCluster {
 						DateTime time = new DateTime();
 						for(String outputIP : lastAck.keySet()) {
 							if(lastAck.get(outputIP) == null) {
+								System.out.println("null");
 								continue;
 							}
 							if(time.getMillis() - lastAck.get(outputIP).getMillis() > timeout) {
@@ -268,7 +269,6 @@ public class LocalCluster {
 			lastAck.put(tuple.sourceAddr, new DateTime());
 			if(isSource) {
 				toBeAckedQueue.remove(id);
-				lastAck.put(tuple.sourceAddr, new DateTime());
 			} else {
 				backwardAck((Ack)tuple);
 			}
