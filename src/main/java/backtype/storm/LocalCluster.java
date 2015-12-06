@@ -75,7 +75,7 @@ public class LocalCluster {
 	
 	private static Logger log = LogManager.getLogger("clusterLogger");
 	
-	private final static long timeout = 10000;
+	private final static long timeout = 5000;
 	private static Map<String, DateTime> lastAck = Collections.synchronizedMap(new HashMap<String, DateTime>());
 	
 	private Thread examineTimeoutThread;
