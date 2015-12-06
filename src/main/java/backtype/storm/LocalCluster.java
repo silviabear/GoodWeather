@@ -180,7 +180,7 @@ public class LocalCluster {
 				log.debug("examineTimeoutThread run");
 				while(true) {
 					try {
-						Thread.sleep(1000);
+						Thread.sleep(100);
 						DateTime time = new DateTime();
 						for(String outputIP : lastAck.keySet()) {
 							if(lastAck.get(outputIP) == null) {
@@ -265,6 +265,7 @@ public class LocalCluster {
 		long id = tuple.id;
 		log.debug("Receive tuple " + id);
 		if(tuple instanceof Ack) {
+			System.out.println("Receive ack");
 			if(isSource) {
 				toBeAckedQueue.remove(id);
 				lastAck.put(tuple.sourceAddr, new DateTime());
