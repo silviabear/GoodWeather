@@ -201,15 +201,6 @@ public class LocalCluster {
 	}
 	
 	public void startSenders() {
-		if(!isSink) {
-			outputSenders = new ArrayList<P2PSender>();
-			for(String outputIP : topology.getOutputIP(localhost)) {
-				P2PSender outputSender = new P2PSender(outputIP, incomingPort);
-				lastAck.put(outputIP, null);
-				outputSenders.add(outputSender);
-				outputSender.run();
-			}
-		}
 		
 		if(comp instanceof IRichBolt) {
 			ackSenders = new HashMap<String, P2PSender>();
@@ -220,6 +211,18 @@ public class LocalCluster {
 			}
 		} else {
 			lastAck = new HashMap<String, DateTime>();
+		}
+		
+		if(!isSink) {
+			outputSenders = new ArrayList<P2PSender>();
+			for(String outputIP : topology.getOutputIP(localhost)) {
+				P2PSender outputSender = new P2PSender(outputIP, incomingPort);
+				if(comp instanceof IRichSpout) {
+					lastAck.put(outputIP, null);
+				}
+				outputSenders.add(outputSender);
+				outputSender.run();
+			}
 		}
 	}
 	
