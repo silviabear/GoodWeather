@@ -36,11 +36,13 @@ public class Main {
 			IRichSpout portReader = new PortReader();
 			builder.addNode("172.22.151.52", "172.22.151.53", portReader);
 			builder.addNode("172.22.151.52", "172.22.151.54", portReader);
-			builder.addNode("172.22.151.53", "172.22.151.55", new PortNormalizer());
-			builder.addNode("172.22.151.54", "172.22.151.56", new PortNormalizer());
-			builder.addNode("172.22.151.55", "172.22.151.57", new PortCounter());
-			builder.addNode("172.22.151.56", "172.22.151.57", new PortCounter());
-			builder.addNode("172.22.151.57", null, new CountFinalizer());
+			builder.addNode("172.22.151.52", "172.22.151.55", portReader);
+			builder.addNode("172.22.151.52", "172.22.151.56", portReader);
+			builder.addNode("172.22.151.53", "172.22.151.57", new PortNormalizer());
+			builder.addNode("172.22.151.54", "172.22.151.57", new PortNormalizer());
+			builder.addNode("172.22.151.55", "172.22.151.57", new PortNormalizer());
+			builder.addNode("172.22.151.55", "172.22.151.57", new PortNormalizer());
+			builder.addNode("172.22.151.57", null, new PortCounterFinalizer());
 		}
 		conf.put("filename", "data/app1-data");
 		LocalCluster cluster = new LocalCluster();
