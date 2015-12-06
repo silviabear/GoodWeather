@@ -148,6 +148,9 @@ public class LocalCluster {
 				while(true) {
 					try {
 						ITuple tuple = collector.nextTuple();
+						if(tuple instanceof Fail) {
+							System.out.println("FAILLLLLL");
+						}
 						if(tuple instanceof Fin) {
 							for(P2PSender sender : outputSenders) {
 								sender.send(tuple);
