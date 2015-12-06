@@ -190,6 +190,7 @@ public class LocalCluster {
 									}
 								}
 								outputSenders.remove(index);
+								((IRichSpout)comp).getOutputCollector().emit(new Fail(-2));
 								for(ITuple tuple : toBeAckedQueue.values()) {
 									((IRichSpout)comp).getOutputCollector().emit(tuple);
 								}
