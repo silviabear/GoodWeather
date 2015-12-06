@@ -7,9 +7,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ArrayBlockingQueue;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.joda.time.DateTime;
 
 import edu.illinois.cs425_mp1.network.Listener;
 import edu.illinois.cs425_mp1.network.P2PSender;
@@ -67,9 +69,16 @@ public class LocalCluster {
 	
 	private static final Map<Long, ITuple> toBeAckedQueue = Collections.synchronizedMap(new HashMap<Long, ITuple>());
 	
-	private static final Map<Long, String> idToInputIP = Collections.synchronizedMap(new HashMap<Long, String>());
+	private static final Map<Long, String> idToOutputIP = Collections.synchronizedMap(new HashMap<Long, String>());
 	
 	private static Logger log = LogManager.getLogger("clusterLogger");
+	
+	private final static long timeout = 10000;
+	private static Map<String, DateTime> lastAck;
+	
+	private Thread examineTimeoutThread;
+	
+	private static ArrayBlockingQueue<Long> outputIdToUse = new ArrayBlockingQueue<Long>(100000);
 	
 	static {
         //Get localhost value
@@ -141,7 +150,10 @@ public class LocalCluster {
 								sender.send(tuple);
 							}
 						} else {
-							outputSenders.get(currentSender % outputSenders.size()).send(tuple);
+							synchronized(outputSenders) {
+								outputSenders.get(currentSender % outputSenders.size()).send(tuple);
+								
+							}
 						}
 						log.debug("Send tuple " + tuple.id);
 						toBeAckedQueue.put(tuple.id, tuple);
@@ -154,13 +166,44 @@ public class LocalCluster {
 		};
 		outputThread.start();
 		
+		examineTimeoutThread = new Thread() {
+			@Override
+			public void run() {
+				while(true) {
+					try {
+						Thread.sleep(1000);
+						DateTime time = new DateTime();
+						for(String outputIP : lastAck.keySet()) {
+							if(time.getMillis() - lastAck.get(outputIP).getMillis() > timeout) {
+								int index = -1;
+								for(int i = 0; i < outputSenders.size(); i++) {
+									if(outputSenders.get(i).getHost().equals(outputIP)) {
+										index = i;
+										break;
+									}
+								}
+								outputSenders.remove(index);
+								for(ITuple tuple : toBeAckedQueue.values()) {
+									((IRichSpout)comp).getOutputCollector().emit(tuple);
+								}
+							}
+						}
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		};
 	}
 	
 	public void startSenders() {
 		if(!isSink) {
 			outputSenders = new ArrayList<P2PSender>();
+			lastAck = new HashMap<String, DateTime>();
 			for(String outputIP : topology.getOutputIP(localhost)) {
 				P2PSender outputSender = new P2PSender(outputIP, incomingPort);
+				lastAck.put(outputIP, null);
 				outputSenders.add(outputSender);
 				outputSender.run();
 			}
@@ -207,6 +250,7 @@ public class LocalCluster {
 		if(tuple instanceof Ack) {
 			if(isSource) {
 				toBeAckedQueue.remove(id);
+				lastAck.put(tuple.sourceAddr, new DateTime());
 			} else {
 				backwardAck((Ack)tuple);
 			}
@@ -222,6 +266,7 @@ public class LocalCluster {
 				if(comp instanceof IRichBolt) {
 					((IRichBolt)comp).onFinish();
 				}
+				outputIdToUse.add(id);
 				OutputCollector collector = ((IRichBolt)comp).getOutputCollector();
 				collector.finish();
 				collector.emit(tuple);
@@ -231,11 +276,18 @@ public class LocalCluster {
 			for(String str : ((Tuple) tuple).getValues().values()) {
 				bolt.execute(str);
 			}
+			if(isSink) {
+				ackSenders.get(tuple.sourceAddr).send(new Ack(id));
+			}
 		}
 	}
 	
 	private static void backwardAck(Ack ack) {
-		ackSenders.get(ack.id).send(ack);
+		ackSenders.get(0).send(ack);
+	}
+	
+	public static long getNextOutputId() throws InterruptedException {
+		return outputIdToUse.take();
 	}
 	
 }

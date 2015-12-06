@@ -19,6 +19,13 @@ public class Tuple extends ITuple implements Serializable {
 		this.inputIP = inputIP;
 	}
 	
+	public Tuple(Values values, String inputIP, long id) {
+		super(idCounter);
+		this.id = id;
+		this.values = values;
+		this.inputIP = inputIP;
+	}
+	
 	public Values getValues() {
 		return values;
 	}

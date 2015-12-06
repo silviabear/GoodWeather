@@ -45,7 +45,12 @@ public class OutputCollector {
 			val.add(cache[i]);
 		}
 		Values value = new Values(val);
-		Tuple tuple = new Tuple(value, LocalCluster.localhost);
+		Tuple tuple = null;
+		try {
+			tuple = new Tuple(value, LocalCluster.localhost, LocalCluster.getNextOutputId());
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		queue.add(tuple);
 	}
 	
