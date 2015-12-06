@@ -35,8 +35,8 @@
             <!--<AppenderRef ref="RollingFile"/>-->
         </Logger>
         <Logger name="networkLogger" level="trace" additivity="false">
-            <AppenderRef ref="Console"/>
-            <!--<AppenderRef ref="RollingFile"/>-->
+            <!--<AppenderRef ref="Console"/>-->
+            <AppenderRef ref="RollingFile"/>
         </Logger>
         <Logger name="parserLogger" level="trace" additivity="false">
             <!--<AppenderRef ref="Console"/>-->
@@ -53,8 +53,8 @@
         	<AppenderRef ref="Console"/>
         </Logger>
         <Logger name="collectorLogger" level="trace" additivity="false">
-        	<!--<AppenderRef ref="RollingFile"/>-->
-        	<AppenderRef ref="Console"/>
+        	<AppenderRef ref="RollingFile"/>
+        	<!--<AppenderRef ref="Console"/>-->
         </Logger>
         <Root level="error">
             <AppenderRef ref="Console"/>
