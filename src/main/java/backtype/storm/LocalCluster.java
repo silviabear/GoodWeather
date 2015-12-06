@@ -265,7 +265,7 @@ public class LocalCluster {
 		long id = tuple.id;
 		log.debug("Receive tuple " + id);
 		if(tuple instanceof Ack) {
-			System.out.println("Receive ack");
+			lastAck.put(tuple.sourceAddr, new DateTime());
 			if(isSource) {
 				toBeAckedQueue.remove(id);
 				lastAck.put(tuple.sourceAddr, new DateTime());
@@ -309,6 +309,7 @@ public class LocalCluster {
 	private static void forwardTuple(ITuple tuple) {
 		OutputCollector collector = ((IRichBolt)comp).getOutputCollector();
 		collector.finish();
+		tuple.sourceAddr = localhost;
 		collector.emit(tuple);
 	}
 	
