@@ -201,7 +201,7 @@ public class LocalCluster {
 		
 	}
 	
-	public static void handleInput(ITuple tuple) {
+	public synchronized static void handleInput(ITuple tuple) {
 		long id = tuple.id;
 		log.debug("Receive tuple " + id);
 		if(tuple instanceof Ack) {
