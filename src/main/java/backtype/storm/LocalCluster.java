@@ -289,6 +289,7 @@ public class LocalCluster {
 			}
 		} else if(tuple instanceof Fail) {
 			log.debug("Receive fail");
+			System.out.println("Receive fail");
 			if(isSink) {
 				sinkFinCriteria--;
 			} else {
