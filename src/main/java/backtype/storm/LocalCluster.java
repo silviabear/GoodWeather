@@ -201,7 +201,7 @@ public class LocalCluster {
 		
 	}
 	
-	public synchronized static void handleInput(ITuple tuple) {
+	public static void handleInput(ITuple tuple) {
 		long id = tuple.id;
 		log.debug("Receive tuple " + id);
 		if(tuple instanceof Ack) {
@@ -215,7 +215,9 @@ public class LocalCluster {
 			if(isSink) {
 				sinkFinCounter++;
 				if(sinkFinCounter == ackSenders.size()) { 
-					((IRichBolt)comp).cleanup();
+					synchronized(comp) {
+						((IRichBolt)comp).cleanup();
+					}
 				}
 			} else {
 				if(comp instanceof IRichBolt) {
@@ -226,9 +228,11 @@ public class LocalCluster {
 				collector.emit(tuple);
 			}
 		} else if(tuple instanceof Tuple) {
-			IRichBolt bolt = (IRichBolt)comp;
-			for(String str : ((Tuple) tuple).getValues().values()) {
-				bolt.execute(str);
+			synchronized(comp) {
+				IRichBolt bolt = (IRichBolt)comp;
+				for(String str : ((Tuple) tuple).getValues().values()) {
+					bolt.execute(str);
+				}
 			}
 		}
 	}
