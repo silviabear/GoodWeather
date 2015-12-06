@@ -46,10 +46,15 @@ public class OutputCollector {
 		}
 		Values value = new Values(val);
 		Tuple tuple = null;
-		try {
-			tuple = new Tuple(value, LocalCluster.localhost, LocalCluster.getNextOutputId());
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+		if(LocalCluster.isSource) {
+			tuple = new Tuple(value, LocalCluster.localhost);
+		}
+		else {
+			try {
+				tuple = new Tuple(value, LocalCluster.localhost, LocalCluster.getNextOutputId());
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 		queue.add(tuple);
 	}

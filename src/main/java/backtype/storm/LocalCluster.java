@@ -58,8 +58,8 @@ public class LocalCluster {
 	};
 	private Thread outputThread;
 	
-	private static boolean isSink;
-	private static boolean isSource;
+	public static boolean isSink;
+	public static boolean isSource;
 	
 	public static Config config;
 	
@@ -176,6 +176,9 @@ public class LocalCluster {
 						Thread.sleep(1000);
 						DateTime time = new DateTime();
 						for(String outputIP : lastAck.keySet()) {
+							if(lastAck.get(outputIP) == null) {
+								continue;
+							}
 							if(time.getMillis() - lastAck.get(outputIP).getMillis() > timeout) {
 								int index = -1;
 								for(int i = 0; i < outputSenders.size(); i++) {
