@@ -51,9 +51,7 @@ public class OutputCollector {
 		}
 		else {
 			try {
-				log.debug("wait for id");
 				tuple = new Tuple(value, LocalCluster.localhost, LocalCluster.getNextOutputId());
-				log.debug("get id");
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

@@ -155,8 +155,10 @@ public class LocalCluster {
 						} else {
 							log.debug("Request send tuple " + tuple.id);
 							synchronized(outputSenders) {
-								outputSenders.get(currentSender % outputSenders.size()).send(tuple);
+								int next = currentSender % outputSenders.size();
+								outputSenders.get(next).send(tuple);
 							}
+							
 						}
 						log.debug("Send tuple " + tuple.id);
 						toBeAckedQueue.put(tuple.id, tuple);
@@ -286,6 +288,8 @@ public class LocalCluster {
 			}
 			if(isSink) {
 				ackSenders.get(tuple.sourceAddr).send(new Ack(id));
+			} else {
+				idToOutputIP.put(tuple.id, tuple.sourceAddr);
 			}
 		} else if(tuple instanceof Fail) {
 			log.debug("Receive fail");
