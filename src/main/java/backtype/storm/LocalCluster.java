@@ -22,6 +22,7 @@ import backtype.storm.topology.IRichBolt;
 import backtype.storm.topology.IRichSpout;
 import backtype.storm.topology.StormTopology;
 import backtype.storm.tuple.Ack;
+import backtype.storm.tuple.Fail;
 import backtype.storm.tuple.Fin;
 import backtype.storm.tuple.ITuple;
 import backtype.storm.tuple.Tuple;
@@ -40,6 +41,7 @@ public class LocalCluster {
 	private static Map<String, P2PSender> ackSenders;
 	
 	private static int sinkFinCounter = 0;
+	private static int sinkFinCriteria;
 	
 	private final Thread ackListenerThread = new Thread() {
 		@Override
@@ -211,6 +213,7 @@ public class LocalCluster {
 				P2PSender sender = new P2PSender(inputIP, ackPort);
 				sender.run();
 				ackSenders.put(inputIP, sender);
+				sinkFinCriteria++;
 			}
 		} 
 		
@@ -271,12 +274,7 @@ public class LocalCluster {
 					((IRichBolt)comp).cleanup();
 				}
 			} else {
-				if(comp instanceof IRichBolt) {
-					((IRichBolt)comp).onFinish();
-				}
-				OutputCollector collector = ((IRichBolt)comp).getOutputCollector();
-				collector.finish();
-				collector.emit(tuple);
+				forwardTuple(tuple);
 			}
 		} else if(tuple instanceof Tuple) {
 			IRichBolt bolt = (IRichBolt)comp;
@@ -287,7 +285,20 @@ public class LocalCluster {
 			if(isSink) {
 				ackSenders.get(tuple.sourceAddr).send(new Ack(id));
 			}
+		} else if(tuple instanceof Fail) {
+			log.debug("Receive fail");
+			if(isSink) {
+				sinkFinCriteria--;
+			} else {
+				forwardTuple(tuple);
+			}
 		}
+	}
+	
+	private static void forwardTuple(ITuple tuple) {
+		OutputCollector collector = ((IRichBolt)comp).getOutputCollector();
+		collector.finish();
+		collector.emit(tuple);
 	}
 	
 	private static void backwardAck(Ack ack) {
