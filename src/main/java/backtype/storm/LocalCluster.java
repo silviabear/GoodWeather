@@ -305,7 +305,7 @@ public class LocalCluster {
 	}
 	
 	private static void backwardAck(Ack ack) {
-		ackSenders.get(0).send(ack);
+		ackSenders.get(idToOutputIP.get(ack.id)).send(ack);
 	}
 	
 	public static long getNextOutputId() throws InterruptedException {
