@@ -214,7 +214,8 @@ public class LocalCluster {
 			log.debug("Receive fin");
 			if(isSink) {
 				sinkFinCounter++;
-				if(sinkFinCounter == ackSenders.size()) { 					
+				if(sinkFinCounter == ackSenders.size()) {
+					log.debug("Finish and cleanup");
 					((IRichBolt)comp).cleanup();
 				}
 			} else {
