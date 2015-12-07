@@ -1,5 +1,8 @@
 package backtype.storm;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -326,6 +329,24 @@ public class LocalCluster {
 	
 	public static long getNextOutputId() throws InterruptedException {
 		return outputIdToUse.take();
+	}
+	
+	public void initiate() {
+		System.out.println("Enter anything to initiate the topology");
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		try {
+			br.readLine();
+		} catch (IOException e) {
+		}
+		this.startSenders();
+		System.out.println("Enter anything to start the topology");
+		
+		try {
+			br.readLine();
+		} catch (IOException e) {
+		}
+		
+		this.start();
 	}
 	
 }

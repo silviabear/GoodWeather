@@ -44,23 +44,9 @@ public class Main {
 			builder.addNode("172.22.151.56", "172.22.151.57", new PortNormalizer());
 			builder.addNode("172.22.151.57", null, new PortCounterFinalizer());
 		}
-		conf.put("filename", "data/app1-data");
+		conf.put("filename", "data/data20mb");
 		LocalCluster cluster = new LocalCluster();
 		cluster.submitTopology("Getting-Started-Toplogie", conf, builder.createTopology());
-		System.out.println("Enter anything to initiate the topology");
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		try {
-			br.readLine();
-		} catch (IOException e) {
-		}
-		cluster.startSenders();
-		System.out.println("Enter anything to start the topology");
-		
-		try {
-			br.readLine();
-		} catch (IOException e) {
-		}
-		
-		cluster.start();
+		cluster.initiate();
 	}
 }
