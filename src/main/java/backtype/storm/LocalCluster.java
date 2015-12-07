@@ -294,7 +294,9 @@ public class LocalCluster {
 			}
 		} else if(tuple instanceof Tuple) {
 			IRichBolt bolt = (IRichBolt)comp;
-			outputIdToUse.add(id);
+			if(!isSink) {
+				outputIdToUse.add(id);
+			}
 			for(String str : ((Tuple) tuple).getValues().values()) {
 				bolt.execute(str);
 			}
