@@ -44,7 +44,7 @@ public class OutputCollector {
 		}
 	}
 	
-	protected void dumpTuple() throws InterruptedException {
+	protected void dumpTuple() {
 		List<String> val = new ArrayList<String>(cacheSize);
 		for(int i = 0; i < cacheSize; i++) {
 			val.add(cache[i]);
@@ -61,7 +61,13 @@ public class OutputCollector {
 				e.printStackTrace();
 			}
 		}
-		queue.put(tuple);
+
+			try {
+				queue.put(tuple);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	}
 	
 	public ITuple nextTuple() throws InterruptedException {
