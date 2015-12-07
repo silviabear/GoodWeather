@@ -331,6 +331,21 @@ public class LocalCluster {
 		return outputIdToUse.take();
 	}
 	
+	public static void fail(String outputIP) {
+		int index = -1;
+		for(int i = 0; i < outputSenders.size(); i++) {
+			if(outputSenders.get(i).getHost().equals(outputIP)) {
+				index = i;
+				break;
+			}
+		}
+		outputSenders.remove(index);
+		((IRichSpout)comp).getOutputCollector().emit(new Fail(-2));
+		for(ITuple tuple : toBeAckedQueue.values()) {
+			((IRichSpout)comp).getOutputCollector().emit(tuple);
+		}
+	}
+	
 	public void initiate() {
 		System.out.println("Enter anything to initiate the topology");
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));

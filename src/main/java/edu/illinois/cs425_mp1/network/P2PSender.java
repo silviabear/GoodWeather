@@ -14,6 +14,7 @@ import io.netty.handler.codec.serialization.ObjectEncoder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import backtype.storm.LocalCluster;
 import backtype.storm.topology.IRichBolt;
 
 import java.io.FileNotFoundException;
@@ -92,6 +93,7 @@ public class P2PSender implements Sender {
             log.trace("request sent to " + this.HOST);
         } catch (Exception e) {
             log.trace("node " + HOST + "failed, skip");
+            LocalCluster.fail(this.HOST);
             P2PSender[] channels = Adapter.getChannels();
             for (int i = 0; i < channels.length; i++) {
                 if (channels[i] != null && channels[i].equals(HOST)) {
