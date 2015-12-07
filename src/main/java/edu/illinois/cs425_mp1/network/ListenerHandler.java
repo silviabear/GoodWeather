@@ -105,8 +105,8 @@ public class ListenerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         log.error("exception is caught in channel, details printed on console");
-        System.out.println(ctx.channel().remoteAddress().toString());
-        LocalCluster.fail(ctx.channel().remoteAddress().toString());
+        System.out.println(ctx.channel().remoteAddress().toString().split(":")[0].substring(1));
+        LocalCluster.fail(ctx.channel().remoteAddress().toString().split(":")[0].substring(1));
         cause.printStackTrace();
         log.error("closing current channel");
         ctx.close();
