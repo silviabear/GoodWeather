@@ -156,7 +156,12 @@ public class LocalCluster {
 						}
 						if(tuple instanceof Fin) {
 							for(P2PSender sender : outputSenders) {
-								sender.send(tuple);
+								try {
+									sender.send(tuple);
+								} catch(Exception e) {
+									System.out.println("FAIL");
+									fail(sender.getHost());
+								}
 							}
 						} else {
 							log.debug("Request send tuple " + tuple.id);
