@@ -285,7 +285,7 @@ public class LocalCluster {
 			if(isSink) {
 				sinkFinCounter++;
 				System.out.println(sinkFinCounter + "  " + sinkFinCriteria);
-				if(sinkFinCounter == sinkFinCriteria / 2) {
+				if(sinkFinCounter == sinkFinCriteria) {
 					log.debug("Finish and cleanup");
 					((IRichBolt)comp).cleanup();
 				}
@@ -344,6 +344,7 @@ public class LocalCluster {
 		for(ITuple tuple : toBeAckedQueue.values()) {
 			((IRichSpout)comp).getOutputCollector().emit(tuple);
 		}
+		((IRichSpout)comp).getOutputCollector().emit(new Fin(-1));
 	}
 	
 	public void initiate() {
