@@ -18,7 +18,7 @@ public class Main {
 		builder.addNode("172.22.151.52", "172.22.151.53", new PortReader());
 		builder.addNode("172.22.151.53", "172.22.151.54", new TimeNormalizer());
 		builder.addNode("172.22.151.54", null, new TimeAverageFinalizer());
-		conf.put("filename", "/home/xxu52/data20mb");
+		conf.put("filename", "/home/xxu52/data320mb");
 		LocalCluster cluster = new LocalCluster();
 		cluster.submitTopology("Ben", conf, builder.createTopology());
 		cluster.initiate();
