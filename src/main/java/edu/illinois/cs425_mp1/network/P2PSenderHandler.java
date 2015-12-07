@@ -54,7 +54,8 @@ public class P2PSenderHandler extends ChannelInboundHandlerAdapter {
      */
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        cause.printStackTrace();
+    	System.out.println("FAILLLL");
+    	cause.printStackTrace();
         ctx.close();
     }
 
