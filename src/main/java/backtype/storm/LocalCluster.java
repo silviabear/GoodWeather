@@ -217,7 +217,7 @@ public class LocalCluster {
 				}
 			}
 		};
-		examineTimeoutThread.start();
+		//examineTimeoutThread.start();
 	}
 	
 	public void startSenders() {
