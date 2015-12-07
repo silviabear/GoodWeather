@@ -332,6 +332,7 @@ public class LocalCluster {
 	}
 	
 	public static void fail(String outputIP) {
+		System.out.println("FAIL");
 		int index = -1;
 		for(int i = 0; i < outputSenders.size(); i++) {
 			if(outputSenders.get(i).getHost().equals(outputIP)) {
