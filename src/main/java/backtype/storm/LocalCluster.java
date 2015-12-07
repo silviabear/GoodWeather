@@ -189,11 +189,9 @@ public class LocalCluster {
 						String toRemove = null;
 						for(String outputIP : lastAck.keySet()) {
 							if(lastAck.get(outputIP) == null) {
-								System.out.println("null");
 								continue;
 							}
 							int index = -1;
-							System.out.println(lastAck.get(outputIP));
 							if(time.getMillis() - lastAck.get(outputIP).getMillis() > timeout) {
 								System.out.println("gonna fail");
 								for(int i = 0; i < outputSenders.size(); i++) {
