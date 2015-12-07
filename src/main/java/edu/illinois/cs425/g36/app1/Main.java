@@ -24,7 +24,7 @@ public class Main {
 	
 	public static void main(String[] args) {
 		
-		boolean parallelMode = args.length > 0;
+		boolean parallelMode = args[0].equals("1");
 		
 		TopologyBuilder builder = new TopologyBuilder();
 		Config conf = new Config();
