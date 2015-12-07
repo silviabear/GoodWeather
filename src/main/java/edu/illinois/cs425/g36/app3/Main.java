@@ -12,7 +12,7 @@ public class Main {
 		Config conf = new Config();
 		builder.addNode("172.22.151.52", "172.22.151.53", new PortReader());
 		builder.addNode("172.22.151.53", null, new LineCounter());
-		conf.put("filename", "data/data20mb");
+		conf.put("filename", "data/data320mb");
 		LocalCluster cluster = new LocalCluster();
 		cluster.submitTopology("Bear", conf, builder.createTopology());
 		cluster.initiate();
