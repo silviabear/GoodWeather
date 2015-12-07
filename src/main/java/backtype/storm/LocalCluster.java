@@ -290,7 +290,7 @@ public class LocalCluster {
 			if(isSink) {
 				sinkFinCounter++;
 				System.out.println(sinkFinCounter + "  " + sinkFinCriteria);
-				if(sinkFinCounter == sinkFinCriteria) {
+				if(sinkFinCounter >= sinkFinCriteria) {
 					log.debug("Finish and cleanup");
 					((IRichBolt)comp).cleanup();
 				}
