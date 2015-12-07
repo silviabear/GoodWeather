@@ -21,6 +21,8 @@ public class PortCounterFinalizer extends IRichBolt {
 	*/
 	@Override
 	public void cleanup() {
+		System.out.println("150:" + counters.get("150")); 
+		/*
 		PrintWriter writer;
 		try {
 			writer = new PrintWriter("result", "UTF-8");
@@ -33,7 +35,7 @@ public class PortCounterFinalizer extends IRichBolt {
 			e.printStackTrace();
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
-		} 
+		} */
 	}
 	
 	/**
